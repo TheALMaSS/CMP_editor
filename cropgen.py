@@ -83,7 +83,7 @@ class FlowchartApp(QMainWindow):
                     "branching_condition": arrow.text_item.toPlainText()
                 })
             data.append({
-                "constraints": node.constraints_text.toPlainText(),
+                "dates": node.dates_text.toPlainText(),
                 "operation_id": node.id_text.toPlainText(),
                 "operation_name": node.name_text.toPlainText(),
                 "x": node.x(),
@@ -127,7 +127,7 @@ class FlowchartApp(QMainWindow):
         for node_data in data:
             node = Node(node_data["x"], node_data["y"])
             node.setZValue(1)
-            node.constraints_text.setPlainText(node_data.get("constraints", ""))
+            node.dates_text.setPlainText(node_data.get("dates", ""))
             node.id_text.setPlainText(node_data.get("operation_id", ""))
             node.name_text.setPlainText(node_data.get("operation_name", ""))
             node.update_text_positions()

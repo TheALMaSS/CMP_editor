@@ -27,15 +27,15 @@ class Node(QGraphicsRectItem):
         self.setPen(QPen(Qt.black, 2))
 
         # TEXT FIELDS
-        self.constraints_text = HighlightableTextItem("Constraints", self)
-        self.id_text = QGraphicsTextItem("Operation Id", self)
-        self.name_text = QGraphicsTextItem("Operation Name", self)
-        self.constraints_text.setTextInteractionFlags(Qt.TextEditorInteraction)
+        self.id_text = QGraphicsTextItem("Id", self)
+        self.name_text = QGraphicsTextItem("Name", self)
+        self.dates_text = HighlightableTextItem("dd/MM - dd/MM", self)
         self.id_text.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.name_text.setTextInteractionFlags(Qt.TextEditorInteraction)
+        self.dates_text.setTextInteractionFlags(Qt.TextEditorInteraction)
 
         self.update_text_positions()
-        self.constraints_text.document().contentsChanged.connect(self.update_text_positions)
+        self.dates_text.document().contentsChanged.connect(self.update_text_positions)
         self.id_text.document().contentsChanged.connect(self.update_text_positions)
         self.name_text.document().contentsChanged.connect(self.update_text_positions)
 
@@ -47,29 +47,26 @@ class Node(QGraphicsRectItem):
         """Center text horizontally; make ID and Name bold/larger."""
         rect = self.rect()
 
-        # Constraints
-        constraints_font = QFont("Arial", 10)
-        self.constraints_text.setFont(constraints_font)
-        bounds = self.constraints_text.boundingRect()
-        x = (rect.width() - bounds.width()) / 2
-        y = 5  # small margin from top
-        self.constraints_text.setPos(x, y)
-
         # ID
-        id_font = QFont("Arial", 12, QFont.Bold)
-        self.id_text.setFont(id_font)
+        self.id_text.setFont(QFont("Arial", 12, QFont.Bold))
         bounds = self.id_text.boundingRect()
         x = (rect.width() - bounds.width()) / 2
-        y = 35
+        y = 5
         self.id_text.setPos(x, y)
 
-        # Operation Name
-        name_font = QFont("Arial", 10, QFont.Bold)
-        self.name_text.setFont(name_font)
+        # Name
+        self.name_text.setFont(QFont("Arial", 10, QFont.Bold))
         bounds = self.name_text.boundingRect()
         x = (rect.width() - bounds.width()) / 2
-        y = 65
+        y = 40
         self.name_text.setPos(x, y)
+
+        # Dates range
+        self.dates_text.setFont(QFont("Arial", 10))
+        bounds = self.dates_text.boundingRect()
+        x = (rect.width() - bounds.width()) / 2
+        y = 70
+        self.dates_text.setPos(x, y)
 
     def add_arrow_to(self, target_node):
         # Avoid duplicates

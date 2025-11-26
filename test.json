@@ -1,0 +1,73 @@
+[
+  {
+    "dates": "10/10 - 10/06",
+    "operation_id": "1",
+    "operation_name": "ACTION 1",
+    "x": 229.0,
+    "y": -155.0,
+    "outgoing": [
+      {
+        "destination_id": "2",
+        "branching_condition": "50%"
+      },
+      {
+        "destination_id": "3",
+        "branching_condition": "50%"
+      }
+    ]
+  },
+  {
+    "dates": "07/12 - 10/02",
+    "operation_id": "2",
+    "operation_name": "ACTION 2",
+    "x": 21.0,
+    "y": 54.0,
+    "outgoing": [
+      {
+        "destination_id": "4",
+        "branching_condition": ""
+      }
+    ]
+  },
+  {
+    "dates": "dd/MM - dd/MM",
+    "operation_id": "3",
+    "operation_name": "ACTION 3",
+    "x": 331.0,
+    "y": 44.0,
+    "outgoing": [
+      {
+        "destination_id": "4",
+        "branching_condition": ""
+      },
+      {
+        "destination_id": "Id",
+        "branching_condition": "Branching\nConditions"
+      }
+    ]
+  },
+  {
+    "dates": "dd/MM - dd/MM",
+    "operation_id": "4",
+    "operation_name": "Name",
+    "x": 196.0,
+    "y": 316.0,
+    "outgoing": []
+  },
+  {
+    "dates": "dd/MM - dd/MM",
+    "operation_id": "Id",
+    "operation_name": "Name",
+    "x": 453.0,
+    "y": 327.0,
+    "outgoing": []
+  },
+  {
+    "dates": "dd/MM - dd/MM",
+    "operation_id": "Id",
+    "operation_name": "Name",
+    "x": 354.0,
+    "y": 594.0,
+    "outgoing": []
+  }
+]
