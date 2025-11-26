@@ -1,0 +1,27 @@
+[
+  {
+    "constraints": "Constraints",
+    "operation_id": "20",
+    "operation_name": "TEST",
+    "x": 87.0,
+    "y": -198.0,
+    "outgoing": [
+      {
+        "destination_id": "Operation Id",
+        "branching_condition": ""
+      },
+      {
+        "destination_id": "Operation Id",
+        "branching_condition": ""
+      }
+    ]
+  },
+  {
+    "constraints": "Constraints",
+    "operation_id": "Operation Id",
+    "operation_name": "Operation Name",
+    "x": 44.0,
+    "y": 339.0,
+    "outgoing": []
+  }
+]
