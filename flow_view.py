@@ -26,7 +26,7 @@ class FlowView(QGraphicsView):
                 item = parent
 
             # If clicking on text associated to arrow -> delete arrow
-            if parent is not None and (hasattr(parent, "start_node")):
+            if parent is not None and hasattr(parent, "start_node"):
                 item = parent
 
             # Delete an arrow
@@ -47,8 +47,6 @@ class FlowView(QGraphicsView):
 
             # Delete a node
             if hasattr(item, "outgoing_arrows") or hasattr(item, "incoming_arrows"):
-
-                # Remove outgoing arrows
                 for arrow in list(getattr(item, "outgoing_arrows", [])):
                     if arrow in getattr(arrow.end_node, "incoming_arrows", []):
                         arrow.end_node.incoming_arrows.remove(arrow)
@@ -56,7 +54,6 @@ class FlowView(QGraphicsView):
                         self.scene().removeItem(arrow.text_item)
                     self.scene().removeItem(arrow)
 
-                # Remove incoming arrows
                 for arrow in list(getattr(item, "incoming_arrows", [])):
                     if arrow in getattr(arrow.start_node, "outgoing_arrows", []):
                         arrow.start_node.outgoing_arrows.remove(arrow)
@@ -64,17 +61,27 @@ class FlowView(QGraphicsView):
                         self.scene().removeItem(arrow.text_item)
                     self.scene().removeItem(arrow)
 
-                # Remove node from global node list
                 if item in self.window.nodes:
                     self.window.nodes.remove(item)
 
-                # Remove node itself
                 self.scene().removeItem(item)
                 return
 
-            # Fallback for unexpected items
             self.scene().removeItem(item)
             return
+
+        # ----------------------------------------------------------------------------------------------
+        # ADD BEND POINT (left click on arrow when NOT deleting)
+        # ----------------------------------------------------------------------------------------------
+        if event.button() == Qt.LeftButton and not getattr(self.window, "delete_mode", False):
+            # map click to scene coordinates
+            scene_pos = self.mapToScene(event.pos())
+            item = self.itemAt(event.pos())
+            if item is not None:
+                # If the clicked item is an Arrow (QGraphicsPathItem)
+                if hasattr(item, "add_bend_point"):
+                    item.add_bend_point(scene_pos)
+                    return
 
         # ----------------------------------------------------------------------------------------------
         # PANNING MODE

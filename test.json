@@ -10,15 +10,28 @@
     "outgoing": [
       {
         "destination_id": "1A",
-        "branching_condition": "50%"
+        "branching_condition": "50%",
+        "bend_points": [
+          [
+            158.0,
+            -121.0
+          ]
+        ]
       },
       {
         "destination_id": "1B",
-        "branching_condition": "20%"
+        "branching_condition": "20%",
+        "bend_points": []
       },
       {
         "destination_id": "1C",
-        "branching_condition": "30%"
+        "branching_condition": "30%",
+        "bend_points": [
+          [
+            763.0,
+            -152.0
+          ]
+        ]
       }
     ]
   },
@@ -26,14 +39,15 @@
     "dates": "10/08 - 20/08",
     "operation_id": "1A",
     "operation_name": "Autumn Plough",
-    "x": 21.0,
-    "y": 54.0,
+    "x": -19.0,
+    "y": 45.0,
     "width": 248.0,
     "height": 110.0,
     "outgoing": [
       {
         "destination_id": "2",
-        "branching_condition": ""
+        "branching_condition": "",
+        "bend_points": []
       }
     ]
   },
@@ -41,14 +55,15 @@
     "dates": "10/08 - 20/08",
     "operation_id": "1B",
     "operation_name": "Shallow stubble harrow",
-    "x": 335.0,
-    "y": 42.0,
+    "x": 328.0,
+    "y": 30.0,
     "width": 280.0,
     "height": 116.0,
     "outgoing": [
       {
         "destination_id": "2",
-        "branching_condition": ""
+        "branching_condition": "",
+        "bend_points": []
       }
     ]
   },
@@ -56,22 +71,25 @@
     "dates": "10/08 - 25/08",
     "operation_id": "1C",
     "operation_name": "Sow with special sow machine (no plough)",
-    "x": 691.0,
-    "y": -17.0,
+    "x": 728.0,
+    "y": 0.0,
     "width": 442.0,
     "height": 115.0,
     "outgoing": [
       {
         "destination_id": "3C",
-        "branching_condition": "50%"
+        "branching_condition": "50%",
+        "bend_points": []
       },
       {
         "destination_id": "3B",
-        "branching_condition": "25%"
+        "branching_condition": "25%",
+        "bend_points": []
       },
       {
         "destination_id": "3A",
-        "branching_condition": "25%"
+        "branching_condition": "25%",
+        "bend_points": []
       }
     ]
   },
@@ -86,15 +104,18 @@
     "outgoing": [
       {
         "destination_id": "3A",
-        "branching_condition": "25%"
+        "branching_condition": "25%",
+        "bend_points": []
       },
       {
         "destination_id": "3B",
-        "branching_condition": "25%"
+        "branching_condition": "25%",
+        "bend_points": []
       },
       {
         "destination_id": "3C",
-        "branching_condition": "50%"
+        "branching_condition": "50%",
+        "bend_points": []
       }
     ]
   },
@@ -109,7 +130,8 @@
     "outgoing": [
       {
         "destination_id": "4",
-        "branching_condition": ""
+        "branching_condition": "",
+        "bend_points": []
       }
     ]
   },
@@ -124,7 +146,8 @@
     "outgoing": [
       {
         "destination_id": "4",
-        "branching_condition": ""
+        "branching_condition": "",
+        "bend_points": []
       }
     ]
   },
@@ -139,7 +162,8 @@
     "outgoing": [
       {
         "destination_id": "4",
-        "branching_condition": ""
+        "branching_condition": "",
+        "bend_points": []
       }
     ]
   },

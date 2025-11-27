@@ -1,7 +1,7 @@
 import sys, json
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog
-from PyQt5.QtGui import QColor, QPainter, QBrush
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor, QBrush
+from PyQt5.QtCore import Qt, QPointF
 from flow_view import FlowView
 from node import Node
 from flow_scene import FlowScene
@@ -87,7 +87,8 @@ class FlowchartApp(QMainWindow):
             for arrow in node.outgoing_arrows:
                 outgoing.append({
                     "destination_id": arrow.end_node.id_text.toPlainText(),
-                    "branching_condition": arrow.text_item.toPlainText()
+                    "branching_condition": arrow.text_item.toPlainText(),
+                    "bend_points": [[bp.scenePos().x(), bp.scenePos().y()] for bp in arrow.bend_points]
                 })
             data.append({
                 "dates": node.dates_text.toPlainText(),
@@ -102,33 +103,37 @@ class FlowchartApp(QMainWindow):
 
         with open(filename, "w") as f:
             json.dump(data, f, indent=2)
-
         print(f"Exported {filename}")
+
 
     def load_json(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open JSON", "", "JSON Files (*.json)")
         if not filename:
             return
 
-        # Clear all arrows first
+        # Clear all arrows
         for node in list(self.nodes):
             for arrow in list(node.outgoing_arrows):
                 if arrow.text_item:
                     self.scene.removeItem(arrow.text_item)
+                for bp in arrow.bend_points:
+                    self.scene.removeItem(bp)
                 self.scene.removeItem(arrow)
                 node.outgoing_arrows.remove(arrow)
             for arrow in list(node.incoming_arrows):
                 if arrow.text_item:
                     self.scene.removeItem(arrow.text_item)
+                for bp in arrow.bend_points:
+                    self.scene.removeItem(bp)
                 self.scene.removeItem(arrow)
                 node.incoming_arrows.remove(arrow)
 
-        # Clear nodes from scene
+        # Clear nodes
         for node in list(self.nodes):
             self.scene.removeItem(node)
         self.nodes.clear()
 
-        # Load new nodes
+        # Load nodes
         with open(filename, "r") as f:
             data = json.load(f)
 
@@ -146,7 +151,7 @@ class FlowchartApp(QMainWindow):
             self.nodes.append(node)
             node_map[node_data["operation_id"]] = node
 
-        # Create arrows
+        # Create arrows with bend points
         for node_data in data:
             source_node = node_map.get(node_data["operation_id"])
             if not source_node:
@@ -158,6 +163,9 @@ class FlowchartApp(QMainWindow):
                     arrow.text_item.setPlainText(arrow_data.get("branching_condition", ""))
                     self.scene.addItem(arrow)
                     self.scene.addItem(arrow.text_item)
+                    # recreate bend points
+                    for bp_coords in arrow_data.get("bend_points", []):
+                        arrow.add_bend_point(QPointF(bp_coords[0], bp_coords[1]))
 
     def toggle_delete_mode(self):
         self.delete_mode = self.delete_btn.isChecked()

@@ -81,9 +81,9 @@ class Node(QGraphicsRectItem):
     def itemChange(self, change, value):
         if change == QGraphicsItem.ItemPositionChange:
             for arrow in getattr(self, "outgoing_arrows", []):
-                arrow.update_position()
+                arrow.update_path()
             for arrow in getattr(self, "incoming_arrows", []):
-                arrow.update_position()
+                arrow.update_path()
         return super().itemChange(change, value)
 
     def paint(self, painter, option, widget=None):
@@ -111,8 +111,8 @@ class Node(QGraphicsRectItem):
             self.update_text_positions()
             # Update arrows
             for arrow in getattr(self, "outgoing_arrows", []):
-                arrow.update_position()
+                arrow.update_path()
             for arrow in getattr(self, "incoming_arrows", []):
-                arrow.update_position()
+                arrow.update_path()
         else:
             super().mouseMoveEvent(event)
