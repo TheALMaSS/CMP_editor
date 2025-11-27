@@ -51,19 +51,25 @@ class Arrow(QGraphicsPathItem):
         self.update_path()
 
     def update_path(self):
+        # Start and end centers
         start_center = self.start_node.pos() + self.start_node.rect().center()
         end_center = self.end_node.pos() + self.end_node.rect().center()
 
-        # intersections with node borders
-        start = line_rect_intersection(self.start_node.sceneBoundingRect(), end_center, start_center)
-        end = line_rect_intersection(self.end_node.sceneBoundingRect(), start_center, end_center)
+        # Determine "first point" that intersects the start node
+        first_target = self.bend_points[0].scenePos() if self.bend_points else end_center
+        start = line_rect_intersection(self.start_node.sceneBoundingRect(), first_target, start_center)
 
+        # Determine "last point" that intersects the end node
+        last_target = self.bend_points[-1].scenePos() if self.bend_points else start_center
+        end = line_rect_intersection(self.end_node.sceneBoundingRect(), last_target, end_center)
+
+        # Build the path
         path = QPainterPath(start)
         for bend in self.bend_points:
             path.lineTo(bend.scenePos())
         path.lineTo(end)
-        self.setPath(path)
 
+        self.setPath(path)
         self.update_text_position()
 
     def update_text_position(self, offset=25):
@@ -71,22 +77,40 @@ class Arrow(QGraphicsPathItem):
         if path.elementCount() < 2:
             return
 
-        # Approximate midpoint of the polyline
-        start_elem = path.elementAt(0)
-        end_elem = path.elementAt(path.elementCount() - 1)
-        mid_x = (start_elem.x + end_elem.x) / 2
-        mid_y = (start_elem.y + end_elem.y) / 2
+        # Build a list of points along the path
+        points = [QPointF(path.elementAt(i).x, path.elementAt(i).y) for i in range(path.elementCount())]
+
+        # Compute cumulative distances
+        total_length = 0
+        segment_lengths = []
+        for i in range(len(points) - 1):
+            dx = points[i+1].x() - points[i].x()
+            dy = points[i+1].y() - points[i].y()
+            seg_len = math.hypot(dx, dy)
+            segment_lengths.append(seg_len)
+            total_length += seg_len
+
+        # Find midpoint along the polyline
+        mid_dist = total_length / 2
+        accumulated = 0
+        for i, seg_len in enumerate(segment_lengths):
+            if accumulated + seg_len >= mid_dist:
+                t = (mid_dist - accumulated) / seg_len
+                mid_x = points[i].x() + t * (points[i+1].x() - points[i].x())
+                mid_y = points[i].y() + t * (points[i+1].y() - points[i].y())
+                dx = points[i+1].x() - points[i].x()
+                dy = points[i+1].y() - points[i].y()
+                break
+            accumulated += seg_len
 
         # perpendicular offset
-        dx = end_elem.x - start_elem.x
-        dy = end_elem.y - start_elem.y
         length = math.hypot(dx, dy) or 1
         perp_x = -dy / length * offset
         perp_y = dx / length * offset
 
         rect = self.text_item.boundingRect()
         self.text_item.setPos(mid_x - rect.width() / 2 + perp_x,
-                              mid_y - rect.height() / 2 + perp_y)
+                            mid_y - rect.height() / 2 + perp_y)
 
     def paint(self, painter, option, widget=None):
         super().paint(painter, option, widget)
