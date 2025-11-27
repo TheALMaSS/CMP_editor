@@ -144,11 +144,11 @@ class FlowView(QGraphicsView):
                 menu.addAction(change_color_action)
 
                 # ADD BOOLEAN CONSTRAINT
-                add_boolean_constraint_action = QAction("Add Boolean Constraint", self)
-                def on_add_boolean_constraint():
-                    item.add_boolean_constraint()
-                add_boolean_constraint_action.triggered.connect(on_add_boolean_constraint)
-                menu.addAction(add_boolean_constraint_action)
+                #add_boolean_constraint_action = QAction("Add Boolean Constraint", self)
+                #def on_add_boolean_constraint():
+                #    item.add_boolean_constraint()
+                #add_boolean_constraint_action.triggered.connect(on_add_boolean_constraint)
+                #menu.addAction(add_boolean_constraint_action)
 
                 menu.exec_(event.globalPos())
                 return
