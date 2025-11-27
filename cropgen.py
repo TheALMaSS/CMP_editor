@@ -7,22 +7,30 @@ from node import Node
 from flow_scene import FlowScene
 
 class FlowchartApp(QMainWindow):
+
+    # ----------------------------------------------------------------------------------------------
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Minimal Flowchart")
+
+        # Init WINDOW
+        self.setWindowTitle("CMP Editor")
         self.setGeometry(100, 100, 800, 600)
 
+        # Init SCENE
         self.scene = FlowScene()
         self.scene.setBackgroundBrush(QBrush(QColor("#738DB3")))
+        self.scene.setSceneRect(-5000, -5000, 10000, 10000)
+
+        # Init VIEW
         self.view = FlowView(self.scene, self)
         self.setCentralWidget(self.view)
 
+        # Init DATA STRUCTURES
         self.nodes = []
         self.lines = []
-
         self.selected_node = None
 
-        # BUTTONS
+        # Init BUTTONS
         self.add_node_btn = QPushButton("Add Node", self)
         self.add_node_btn.move(700, 50)
         self.add_node_btn.clicked.connect(self.add_node)
@@ -40,8 +48,7 @@ class FlowchartApp(QMainWindow):
         self.load_btn = QPushButton("Load JSON", self)
         self.load_btn.move(700, 200)
         self.load_btn.clicked.connect(self.load_json)
-
-        self.view.setRenderHint(QPainter.Antialiasing)
+    # ----------------------------------------------------------------------------------------------
 
     def add_node(self):
         node = Node(100 + len(self.nodes)*50, 100)

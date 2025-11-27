@@ -2,27 +2,35 @@ from PyQt5.QtWidgets import QGraphicsView
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPainter
 
+# Displays a portion of the SCENE and handles user interaction
 class FlowView(QGraphicsView):
     def __init__(self, scene, window):
         super().__init__(scene)
         self.window = window
-        self.setRenderHint(QPainter.Antialiasing)
-        self._panning = False
+        self.setRenderHint(QPainter.Antialiasing) # TODO: check
+        self._panning = True
         self._pan_start = QPoint()
 
     def mousePressEvent(self, event):
+        # ----------------------------------------------------------------------------------------------
         # DELETE MODE (left click)
+        # ----------------------------------------------------------------------------------------------
         if event.button() == Qt.LeftButton and getattr(self.window, "delete_mode", False):
             item = self.itemAt(event.pos())
             if item is None:
                 return
 
-            # If clicking on text inside node → treat parent as node
+            # If clicking on text inside node -> delete entire node
             parent = item.parentItem()
             if parent is not None and (hasattr(parent, "outgoing_arrows") or hasattr(parent, "incoming_arrows")):
                 item = parent
 
-            # -------- DELETE ARROW --------
+            # If clicking on text associated to arrow -> delete arrow
+            parent = item.parentItem()
+            if parent is not None and (hasattr(item, "start_node")):
+                item = parent
+
+            # Delete an arrow
             if hasattr(item, "start_node") and hasattr(item, "end_node"):
                 start = item.start_node
                 end = item.end_node
@@ -38,7 +46,7 @@ class FlowView(QGraphicsView):
                 self.scene().removeItem(item)
                 return
 
-            # -------- DELETE NODE --------
+            # Delete a node
             if hasattr(item, "outgoing_arrows") or hasattr(item, "incoming_arrows"):
 
                 # Remove outgoing arrows
@@ -69,7 +77,9 @@ class FlowView(QGraphicsView):
             self.scene().removeItem(item)
             return
 
-        # -------- PANNING --------
+        # ----------------------------------------------------------------------------------------------
+        # PANNING MODE
+        # ----------------------------------------------------------------------------------------------
         if event.button() == Qt.MiddleButton and not getattr(self.window, "delete_mode", False):
             self._panning = True
             self._pan_start = event.pos()
