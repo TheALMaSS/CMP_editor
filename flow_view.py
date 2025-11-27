@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QGraphicsView, QApplication
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPainter
+from node import Node
 
 # Displays a portion of the SCENE and handles user interaction
 class FlowView(QGraphicsView):
@@ -10,6 +11,7 @@ class FlowView(QGraphicsView):
         self.setRenderHint(QPainter.Antialiasing) # TODO: check
         self._panning = False
         self._pan_start = QPoint()
+        self.resizing_node = None
 
     def mousePressEvent(self, event):
         # ----------------------------------------------------------------------------------------------
@@ -91,18 +93,50 @@ class FlowView(QGraphicsView):
             self._pan_start = event.pos()
             self.setCursor(Qt.ClosedHandCursor)
             return
+        
+        # ----------------------------------------------------------------------------------------------
+        # CLICKING ON A NODE: EITHER MOVING OR RESIZING
+        # ----------------------------------------------------------------------------------------------
+        if isinstance(item, Node):
+            pos_in_node = item.mapFromScene(self.mapToScene(event.pos()))
+            rect = item.rect()
+            if rect.right() - Node.CORNER_SIZE < pos_in_node.x() < rect.right() and \
+            rect.bottom() - Node.CORNER_SIZE < pos_in_node.y() < rect.bottom():
+                self.resizing_node = item
+                return
 
+        # ----------------------------------------------------------------------------------------------
+        # MOVING AN OBJECT FLAGGED AS ItemIsMovable IS HANDLED BY QGraphics
+        # ----------------------------------------------------------------------------------------------
         super().mousePressEvent(event)
 
     # ----------------------------------------------------------------------------------------------
     def mouseMoveEvent(self, event):
+
         if self._panning:
             delta = event.pos() - self._pan_start
             self._pan_start = event.pos()
             self.horizontalScrollBar().setValue(self.horizontalScrollBar().value() - delta.x())
             self.verticalScrollBar().setValue(self.verticalScrollBar().value() - delta.y())
             return
+
+        if self.resizing_node is not None:
+            node = self.resizing_node
+            # Map mouse pos to node coordinates
+            scene_pos = self.mapToScene(event.pos())
+            node_pos = node.mapFromScene(scene_pos)
+
+            new_width = max(node_pos.x(), 30)
+            new_height = max(node_pos.y(), 30)
+            node.setRect(0, 0, new_width, new_height)
+            node.update_text_positions()
+            # Update connected arrows
+            for arrow in node.outgoing_arrows + node.incoming_arrows:
+                arrow.update_path()
+            return
+
         super().mouseMoveEvent(event)
+
     # ----------------------------------------------------------------------------------------------
 
     # ----------------------------------------------------------------------------------------------
@@ -111,9 +145,16 @@ class FlowView(QGraphicsView):
             self._panning = False
             self.setCursor(Qt.ArrowCursor)
             return
+        
+        if self.resizing_node is not None:
+            self.resizing_node = None
+
         super().mouseReleaseEvent(event)
     # ----------------------------------------------------------------------------------------------
 
+    # ----------------------------------------------------------------------------------------------
+    # ZOOM IN AND OUT WITH SHIFT + WHEEL
+    # ----------------------------------------------------------------------------------------------
     def wheelEvent(self, event):
         modifiers = QApplication.keyboardModifiers()
         if modifiers == Qt.ShiftModifier:

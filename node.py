@@ -11,7 +11,7 @@ class HighlightableTextItem(QGraphicsTextItem):
         super().paint(painter, option, widget)
 
 class Node(QGraphicsRectItem):
-    HANDLE_SIZE = 10  # bottom-right corner sensitive area
+    CORNER_SIZE = 20
 
     def __init__(self, x, y, width=180, height=120, radius=10):
         super().__init__(0, 0, width, height)
@@ -90,29 +90,3 @@ class Node(QGraphicsRectItem):
         painter.setBrush(self.brush())
         painter.setPen(self.pen())
         painter.drawRoundedRect(self.rect(), self.radius, self.radius)
-
-    # -------------------- Resizing --------------------
-    def mousePressEvent(self, event):
-        rect = self.rect()
-        pos = event.pos()
-        # Bottom-right corner sensitive area
-        if rect.right() - self.HANDLE_SIZE < pos.x() < rect.right() and rect.bottom() - self.HANDLE_SIZE < pos.y() < rect.bottom():
-            self.resizing = True
-        else:
-            self.resizing = False
-        super().mousePressEvent(event)
-
-    def mouseMoveEvent(self, event):
-        if self.resizing:
-            # Resize rectangle
-            new_width = max(event.pos().x(), 30)
-            new_height = max(event.pos().y(), 30)
-            self.setRect(0, 0, new_width, new_height)
-            self.update_text_positions()
-            # Update arrows
-            for arrow in getattr(self, "outgoing_arrows", []):
-                arrow.update_path()
-            for arrow in getattr(self, "incoming_arrows", []):
-                arrow.update_path()
-        else:
-            super().mouseMoveEvent(event)
