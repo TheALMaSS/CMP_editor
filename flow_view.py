@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QGraphicsView, QApplication
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtWidgets import QGraphicsView, QApplication, QMenu, QAction, QColorDialog, QGraphicsTextItem
+from PyQt5.QtCore import Qt, QPoint, QRectF
 from PyQt5.QtGui import QPainter
 from node import Node
 from arrow import BendPoint, Arrow
@@ -126,11 +126,39 @@ class FlowView(QGraphicsView):
         if event.button() == Qt.RightButton:
             item = self.itemAt(event.pos())
 
-            # DELETE A BEND POINT
+            # TODO: check why does it crash when i right click on the text???
+            if isinstance(item, QGraphicsTextItem):
+                return
+
+            # IF NODE -> SHOW OPTIONS
+            if isinstance(item, Node):
+                menu = QMenu()
+
+                # CHANGE NODE COLOR
+                change_color_action = QAction("Change Color", self)
+                def on_change_color():
+                    from PyQt5.QtWidgets import QColorDialog
+                    color = QColorDialog.getColor(item.brush().color(), self.window, "Select Node Color")
+                    item.change_color(color)
+                change_color_action.triggered.connect(on_change_color)
+                menu.addAction(change_color_action)
+
+                # ADD BOOLEAN CONSTRAINT
+                add_boolean_constraint_action = QAction("Add Boolean Constraint", self)
+                def on_add_boolean_constraint():
+                    item.add_boolean_constraint()
+                add_boolean_constraint_action.triggered.connect(on_add_boolean_constraint)
+                menu.addAction(add_boolean_constraint_action)
+
+                menu.exec_(event.globalPos())
+                return
+
+            # IF BEND POINT -> DELETE
             if isinstance(item, BendPoint):
                 item.arrow.bend_points.remove(item)
                 item.scene().removeItem(item)
                 item.arrow.update_path()
+
             return
 
         # ----------------------------------------------------------------------------------------------
@@ -150,7 +178,6 @@ class FlowView(QGraphicsView):
 
         if self.resizing_node is not None:
             node = self.resizing_node
-            # Map mouse pos to node coordinates
             scene_pos = self.mapToScene(event.pos())
             node_pos = node.mapFromScene(scene_pos)
 
@@ -176,6 +203,9 @@ class FlowView(QGraphicsView):
         
         if self.resizing_node is not None:
             self.resizing_node = None
+        
+        # TODO: maybe optimize by not redrawing entire scene, but just the nodes in the node lists
+        self.scene().update()
 
         super().mouseReleaseEvent(event)
     # ----------------------------------------------------------------------------------------------

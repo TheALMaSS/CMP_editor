@@ -1,14 +1,41 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QGraphicsRectItem, QGraphicsTextItem, QGraphicsItem
-from PyQt5.QtGui import QColor, QPen, QFont
+from PyQt5.QtWidgets import QGraphicsRectItem, QGraphicsTextItem, QGraphicsItem, QColorDialog
+from PyQt5.QtGui import QColor, QPen, QFont, QBrush
 from arrow import Arrow
 
+class PrefixedTextItem(QGraphicsTextItem):
+    def __init__(self, prefix, text="", parent=None):
+        super().__init__(prefix + text, parent)
+        self.prefix = prefix
+        self.setTextInteractionFlags(Qt.TextEditorInteraction)
+
+    def keyPressEvent(self, event):
+        cursor = self.textCursor()
+        if cursor.position() < len(self.prefix):
+            cursor.setPosition(len(self.prefix))
+            self.setTextCursor(cursor)
+        super().keyPressEvent(event)
+
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+        cursor = self.textCursor()
+        if cursor.position() < len(self.prefix):
+            cursor.setPosition(len(self.prefix))
+            self.setTextCursor(cursor)
+
+# TODO: EVENTUALLY REMOVE THIS CLASS
 class HighlightableTextItem(QGraphicsTextItem):
     def paint(self, painter, option, widget=None):
         if self.hasFocus() and self.textCursor().hasSelection():
             rect = self.boundingRect()
             painter.fillRect(rect, QColor("yellow"))
         super().paint(painter, option, widget)
+
+    def mousePressEvent(self, event):
+        cursor = self.textCursor()
+        cursor.clearSelection()  # remove any initial selection
+        self.setTextCursor(cursor)
+        super().mousePressEvent(event)
 
 class Node(QGraphicsRectItem):
     CORNER_SIZE = 20
@@ -20,9 +47,10 @@ class Node(QGraphicsRectItem):
         self.setFlag(QGraphicsRectItem.ItemIsSelectable)
         self.setPos(x, y)
         self.radius = radius
+        self.constraint_bg = False
         self.resizing = False
 
-        # Appearance
+        # APPEARANCE
         self.setBrush(QColor("#EBEBEB"))
         self.setPen(QPen(Qt.black, 2))
 
@@ -34,14 +62,22 @@ class Node(QGraphicsRectItem):
         self.name_text.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.dates_text.setTextInteractionFlags(Qt.TextEditorInteraction)
 
+        # BACKGROUND RECTANGLES FOR CONSTRAINTS AND RANDOM CHANCE
+
         self.update_text_positions()
         self.dates_text.document().contentsChanged.connect(self.update_text_positions)
         self.id_text.document().contentsChanged.connect(self.update_text_positions)
         self.name_text.document().contentsChanged.connect(self.update_text_positions)
 
-        # Arrows
+        # ARROWS
         self.outgoing_arrows = []
         self.incoming_arrows = []
+
+    def add_boolean_constraint(self):
+        if self.constraint_bg:
+            return  # already exists
+        self.constraint_bg = True
+        self.scene().update()
 
     def update_text_positions(self):
         """Center text horizontally; make ID and Name bold/larger."""
@@ -85,8 +121,21 @@ class Node(QGraphicsRectItem):
             for arrow in getattr(self, "incoming_arrows", []):
                 arrow.update_path()
         return super().itemChange(change, value)
+    
+    def change_color(self, color):
+        if color.isValid():
+            self.setBrush(color)
 
     def paint(self, painter, option, widget=None):
+        if getattr(self, "constraint_bg", False):
+            margin = 50
+            rect = self.rect()
+            bg_rect = rect.adjusted(-margin/2, -margin/2, margin/2, margin/2)
+            light_blue = QColor("#DBC7A9")
+            painter.setBrush(QBrush(light_blue))
+            painter.setPen(QPen(light_blue, 2))
+            painter.drawRoundedRect(bg_rect, self.radius, self.radius)
+
         painter.setBrush(self.brush())
         painter.setPen(self.pen())
         painter.drawRoundedRect(self.rect(), self.radius, self.radius)
