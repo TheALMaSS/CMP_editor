@@ -1,46 +1,49 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtWidgets import QGraphicsRectItem, QGraphicsTextItem, QGraphicsItem, QColorDialog
 from PyQt5.QtGui import QColor, QPen, QFont, QBrush
 from arrow import Arrow
 
-class PrefixedTextItem(QGraphicsTextItem):
-    def __init__(self, prefix, text="", parent=None):
-        super().__init__(prefix + text, parent)
-        self.prefix = prefix
-        self.setTextInteractionFlags(Qt.TextEditorInteraction)
+class TextItemWithBackground(QGraphicsTextItem):
+    def __init__(self, text="", parent=None, color=QColor("#8B0000"), padding=3):
+        super().__init__(text, parent)
+        self.color = color        # used for both background and border
+        self.padding = padding
 
-    def keyPressEvent(self, event):
-        cursor = self.textCursor()
-        if cursor.position() < len(self.prefix):
-            cursor.setPosition(len(self.prefix))
-            self.setTextCursor(cursor)
-        super().keyPressEvent(event)
+        # white text
+        self.setDefaultTextColor(Qt.white)
 
-    def mousePressEvent(self, event):
-        super().mousePressEvent(event)
-        cursor = self.textCursor()
-        if cursor.position() < len(self.prefix):
-            cursor.setPosition(len(self.prefix))
-            self.setTextCursor(cursor)
+    def setColor(self, color):
+        self.color = color
+        self.update()
 
-# TODO: EVENTUALLY REMOVE THIS CLASS
-class HighlightableTextItem(QGraphicsTextItem):
+    def setPadding(self, padding):
+        self.padding = padding
+        self.update()
+
     def paint(self, painter, option, widget=None):
-        if self.hasFocus() and self.textCursor().hasSelection():
-            rect = self.boundingRect()
-            painter.fillRect(rect, QColor("yellow"))
-        super().paint(painter, option, widget)
+        rect = self.boundingRect()
 
-    def mousePressEvent(self, event):
-        cursor = self.textCursor()
-        cursor.clearSelection()  # remove any initial selection
-        self.setTextCursor(cursor)
-        super().mousePressEvent(event)
+        padded_rect = QRectF(rect.x() - self.padding,
+                             rect.y() - self.padding,
+                             rect.width() + 2*self.padding,
+                             rect.height() + 2*self.padding)
+
+        # background
+        painter.setBrush(self.color)
+        painter.setPen(Qt.NoPen)
+        painter.drawRect(padded_rect)
+
+        # border (same color)
+        painter.setPen(QPen(Qt.black, 2))
+        painter.setBrush(Qt.NoBrush)
+        painter.drawRect(padded_rect)
+
+        super().paint(painter, option, widget)
 
 class Node(QGraphicsRectItem):
     CORNER_SIZE = 20
 
-    def __init__(self, x, y, width=180, height=120, radius=10):
+    def __init__(self, x, y, width=200, height=120, radius=10):
         super().__init__(0, 0, width, height)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         self.setFlag(QGraphicsRectItem.ItemIsMovable)
@@ -57,17 +60,20 @@ class Node(QGraphicsRectItem):
         # TEXT FIELDS
         self.id_text = QGraphicsTextItem("Id", self)
         self.name_text = QGraphicsTextItem("Name", self)
-        self.dates_text = HighlightableTextItem("dd/MM - dd/MM", self)
+        self.dates_text = QGraphicsTextItem("dd/MM - dd/MM", self)
+        self.constraints_text = TextItemWithBackground("constraints", parent=self, color=QColor("#6E2C2C"))
         self.id_text.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.name_text.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.dates_text.setTextInteractionFlags(Qt.TextEditorInteraction)
+        self.constraints_text.setTextInteractionFlags(Qt.TextEditorInteraction)
 
-        # BACKGROUND RECTANGLES FOR CONSTRAINTS AND RANDOM CHANCE
+        self.constraints_text.setVisible(False)
 
         self.update_text_positions()
         self.dates_text.document().contentsChanged.connect(self.update_text_positions)
         self.id_text.document().contentsChanged.connect(self.update_text_positions)
         self.name_text.document().contentsChanged.connect(self.update_text_positions)
+        self.constraints_text.document().contentsChanged.connect(self.update_text_positions)
 
         # ARROWS
         self.outgoing_arrows = []
@@ -103,6 +109,13 @@ class Node(QGraphicsRectItem):
         x = (rect.width() - bounds.width()) / 2
         y = 70
         self.dates_text.setPos(x, y)
+
+        # Constraint text
+        self.constraints_text.setFont(QFont("Arial", 12))
+        bounds = self.constraints_text.boundingRect()
+        x = (rect.width() - bounds.width()) / 2
+        y = 110
+        self.constraints_text.setPos(x, y)
 
     def add_arrow_to(self, target_node):
         # Avoid duplicates

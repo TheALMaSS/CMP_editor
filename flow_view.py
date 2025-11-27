@@ -143,12 +143,29 @@ class FlowView(QGraphicsView):
                 change_color_action.triggered.connect(on_change_color)
                 menu.addAction(change_color_action)
 
-                # ADD BOOLEAN CONSTRAINT
-                #add_boolean_constraint_action = QAction("Add Boolean Constraint", self)
-                #def on_add_boolean_constraint():
+                # TOGGLE ON CONSTRAINTS
+                toggle_on_constraints_action = QAction("Toggle ON Constraints", self)
+                def on_toggle_on_constraints():
+                    item.constraints_text.setVisible(True)
+                    old_rect = item.rect()
+                    new_height = old_rect.height() * 1.3
+                    item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
+                    item.update_text_positions()
                 #    item.add_boolean_constraint()
-                #add_boolean_constraint_action.triggered.connect(on_add_boolean_constraint)
-                #menu.addAction(add_boolean_constraint_action)
+                toggle_on_constraints_action.triggered.connect(on_toggle_on_constraints)
+                menu.addAction(toggle_on_constraints_action)
+
+                # TOGGLE OFF BOOLEAN CONSTRAINTS
+                toggle_off_constraints_action = QAction("Toggle OFF Constraints", self)
+                def on_toggle_off_constraints():
+                    item.constraints_text.setVisible(False)
+                    old_rect = item.rect()
+                    new_height = old_rect.height() / 1.3
+                    item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
+                    item.update_text_positions()
+                #    item.add_boolean_constraint()
+                toggle_off_constraints_action.triggered.connect(on_toggle_off_constraints)
+                menu.addAction(toggle_off_constraints_action)
 
                 menu.exec_(event.globalPos())
                 return
