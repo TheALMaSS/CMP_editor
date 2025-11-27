@@ -19,16 +19,6 @@ class BendPoint(QGraphicsEllipseItem):
             self.arrow.update_path()
         return super().itemChange(change, value)
 
-    def mousePressEvent(self, event):
-        if event.button() == Qt.RightButton:
-            if self in self.arrow.bend_points:
-                self.arrow.bend_points.remove(self)
-            self.scene().removeItem(self)
-            self.arrow.update_path()
-            return
-        super().mousePressEvent(event)
-
-
 class Arrow(QGraphicsPathItem):
     def __init__(self, start_node, end_node, text="Branching\nConditions"):
         super().__init__()
