@@ -9,7 +9,7 @@ class FlowView(QGraphicsView):
     def __init__(self, scene, window):
         super().__init__(scene)
         self.window = window
-        self.setRenderHint(QPainter.Antialiasing) # TODO: check
+        self.setRenderHint(QPainter.Antialiasing)
         self._panning = False
         self._pan_start = QPoint()
         self.resizing_node = None
@@ -29,18 +29,21 @@ class FlowView(QGraphicsView):
 
                 # If clicking on text inside node -> delete entire node
                 parent = item.parentItem()
-                if parent is not None and (hasattr(parent, "outgoing_arrows") or hasattr(parent, "incoming_arrows")):
+                if isinstance(parent, Node):
                     item = parent
 
                 # If clicking on text associated to arrow -> delete arrow
-                if parent is not None and hasattr(parent, "start_node"):
+                if isinstance(parent, Arrow):
                     item = parent
 
                 # Delete an arrow
-                if hasattr(item, "start_node") and hasattr(item, "end_node"):
+                if isinstance(item, Arrow):
                     start = item.start_node
                     end = item.end_node
-                    # TODO: REMOVE BEND POINTS TOO
+
+                    for bp in list(item.bend_points):
+                        self.scene().removeItem(bp)
+                    item.bend_points.clear()
 
                     if item in getattr(start, "outgoing_arrows", []):
                         start.outgoing_arrows.remove(item)
