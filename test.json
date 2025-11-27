@@ -1,73 +1,156 @@
 [
   {
-    "dates": "10/10 - 10/06",
-    "operation_id": "1",
-    "operation_name": "ACTION 1",
-    "x": 229.0,
-    "y": -155.0,
+    "dates": "",
+    "operation_id": "0",
+    "operation_name": "START",
+    "x": 361.0,
+    "y": -294.0,
+    "width": 142.0,
+    "height": 77.0,
+    "outgoing": [
+      {
+        "destination_id": "1A",
+        "branching_condition": "50%"
+      },
+      {
+        "destination_id": "1B",
+        "branching_condition": "20%"
+      },
+      {
+        "destination_id": "1C",
+        "branching_condition": "30%"
+      }
+    ]
+  },
+  {
+    "dates": "10/08 - 20/08",
+    "operation_id": "1A",
+    "operation_name": "Autumn Plough",
+    "x": 21.0,
+    "y": 54.0,
+    "width": 248.0,
+    "height": 110.0,
     "outgoing": [
       {
         "destination_id": "2",
-        "branching_condition": "50%"
-      },
-      {
-        "destination_id": "3",
-        "branching_condition": "50%"
+        "branching_condition": ""
       }
     ]
   },
   {
-    "dates": "07/12 - 10/02",
+    "dates": "10/08 - 20/08",
+    "operation_id": "1B",
+    "operation_name": "Shallow stubble harrow",
+    "x": 335.0,
+    "y": 42.0,
+    "width": 280.0,
+    "height": 116.0,
+    "outgoing": [
+      {
+        "destination_id": "2",
+        "branching_condition": ""
+      }
+    ]
+  },
+  {
+    "dates": "10/08 - 25/08",
+    "operation_id": "1C",
+    "operation_name": "Sow with special sow machine (no plough)",
+    "x": 691.0,
+    "y": -17.0,
+    "width": 442.0,
+    "height": 115.0,
+    "outgoing": [
+      {
+        "destination_id": "3C",
+        "branching_condition": "50%"
+      },
+      {
+        "destination_id": "3B",
+        "branching_condition": "25%"
+      },
+      {
+        "destination_id": "3A",
+        "branching_condition": "25%"
+      }
+    ]
+  },
+  {
+    "dates": "10/08 - 25/08",
     "operation_id": "2",
-    "operation_name": "ACTION 2",
-    "x": 21.0,
-    "y": 54.0,
+    "operation_name": "Sow",
+    "x": 173.0,
+    "y": 271.0,
+    "width": 180.0,
+    "height": 120.0,
     "outgoing": [
       {
-        "destination_id": "4",
-        "branching_condition": ""
-      }
-    ]
-  },
-  {
-    "dates": "dd/MM - dd/MM",
-    "operation_id": "3",
-    "operation_name": "ACTION 3",
-    "x": 331.0,
-    "y": 44.0,
-    "outgoing": [
-      {
-        "destination_id": "4",
-        "branching_condition": ""
+        "destination_id": "3A",
+        "branching_condition": "25%"
       },
       {
-        "destination_id": "Id",
-        "branching_condition": "Branching\nConditions"
+        "destination_id": "3B",
+        "branching_condition": "25%"
+      },
+      {
+        "destination_id": "3C",
+        "branching_condition": "50%"
       }
     ]
   },
   {
-    "dates": "dd/MM - dd/MM",
+    "dates": "10/08 - 25/08",
+    "operation_id": "3A",
+    "operation_name": "Fertilizer, slurry",
+    "x": 78.0,
+    "y": 649.0,
+    "width": 180.0,
+    "height": 120.0,
+    "outgoing": [
+      {
+        "destination_id": "4",
+        "branching_condition": ""
+      }
+    ]
+  },
+  {
+    "dates": "01/09 - 30/09",
+    "operation_id": "3B",
+    "operation_name": "Fertilizer, slurry",
+    "x": 495.0,
+    "y": 650.0,
+    "width": 180.0,
+    "height": 120.0,
+    "outgoing": [
+      {
+        "destination_id": "4",
+        "branching_condition": ""
+      }
+    ]
+  },
+  {
+    "dates": "01/09 - 30/09",
+    "operation_id": "3C",
+    "operation_name": "Fertilizer, ammonium sulphate",
+    "x": 807.0,
+    "y": 647.0,
+    "width": 325.0,
+    "height": 124.0,
+    "outgoing": [
+      {
+        "destination_id": "4",
+        "branching_condition": ""
+      }
+    ]
+  },
+  {
+    "dates": "25/08 - 28/08",
     "operation_id": "4",
-    "operation_name": "Name",
-    "x": 196.0,
-    "y": 316.0,
-    "outgoing": []
-  },
-  {
-    "dates": "dd/MM - dd/MM",
-    "operation_id": "Id",
-    "operation_name": "Name",
-    "x": 453.0,
-    "y": 327.0,
-    "outgoing": []
-  },
-  {
-    "dates": "dd/MM - dd/MM",
-    "operation_id": "Id",
-    "operation_name": "Name",
-    "x": 354.0,
-    "y": 594.0,
+    "operation_name": "Herbicide",
+    "x": 495.0,
+    "y": 980.0,
+    "width": 180.0,
+    "height": 120.0,
     "outgoing": []
   }
 ]

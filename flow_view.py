@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QGraphicsView
+from PyQt5.QtWidgets import QGraphicsView, QApplication
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPainter
 
@@ -87,6 +87,7 @@ class FlowView(QGraphicsView):
 
         super().mousePressEvent(event)
 
+    # ----------------------------------------------------------------------------------------------
     def mouseMoveEvent(self, event):
         if self._panning:
             delta = event.pos() - self._pan_start
@@ -95,10 +96,31 @@ class FlowView(QGraphicsView):
             self.verticalScrollBar().setValue(self.verticalScrollBar().value() - delta.y())
             return
         super().mouseMoveEvent(event)
+    # ----------------------------------------------------------------------------------------------
 
+    # ----------------------------------------------------------------------------------------------
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.MiddleButton and self._panning:
             self._panning = False
             self.setCursor(Qt.ArrowCursor)
             return
         super().mouseReleaseEvent(event)
+    # ----------------------------------------------------------------------------------------------
+
+    def wheelEvent(self, event):
+        modifiers = QApplication.keyboardModifiers()
+        if modifiers == Qt.ShiftModifier:
+            # Zoom factor
+            zoom_in_factor = 1.15
+            zoom_out_factor = 1 / zoom_in_factor
+
+            # Determine direction
+            if event.angleDelta().y() > 0:
+                factor = zoom_in_factor
+            else:
+                factor = zoom_out_factor
+
+            self.scale(factor, factor)
+        else:
+            # Default behavior (scroll)
+            super().wheelEvent(event)

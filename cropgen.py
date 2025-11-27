@@ -79,7 +79,7 @@ class FlowchartApp(QMainWindow):
     def export_json(self):
         filename, _ = QFileDialog.getSaveFileName(self, "Save Diagram JSON", "", "JSON Files (*.json)")
         if not filename:
-            return  # user canceled
+            return
 
         data = []
         for node in self.nodes:
@@ -95,6 +95,8 @@ class FlowchartApp(QMainWindow):
                 "operation_name": node.name_text.toPlainText(),
                 "x": node.x(),
                 "y": node.y(),
+                "width": node.rect().width(),
+                "height": node.rect().height(),
                 "outgoing": outgoing
             })
 
@@ -132,7 +134,9 @@ class FlowchartApp(QMainWindow):
 
         node_map = {}
         for node_data in data:
-            node = Node(node_data["x"], node_data["y"])
+            width = node_data.get("width", 120)
+            height = node_data.get("height", 60)
+            node = Node(node_data["x"], node_data["y"], width=width, height=height)
             node.setZValue(1)
             node.dates_text.setPlainText(node_data.get("dates", ""))
             node.id_text.setPlainText(node_data.get("operation_id", ""))
