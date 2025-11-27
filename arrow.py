@@ -11,7 +11,7 @@ class Arrow(QGraphicsLineItem):
         self.end_node = end_node
         self.setPen(QPen(Qt.black, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
 
-        self.text_item = QGraphicsTextItem(text)
+        self.text_item = QGraphicsTextItem(text, self)
         font = QFont()
         font.setPointSize(10)
         self.text_item.setFont(font)

@@ -8,7 +8,7 @@ class FlowView(QGraphicsView):
         super().__init__(scene)
         self.window = window
         self.setRenderHint(QPainter.Antialiasing) # TODO: check
-        self._panning = True
+        self._panning = False
         self._pan_start = QPoint()
 
     def mousePressEvent(self, event):
@@ -26,8 +26,7 @@ class FlowView(QGraphicsView):
                 item = parent
 
             # If clicking on text associated to arrow -> delete arrow
-            parent = item.parentItem()
-            if parent is not None and (hasattr(item, "start_node")):
+            if parent is not None and (hasattr(parent, "start_node")):
                 item = parent
 
             # Delete an arrow
