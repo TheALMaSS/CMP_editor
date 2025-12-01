@@ -65,7 +65,7 @@ class Node(QGraphicsRectItem):
         self.name_text = QGraphicsTextItem("Name", self)
         self.dates_text = QGraphicsTextItem("dd/MM - dd/MM", self)
         self.constraints_text = TextItemWithBackground("constraints", parent=self, color=QColor("#9C4848"))
-        self.random_chance_text = TextItemWithBackground("random chance%", parent=self, color=QColor("#6141A3"))
+        self.random_chance_text = TextItemWithBackground("random chance%", parent=self, color=QColor("#6947AD"))
         self.id_text.setTextInteractionFlags(Qt.TextEditorInteraction)
         #self.name_text.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.dates_text.setTextInteractionFlags(Qt.TextEditorInteraction)
