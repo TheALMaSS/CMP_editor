@@ -50,8 +50,9 @@ class Node(QGraphicsRectItem):
         self.setFlag(QGraphicsRectItem.ItemIsSelectable)
         self.setPos(x, y)
         self.radius = radius
-        self.constraint_bg = False
         self.resizing = False
+        self.random_chance_on = False
+        self.constraints_on = False
 
         # APPEARANCE
         self.setBrush(QColor("#EBEBEB"))
@@ -62,28 +63,25 @@ class Node(QGraphicsRectItem):
         self.name_text = QGraphicsTextItem("Name", self)
         self.dates_text = QGraphicsTextItem("dd/MM - dd/MM", self)
         self.constraints_text = TextItemWithBackground("constraints", parent=self, color=QColor("#6E2C2C"))
+        self.random_chance_text = TextItemWithBackground("random chance%", parent=self, color=QColor("#4E3284"))
         self.id_text.setTextInteractionFlags(Qt.TextEditorInteraction)
         #self.name_text.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.dates_text.setTextInteractionFlags(Qt.TextEditorInteraction)
-        self.constraints_text.setTextInteractionFlags(Qt.TextEditorInteraction)
+        self.random_chance_text.setTextInteractionFlags(Qt.TextEditorInteraction)
 
         self.constraints_text.setVisible(False)
+        self.random_chance_text.setVisible(False)
 
         self.update_text_positions()
         self.dates_text.document().contentsChanged.connect(self.update_text_positions)
         self.id_text.document().contentsChanged.connect(self.update_text_positions)
         self.name_text.document().contentsChanged.connect(self.update_text_positions)
         self.constraints_text.document().contentsChanged.connect(self.update_text_positions)
+        self.random_chance_text.document().contentsChanged.connect(self.update_text_positions)
 
         # ARROWS
         self.outgoing_arrows = []
         self.incoming_arrows = []
-
-    def add_boolean_constraint(self):
-        if self.constraint_bg:
-            return  # already exists
-        self.constraint_bg = True
-        self.scene().update()
 
     def update_text_positions(self):
         """Center text horizontally; make ID and Name bold/larger."""
@@ -117,6 +115,16 @@ class Node(QGraphicsRectItem):
         y = 110
         self.constraints_text.setPos(x, y)
 
+        # Random chance text
+        self.random_chance_text.setFont(QFont("Arial", 12))
+        bounds = self.random_chance_text.boundingRect()
+        x = (rect.width() - bounds.width()) / 2
+        if self.constraints_on:
+            y = 160
+        else:
+            y = 110
+        self.random_chance_text.setPos(x, y)
+
     def add_arrow_to(self, target_node):
         # Avoid duplicates
         for arrow in self.outgoing_arrows:
@@ -140,15 +148,6 @@ class Node(QGraphicsRectItem):
             self.setBrush(color)
 
     def paint(self, painter, option, widget=None):
-        if getattr(self, "constraint_bg", False):
-            margin = 50
-            rect = self.rect()
-            bg_rect = rect.adjusted(-margin/2, -margin/2, margin/2, margin/2)
-            light_blue = QColor("#DBC7A9")
-            painter.setBrush(QBrush(light_blue))
-            painter.setPen(QPen(light_blue, 2))
-            painter.drawRoundedRect(bg_rect, self.radius, self.radius)
-
         painter.setBrush(self.brush())
         painter.setPen(self.pen())
         painter.drawRoundedRect(self.rect(), self.radius, self.radius)

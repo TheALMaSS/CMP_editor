@@ -146,26 +146,54 @@ class FlowView(QGraphicsView):
                 # TOGGLE ON CONSTRAINTS
                 toggle_on_constraints_action = QAction("Toggle ON Constraints", self)
                 def on_toggle_on_constraints():
-                    item.constraints_text.setVisible(True)
-                    old_rect = item.rect()
-                    new_height = old_rect.height() * 1.3
-                    item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
-                    item.update_text_positions()
-                #    item.add_boolean_constraint()
+                    if not item.constraints_on:
+                        item.constraints_on = True
+                        item.constraints_text.setVisible(True)
+                        old_rect = item.rect()
+                        new_height = old_rect.height() * 1.4
+                        item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
+                        item.update_text_positions()
                 toggle_on_constraints_action.triggered.connect(on_toggle_on_constraints)
                 menu.addAction(toggle_on_constraints_action)
 
-                # TOGGLE OFF BOOLEAN CONSTRAINTS
+                # TOGGLE OFF CONSTRAINTS
                 toggle_off_constraints_action = QAction("Toggle OFF Constraints", self)
                 def on_toggle_off_constraints():
-                    item.constraints_text.setVisible(False)
-                    old_rect = item.rect()
-                    new_height = old_rect.height() / 1.3
-                    item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
-                    item.update_text_positions()
-                #    item.add_boolean_constraint()
+                    if item.constraints_on:
+                        item.constraints_on = False
+                        item.constraints_text.setVisible(False)
+                        old_rect = item.rect()
+                        new_height = old_rect.height() / 1.4
+                        item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
+                        item.update_text_positions()
                 toggle_off_constraints_action.triggered.connect(on_toggle_off_constraints)
                 menu.addAction(toggle_off_constraints_action)
+
+                # TOGGLE ON RANDOM CHANCE
+                toggle_on_random_chance_action = QAction("Toggle ON Random Chance", self)
+                def on_toggle_on_random_chance():
+                    if not item.random_chance_on:
+                        item.random_chance_on = True
+                        item.random_chance_text.setVisible(True)
+                        old_rect = item.rect()
+                        new_height = old_rect.height() * 1.4
+                        item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
+                        item.update_text_positions()
+                toggle_on_random_chance_action.triggered.connect(on_toggle_on_random_chance)
+                menu.addAction(toggle_on_random_chance_action)
+
+                # TOGGLE OFF RANDOM CHANCE
+                toggle_off_random_chance_action = QAction("Toggle OFF Random Chance", self)
+                def on_toggle_off_random_chance():
+                    if item.random_chance_on:
+                        item.random_chance_on = False
+                        item.random_chance_text.setVisible(False)
+                        old_rect = item.rect()
+                        new_height = old_rect.height() / 1.4
+                        item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
+                        item.update_text_positions()
+                toggle_off_random_chance_action.triggered.connect(on_toggle_off_random_chance)
+                menu.addAction(toggle_off_random_chance_action)
 
                 menu.exec_(event.globalPos())
                 return
