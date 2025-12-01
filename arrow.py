@@ -126,7 +126,7 @@ class Arrow(QGraphicsPathItem):
         p2 = QPointF(p2_elem.x, p2_elem.y)
 
         angle = math.atan2(p2.y() - p1.y(), p2.x() - p1.x())
-        arrow_size = 10
+        arrow_size = 14
         point1 = QPointF(
             p2.x() - arrow_size * math.cos(angle - math.pi / 6),
             p2.y() - arrow_size * math.sin(angle - math.pi / 6)

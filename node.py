@@ -63,7 +63,7 @@ class Node(QGraphicsRectItem):
         self.dates_text = QGraphicsTextItem("dd/MM - dd/MM", self)
         self.constraints_text = TextItemWithBackground("constraints", parent=self, color=QColor("#6E2C2C"))
         self.id_text.setTextInteractionFlags(Qt.TextEditorInteraction)
-        self.name_text.setTextInteractionFlags(Qt.TextEditorInteraction)
+        #self.name_text.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.dates_text.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.constraints_text.setTextInteractionFlags(Qt.TextEditorInteraction)
 

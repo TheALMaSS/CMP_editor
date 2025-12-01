@@ -1,58 +1,153 @@
 import sys, json
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QWidget
 from PyQt5.QtGui import QColor, QBrush
 from PyQt5.QtCore import Qt, QPointF
 from flow_view import FlowView
 from node import Node
 from flow_scene import FlowScene
+import os
+import json
+from PyQt5.QtWidgets import QDialog, QListWidget, QTextEdit, QHBoxLayout, QVBoxLayout, QLabel, QListWidgetItem, QDialogButtonBox
+from PyQt5.QtWidgets import QGraphicsTextItem
+
+ACTIONS_FILE = "actions.json"
+
+def load_actions():
+    with open(ACTIONS_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+    
+class ActionPickerDialog(QDialog):
+    def __init__(self, actions, parent=None):
+        super().__init__(parent, Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
+
+        self.setWindowTitle("Select Crop Action")
+        self.resize(700, 400)
+        self.actions = actions
+        self.selected = None
+
+        self.list_widget = QListWidget()
+        for a in actions:
+            self.list_widget.addItem(a["name"])
+
+        self.desc = QTextEdit()
+        self.desc.setReadOnly(True)
+
+        left_label = QLabel("Actions")
+        right_label = QLabel("Description")
+
+        help_btn = QPushButton("?")
+        help_btn.setFixedWidth(30)
+        help_btn.clicked.connect(self.open_help)
+
+        header_layout = QHBoxLayout()
+        header_layout.addWidget(left_label)
+        header_layout.addStretch()
+        header_layout.addWidget(help_btn)
+
+        left_layout = QVBoxLayout()
+        left_layout.addLayout(header_layout)
+        left_layout.addWidget(self.list_widget)
+
+        right_layout = QVBoxLayout()
+        right_layout.addWidget(right_label)
+        right_layout.addWidget(self.desc)
+
+        # wrap left layout in a container and set width
+        left_container = QWidget()
+        left_container.setLayout(left_layout)
+        left_container.setMinimumWidth(300)  # or use setFixedWidth(250) to lock it
+
+        main_layout = QHBoxLayout()
+        main_layout.addWidget(left_container)
+        main_layout.addLayout(right_layout, 2)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+
+        outer = QVBoxLayout()
+        outer.addLayout(main_layout)
+        outer.addWidget(buttons)
+        self.setLayout(outer)
+
+        self.list_widget.currentRowChanged.connect(self.on_row_changed)
+        if self.list_widget.count():
+            self.list_widget.setCurrentRow(0)
+
+    def open_help(self):
+        dlg = QDialog(self, Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
+        dlg.setWindowTitle("Help - select a crop action")
+        dlg.resize(400, 400)
+
+        text = QTextEdit()
+        text.setReadOnly(True)
+        text.setPlainText("Select a crop action on the left to see its description.\n\n"
+                          "When you press OK, the selected action will be assigned to the new node.")
+
+        layout = QVBoxLayout()
+        layout.addWidget(text)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok)
+        buttons.accepted.connect(dlg.accept)
+        layout.addWidget(buttons)
+
+        dlg.setLayout(layout)
+        dlg.exec_()
+
+    def on_row_changed(self, row):
+        if row < 0 or row >= len(self.actions):
+            self.desc.setPlainText("")
+            return
+        self.desc.setPlainText(self.actions[row].get("description", ""))
+
+    def accept(self):
+        row = self.list_widget.currentRow()
+        if row < 0:
+            super().reject()
+            return
+        self.selected = self.actions[row]
+        super().accept()
 
 class FlowchartApp(QMainWindow):
-
-    # ----------------------------------------------------------------------------------------------
     def __init__(self):
         super().__init__()
-
-        # Init WINDOW
         self.setWindowTitle("CMP Editor")
         self.setGeometry(100, 100, 800, 600)
-
-        # Init SCENE
         self.scene = FlowScene()
         self.scene.setBackgroundBrush(QBrush(QColor("#738DB3")))
         self.scene.setSceneRect(-5000, -5000, 10000, 10000)
-
-        # Init VIEW
         self.view = FlowView(self.scene, self)
         self.setCentralWidget(self.view)
-
-        # Init DATA STRUCTURES
         self.nodes = []
         self.lines = []
         self.selected_node = None
-
-        # Init BUTTONS
         self.add_node_btn = QPushButton("Add Node", self)
         self.add_node_btn.move(700, 50)
         self.add_node_btn.clicked.connect(self.add_node)
-
         self.delete_mode = False
         self.delete_btn = QPushButton("Delete", self)
         self.delete_btn.move(700, 100)
         self.delete_btn.setCheckable(True)
         self.delete_btn.clicked.connect(self.toggle_delete_mode)
-
         self.export_btn = QPushButton("Export JSON", self)
         self.export_btn.move(700, 150)
         self.export_btn.clicked.connect(self.export_json)
-
         self.load_btn = QPushButton("Load JSON", self)
         self.load_btn.move(700, 200)
         self.load_btn.clicked.connect(self.load_json)
-    # ----------------------------------------------------------------------------------------------
+        self._actions = load_actions()
 
     def add_node(self):
+        dlg = ActionPickerDialog(self._actions, self)
+        if dlg.exec_() != QDialog.Accepted:
+            return
+        action = dlg.selected
+
         node = Node(100 + len(self.nodes)*50, 100)
         node.setZValue(1)
+        node.action_data = action
+        node.name_text.setPlainText(action["name"])
+
         self.scene.addItem(node)
         self.nodes.append(node)
 

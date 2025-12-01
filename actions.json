@@ -1,0 +1,66 @@
+[
+  {
+    "name": "START",
+    "description": "The START operation should always be the starting point of your CMP. No farm actions are carried out in this step."
+  },
+  {
+    "name": "Autumn plough",
+    "description": "..."
+  },
+  {
+    "name": "Fertilizer, ammonium sulphate",
+    "description": "..."
+  },
+  {
+    "name": "Fertilizer, boron",
+    "description": "..."
+  },
+  {
+    "name": "Fertilizer, slurry",
+    "description": "..."
+  },
+  {
+    "name": "Fungicide",
+    "description": "..."
+  },
+  {
+    "name": "Growth regulator",
+    "description": "..."
+  },
+  {
+    "name": "Harvest",
+    "description": "..."
+  },
+  {
+    "name": "Herbicide",
+    "description": "..."
+  },
+  {
+    "name": "Insecticide",
+    "description": "..."
+  },
+  {
+    "name": "Row cultivation",
+    "description": "..."
+  },
+  {
+    "name": "Shallow stubble harrow",
+    "description": "..."
+  },
+  {
+    "name": "Sow",
+    "description": "..."
+  },
+  {
+    "name": "Sow with special sow machine (no plough)",
+    "description": "..."
+  },
+  {
+    "name": "Swathing",
+    "description": "..."
+  },
+  {
+    "name": "Wait",
+    "description": "..."
+  }
+]
