@@ -24,19 +24,21 @@ class TextItemWithBackground(QGraphicsTextItem):
         rect = self.boundingRect()
 
         padded_rect = QRectF(rect.x() - self.padding,
-                             rect.y() - self.padding,
-                             rect.width() + 2*self.padding,
-                             rect.height() + 2*self.padding)
+                            rect.y() - self.padding,
+                            rect.width() + 2*self.padding,
+                            rect.height() + 2*self.padding)
+
+        radius = 5  # corner radius in pixels
 
         # background
         painter.setBrush(self.color)
         painter.setPen(Qt.NoPen)
-        painter.drawRect(padded_rect)
+        painter.drawRoundedRect(padded_rect, radius, radius)
 
-        # border (same color)
+        # border
         painter.setPen(QPen(Qt.black, 2))
         painter.setBrush(Qt.NoBrush)
-        painter.drawRect(padded_rect)
+        painter.drawRoundedRect(padded_rect, radius, radius)
 
         super().paint(painter, option, widget)
 
