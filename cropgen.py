@@ -122,18 +122,18 @@ class FlowchartApp(QMainWindow):
         self.lines = []
         self.selected_node = None
         self.add_node_btn = QPushButton("Add Node", self)
-        self.add_node_btn.move(700, 50)
+        self.add_node_btn.move(200, 50)
         self.add_node_btn.clicked.connect(self.add_node)
         self.delete_mode = False
         self.delete_btn = QPushButton("Delete", self)
-        self.delete_btn.move(700, 100)
+        self.delete_btn.move(200, 100)
         self.delete_btn.setCheckable(True)
         self.delete_btn.clicked.connect(self.toggle_delete_mode)
         self.export_btn = QPushButton("Export JSON", self)
-        self.export_btn.move(700, 150)
+        self.export_btn.move(200, 150)
         self.export_btn.clicked.connect(self.export_json)
         self.load_btn = QPushButton("Load JSON", self)
-        self.load_btn.move(700, 200)
+        self.load_btn.move(200, 200)
         self.load_btn.clicked.connect(self.load_json)
         self._actions = load_actions()
 
