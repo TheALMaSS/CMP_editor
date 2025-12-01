@@ -136,6 +136,10 @@ class FlowchartApp(QMainWindow):
         self.load_btn.move(200, 200)
         self.load_btn.clicked.connect(self.load_json)
         self._actions = load_actions()
+        self.load_btn = QPushButton("Need Help?", self)
+        self.load_btn.move(200, 250)
+        self.load_btn.clicked.connect(self.need_help)
+        self._actions = load_actions()
 
     def add_node(self):
         dlg = ActionPickerDialog(self._actions, self)
@@ -264,6 +268,9 @@ class FlowchartApp(QMainWindow):
 
     def toggle_delete_mode(self):
         self.delete_mode = self.delete_btn.isChecked()
+
+    def need_help(self):
+        return
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
