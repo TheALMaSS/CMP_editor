@@ -114,7 +114,7 @@ class FlowchartApp(QMainWindow):
         self.setWindowTitle("CMP Editor")
         self.setGeometry(100, 100, 800, 600)
         self.scene = FlowScene()
-        self.scene.setBackgroundBrush(QBrush(QColor("#738DB3")))
+        self.scene.setBackgroundBrush(QBrush(QColor("#BFBFBF")))
         self.scene.setSceneRect(-5000, -5000, 10000, 10000)
         self.view = FlowView(self.scene, self)
         self.setCentralWidget(self.view)

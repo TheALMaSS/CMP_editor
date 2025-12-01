@@ -150,7 +150,7 @@ class FlowView(QGraphicsView):
                         item.constraints_on = True
                         item.constraints_text.setVisible(True)
                         old_rect = item.rect()
-                        new_height = old_rect.height() * 1.4
+                        new_height = old_rect.height() + 50
                         item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
                         item.update_text_positions()
                 toggle_on_constraints_action.triggered.connect(on_toggle_on_constraints)
@@ -163,7 +163,7 @@ class FlowView(QGraphicsView):
                         item.constraints_on = False
                         item.constraints_text.setVisible(False)
                         old_rect = item.rect()
-                        new_height = old_rect.height() / 1.4
+                        new_height = old_rect.height() - 50
                         item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
                         item.update_text_positions()
                 toggle_off_constraints_action.triggered.connect(on_toggle_off_constraints)
@@ -176,7 +176,7 @@ class FlowView(QGraphicsView):
                         item.random_chance_on = True
                         item.random_chance_text.setVisible(True)
                         old_rect = item.rect()
-                        new_height = old_rect.height() * 1.4
+                        new_height = old_rect.height() + 50
                         item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
                         item.update_text_positions()
                 toggle_on_random_chance_action.triggered.connect(on_toggle_on_random_chance)
@@ -189,7 +189,7 @@ class FlowView(QGraphicsView):
                         item.random_chance_on = False
                         item.random_chance_text.setVisible(False)
                         old_rect = item.rect()
-                        new_height = old_rect.height() / 1.4
+                        new_height = old_rect.height() - 50
                         item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
                         item.update_text_positions()
                 toggle_off_random_chance_action.triggered.connect(on_toggle_off_random_chance)

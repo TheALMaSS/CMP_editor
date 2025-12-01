@@ -57,15 +57,15 @@ class Node(QGraphicsRectItem):
         self.constraints_on = False
 
         # APPEARANCE
-        self.setBrush(QColor("#EBEBEB"))
+        self.setBrush(QColor("#F0F0F0"))
         self.setPen(QPen(Qt.black, 2))
 
         # TEXT FIELDS
         self.id_text = QGraphicsTextItem("Id", self)
         self.name_text = QGraphicsTextItem("Name", self)
         self.dates_text = QGraphicsTextItem("dd/MM - dd/MM", self)
-        self.constraints_text = TextItemWithBackground("constraints", parent=self, color=QColor("#6E2C2C"))
-        self.random_chance_text = TextItemWithBackground("random chance%", parent=self, color=QColor("#4E3284"))
+        self.constraints_text = TextItemWithBackground("constraints", parent=self, color=QColor("#9C4848"))
+        self.random_chance_text = TextItemWithBackground("random chance%", parent=self, color=QColor("#6141A3"))
         self.id_text.setTextInteractionFlags(Qt.TextEditorInteraction)
         #self.name_text.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.dates_text.setTextInteractionFlags(Qt.TextEditorInteraction)
