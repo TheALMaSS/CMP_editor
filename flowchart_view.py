@@ -184,6 +184,7 @@ class FlowchartView(QGraphicsView):
                     if not item.constraints_on:
                         item.constraints_on = True
                         item.constraints_text.setVisible(True)
+                        item.constraints_text.setTextInteractionFlags(Qt.TextEditorInteraction)
                         old_rect = item.rect()
                         new_height = old_rect.height() + 50
                         item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
@@ -197,6 +198,7 @@ class FlowchartView(QGraphicsView):
                     if item.constraints_on:
                         item.constraints_on = False
                         item.constraints_text.setVisible(False)
+                        item.constraints_text.setTextInteractionFlags(Qt.NoTextInteraction)
                         old_rect = item.rect()
                         new_height = old_rect.height() - 50
                         item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
@@ -210,6 +212,7 @@ class FlowchartView(QGraphicsView):
                     if not item.random_chance_on:
                         item.random_chance_on = True
                         item.random_chance_text.setVisible(True)
+                        item.random_chance_text.setTextInteractionFlags(Qt.TextEditorInteraction)
                         old_rect = item.rect()
                         new_height = old_rect.height() + 50
                         item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
@@ -223,6 +226,7 @@ class FlowchartView(QGraphicsView):
                     if item.random_chance_on:
                         item.random_chance_on = False
                         item.random_chance_text.setVisible(False)
+                        item.random_chance_text.setTextInteractionFlags(Qt.NoTextInteraction)
                         old_rect = item.rect()
                         new_height = old_rect.height() - 50
                         item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
