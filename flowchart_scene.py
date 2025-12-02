@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from node import Node
 
 # Contains the items and their logical connections
-class FlowScene(QGraphicsScene):
+class FlowchartScene(QGraphicsScene):
     # ----------------------------------------------------------------------------------------------
     def __init__(self):
         super().__init__()

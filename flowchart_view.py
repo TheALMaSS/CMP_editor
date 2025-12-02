@@ -5,7 +5,7 @@ from node import Node
 from arrow import BendPoint, Arrow
 
 # Displays a portion of the SCENE and handles user interaction
-class FlowView(QGraphicsView):
+class FlowchartView(QGraphicsView):
     def __init__(self, scene, window):
         super().__init__(scene)
         self.window = window
