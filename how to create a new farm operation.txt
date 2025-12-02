@@ -1,0 +1,5 @@
+Creating a new farm operation requires some knowledge of the existing ALMaSS codebase, and also of C++ coding. If you find any issue, please contact: elena.fini@agro.au.dk.
+For the purpose of flowchart design, if cannot complete step 2 (which requires programming knowledge), you may still perform step 1 locally - just keep in mind that, in order for your farm operation to be correctly simulated, someone else will have to complete step 2, eventually.
+
+1) Open the file operations.json and add your new farm operation following the format of the other entries. You will have to specify a C++ function name for it, which will have to match the function you generate in step 2.
+2) Open the ALMaSS project in a code editor and find the file FarmFuncs.cpp (+ its associated header FarmFuncs.h). You may use an existing function with a behaviour similar to what you want to obtain, copy-paste it, rename it, and modify its behaviour to match exactly what you want to achieve.

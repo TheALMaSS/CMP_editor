@@ -3,7 +3,16 @@ from PyQt5.QtCore import Qt
 
 help_text_choose_operation = "Select a crop operation on the left to see its description.\n\n" \
 "When you press OK, the selected operation will be assigned to the new node.\n\n" \
-"If no operation matches your requirements, refer to the 'how to create a new farm operation' manual in this folder."
+"--------------------------------\n\n" \
+"If no existing farm operation matches your needs, you may follow these steps to create a new one:\n\n" \
+"1) Open the file operations.json and add your new farm operation following the format of the other entries." \
+"You will have to specify a C++ function name for it, which will have to match the function you generate in step 2.\n\n" \
+"2) Open the ALMaSS project in a code editor and find the file FarmFuncs.cpp (+ its associated header FarmFuncs.h)." \
+"You may use an existing function with a behaviour similar to what you want to obtain, copy-paste it, rename it, and modify its behaviour to match exactly what you want to achieve.\n\n" \
+"Creating a new farm operation requires some knowledge of the existing ALMaSS codebase, and also of C++ coding. If you find any issue, please contact: elena.fini@agro.au.dk.\n\n" \
+"For the purpose of flowchart design, if cannot complete step 2 (which requires programming knowledge), you may still perform step 1 locally -" \
+"just keep in mind that, in order for your farm operation to be correctly simulated, someone else will have to complete step 2, eventually."
+
 
 class ChooseOperationDialog(QDialog):
     def __init__(self, operations, parent=None):
