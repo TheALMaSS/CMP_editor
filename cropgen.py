@@ -21,7 +21,7 @@ class FlowchartWindow(QMainWindow):
         self.setGeometry(100, 100, 1100, 600)
 
         self.nodes = []
-        self.lines = []
+        self.arrows = []
         self.delete_mode = False
         self.arrow_mode = False
         self._operations = load_operations()
@@ -104,13 +104,25 @@ class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
-    def update_warnings(self):
+    def update_warnings(self, type="None"):
         warnings = []
-        names = [node.name_text.toPlainText() for node in self.nodes]
-        if "START" not in names:
-            warnings.append("△ Warning: No node named 'START' exists.")
 
-        # add other structural checks here
+        if type == "start_and_end_nodes":
+            # CHECK FOR START NODE
+            names = [node.name_text.toPlainText() for node in self.nodes]
+            if "START" not in names:
+                warnings.append("△ Warning: No node named 'START' exists.")
+
+            # CHECK FOR END NODE
+            ids = [node.id_text.toPlainText() for node in self.nodes]
+            if "END" not in ids:
+                warnings.append("△ Warning: No node with id 'END' exists.")
+
+        elif type == "branching_text":
+            # CHECK FOR BRANCHING CONDITIONS TO BE %
+            warnings.append("△ Warning: Some branching text is not in the correct format (xx%).")
+
+        # Join the warnings
         self.warnings_box.setPlainText("\n".join(warnings))
     # ------------------------------------------------------------------------------------------------
 

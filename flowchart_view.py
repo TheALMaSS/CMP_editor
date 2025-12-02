@@ -17,7 +17,6 @@ class FlowchartView(QGraphicsView):
         self.arrow_done = False
 
     def mousePressEvent(self, event):
-
         # IF LEFT CLICK
         if event.button() == Qt.LeftButton:
             item = self.itemAt(event.pos())
@@ -150,24 +149,24 @@ class FlowchartView(QGraphicsView):
         # ----------------------------------------------------------------------------------------------
         # PANNING MODE - MIDDLE BUTTON
         # ----------------------------------------------------------------------------------------------
-        if event.button() == Qt.MiddleButton:
+        elif event.button() == Qt.MiddleButton:
             self._panning = True
             self._pan_start = event.pos()
             self.setCursor(Qt.ClosedHandCursor)
             return
         
         # ----------------------------------------------------------------------------------------------
-        # RIGHT BUTTON
+        # IF RIGHT CLICK
         # ----------------------------------------------------------------------------------------------
-        if event.button() == Qt.RightButton:
+        elif event.button() == Qt.RightButton:
             item = self.itemAt(event.pos())
 
-            # TODO: check why does it crash when i right click on the text???
+            # TODO: check why does it crash when i right click on the text??? Probably best to subclass QGraphicsTextItem and make my own text and override right click
             if isinstance(item, QGraphicsTextItem):
                 return
 
             # IF NODE -> SHOW OPTIONS
-            if isinstance(item, Node):
+            elif isinstance(item, Node):
                 menu = QMenu()
 
                 # CHANGE NODE COLOR
@@ -235,10 +234,9 @@ class FlowchartView(QGraphicsView):
                 menu.addAction(toggle_off_random_chance_action)
 
                 menu.exec_(event.globalPos())
-                return
 
             # IF BEND POINT -> DELETE
-            if isinstance(item, BendPoint):
+            elif isinstance(item, BendPoint):
                 item.arrow.bend_points.remove(item)
                 item.scene().removeItem(item)
                 item.arrow.update_path()
