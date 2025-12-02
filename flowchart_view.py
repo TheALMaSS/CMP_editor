@@ -89,12 +89,15 @@ class FlowchartView(QGraphicsView):
                     return
 
                 # Delete a node
-                if hasattr(item, "outgoing_arrows") or hasattr(item, "incoming_arrows"):
+                if isinstance(item, Node):
                     for arrow in list(getattr(item, "outgoing_arrows", [])):
                         if arrow in getattr(arrow.end_node, "incoming_arrows", []):
                             arrow.end_node.incoming_arrows.remove(arrow)
-                        if hasattr(arrow, "text_item") and arrow.text_item is not None:
+                        if hasattr(arrow, "text_item"):
                             self.scene().removeItem(arrow.text_item)
+                        for bp in list(arrow.bend_points):
+                            self.scene().removeItem(bp)
+                            arrow.bend_points.clear()
                         self.scene().removeItem(arrow)
 
                     for arrow in list(getattr(item, "incoming_arrows", [])):
@@ -106,12 +109,10 @@ class FlowchartView(QGraphicsView):
 
                     if item in self.my_window.nodes:
                         self.my_window.nodes.remove(item)
+                        self.my_window.update_warnings()
 
                     self.scene().removeItem(item)
                     return
-
-                self.scene().removeItem(item)
-                return
 
             # ------------------ IF NO SPECIAL MODE IS SELECTED
             else:
