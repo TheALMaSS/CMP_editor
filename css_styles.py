@@ -1,22 +1,29 @@
 button_style = """
     QPushButton {
-        background-color: #3D3D3D;
+        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                        stop:0 #4D4D4D, stop:1 #2E2E2E);
         color: white;
-        border: none;
-        border-radius: 4px;
+        border: 1px solid #1C1C1C;
+        border-radius: 6px;
         padding: 8px 12px;
         font-weight: bold;
         font-size: 9pt;
         margin: 0px 0px 10px 0px;
     }
+
     QPushButton:hover {
-        background-color: #757575;
+        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                        stop:0 #6E6E6E, stop:1 #3D3D3D);
     }
+
     QPushButton:pressed {
-        background-color: #B5B5B5;
+        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                        stop:0 #2E2E2E, stop:1 #1C1C1C);
     }
+
     QPushButton:checked {
-        background-color: #E94F37;
+        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                        stop:0 #5C7BB8, stop:1 #3D5F9F);
     }
 """
 

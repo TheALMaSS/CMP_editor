@@ -8,11 +8,13 @@ from arrow import BendPoint, Arrow
 class FlowchartView(QGraphicsView):
     def __init__(self, scene, window):
         super().__init__(scene)
-        self.window = window
+        self.my_window = window
         self.setRenderHint(QPainter.Antialiasing)
         self._panning = False
         self._pan_start = QPoint()
         self.resizing_node = None
+        self.selected_node = None
+        self.arrow_done = False
 
     def mousePressEvent(self, event):
 
@@ -21,9 +23,39 @@ class FlowchartView(QGraphicsView):
             item = self.itemAt(event.pos())
 
             # --------------------------------------------------------------------
+            # ARROW MODE (if arrow mode in on)
+            # --------------------------------------------------------------------
+            if getattr(self.my_window, "arrow_mode"):
+                if item is None:
+                    return
+                
+                # If clicking on text inside node -> select parent node
+                parent = item.parentItem()
+                if parent is not None and isinstance(parent, Node):
+                    item = parent
+
+                if isinstance(item, Node):
+
+                    # If a start node has already been selected
+                    if (self.selected_node is not None):
+
+                        if Node == self.selected_node:
+                            return
+                        
+                        arrow = self.selected_node.add_arrow_to(item)
+                        self.scene().addItem(arrow)
+                        self.scene().addItem(arrow.text_item)
+                        self.selected_node = None
+                        self.arrow_done = True
+                
+                    # If a start node has NOT already been selected
+                    else:
+                        self.selected_node = item
+
+            # --------------------------------------------------------------------
             # DELETE MODE (if delete mode in on)
             # --------------------------------------------------------------------
-            if getattr(self.window, "delete_mode"):
+            elif getattr(self.my_window, "delete_mode"):
                 if item is None:
                     return
 
@@ -72,8 +104,8 @@ class FlowchartView(QGraphicsView):
                             self.scene().removeItem(arrow.text_item)
                         self.scene().removeItem(arrow)
 
-                    if item in self.window.nodes:
-                        self.window.nodes.remove(item)
+                    if item in self.my_window.nodes:
+                        self.my_window.nodes.remove(item)
 
                     self.scene().removeItem(item)
                     return
@@ -81,8 +113,8 @@ class FlowchartView(QGraphicsView):
                 self.scene().removeItem(item)
                 return
 
-            # ------------------ IF DELETE MODE IS OFF
-            if not getattr(self.window, "delete_mode"):
+            # ------------------ IF NO SPECIAL MODE IS SELECTED
+            else:
                 # map click to scene coordinates
                 scene_pos = self.mapToScene(event.pos())
 
@@ -137,7 +169,7 @@ class FlowchartView(QGraphicsView):
                 # CHANGE NODE COLOR
                 change_color_action = QAction("Change Color", self)
                 def on_change_color():
-                    color = QColorDialog.getColor(item.brush().color(), self.window, "Select Node Color")
+                    color = QColorDialog.getColor(item.brush().color(), self.my_window, "Select Node Color")
                     item.change_color(color)
                 change_color_action.triggered.connect(on_change_color)
                 menu.addAction(change_color_action)
@@ -247,6 +279,12 @@ class FlowchartView(QGraphicsView):
         
         if self.resizing_node is not None:
             self.resizing_node = None
+
+        if self.arrow_done:
+            self.window().arrow_mode = False
+            self.window().add_arrow_btn.setChecked(False)
+            self.selected_node = None
+            self.arrow_done = False
         
         # TODO: maybe optimize by not redrawing entire scene, but just the nodes in the node lists
         self.scene().update()

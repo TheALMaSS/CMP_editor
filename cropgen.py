@@ -22,7 +22,6 @@ class FlowchartWindow(QMainWindow):
 
         self.nodes = []
         self.lines = []
-        self.selected_node = None
         self.delete_mode = False
         self.arrow_mode = False
         self._operations = load_operations()
@@ -245,29 +244,6 @@ class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
     def need_help(self):
         return
-    # ------------------------------------------------------------------------------------------------
-
-    # ------------------------------------------------------------------------------------------------
-    # TODO: move to scene
-    def mousePressEvent(self, event):
-        pos = self.view.mapToScene(event.pos())
-        items = self.scene.items(pos)
-        nodes = [i for i in items if isinstance(i, Node)]
-        if nodes:
-            node = nodes[0]
-            if event.modifiers() & Qt:  # Shift+Click for arrows
-                if self.selected_node and self.selected_node != node:
-                    arrow = self.selected_node.add_arrow_to(node)
-                    self.scene.addItem(arrow)
-                    self.scene.addItem(arrow.text_item)
-                    self.selected_node = None
-                else:
-                    self.selected_node = node
-            else:  # Normal click selects node
-                self.selected_node = node
-        else:
-            self.selected_node = None
-        super().mousePressEvent(event)
     # ------------------------------------------------------------------------------------------------
 
 
