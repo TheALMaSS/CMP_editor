@@ -97,14 +97,17 @@ class FlowchartView(QGraphicsView):
                             self.scene().removeItem(arrow.text_item)
                         for bp in list(arrow.bend_points):
                             self.scene().removeItem(bp)
-                            arrow.bend_points.clear()
+                        arrow.bend_points.clear()
                         self.scene().removeItem(arrow)
 
                     for arrow in list(getattr(item, "incoming_arrows", [])):
                         if arrow in getattr(arrow.start_node, "outgoing_arrows", []):
                             arrow.start_node.outgoing_arrows.remove(arrow)
-                        if hasattr(arrow, "text_item") and arrow.text_item is not None:
+                        if hasattr(arrow, "text_item"):
                             self.scene().removeItem(arrow.text_item)
+                        for bp in list(arrow.bend_points):
+                            self.scene().removeItem(bp)
+                        arrow.bend_points.clear()
                         self.scene().removeItem(arrow)
 
                     if item in self.my_window.nodes:
