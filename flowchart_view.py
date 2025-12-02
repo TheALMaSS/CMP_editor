@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QGraphicsView, QApplication, QMenu, QAction, QColorDialog, QGraphicsTextItem
+from PyQt5.QtWidgets import QGraphicsView, QApplication, QMenu, QAction, QColorDialog, QGraphicsTextItem, QColorDialog
 from PyQt5.QtCore import Qt, QPoint, QRectF
 from PyQt5.QtGui import QPainter
 from node import Node
@@ -137,7 +137,6 @@ class FlowchartView(QGraphicsView):
                 # CHANGE NODE COLOR
                 change_color_action = QAction("Change Color", self)
                 def on_change_color():
-                    from PyQt5.QtWidgets import QColorDialog
                     color = QColorDialog.getColor(item.brush().color(), self.window, "Select Node Color")
                     item.change_color(color)
                 change_color_action.triggered.connect(on_change_color)
