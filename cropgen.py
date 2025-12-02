@@ -24,6 +24,7 @@ class FlowchartWindow(QMainWindow):
         self.lines = []
         self.selected_node = None
         self.delete_mode = False
+        self.arrow_mode = False
         self._operations = load_operations()
 
         # -------------------------------------------------------------------
@@ -50,6 +51,12 @@ class FlowchartWindow(QMainWindow):
         self.add_node_btn.clicked.connect(self.add_node)
         left_layout.addWidget(self.add_node_btn)
 
+        self.add_arrow_btn = QPushButton("Add Arrow")
+        self.add_arrow_btn.setCheckable(True)
+        self.add_arrow_btn.setStyleSheet(button_style)
+        self.add_arrow_btn.clicked.connect(self.toggle_arrow_mode)
+        left_layout.addWidget(self.add_arrow_btn)
+
         self.delete_btn = QPushButton("Delete")
         self.delete_btn.setCheckable(True)
         self.delete_btn.setStyleSheet(button_style)
@@ -69,9 +76,8 @@ class FlowchartWindow(QMainWindow):
         self.help_btn = QPushButton("Need Help?")
         self.help_btn.setStyleSheet(button_style)
         self.help_btn.clicked.connect(self.need_help)
-
-        # Add the buttons to the left panel
         left_layout.addWidget(self.help_btn)
+
         left_layout.addStretch()
 
         # Warnings box with title, add to the left panel
@@ -94,6 +100,8 @@ class FlowchartWindow(QMainWindow):
         splitter.setHandleWidth(6)
 
         self.setCentralWidget(splitter)
+        # TODO: fix this issue when unfocusing on a text box
+        self.setFocusPolicy(Qt.StrongFocus)
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -125,26 +133,19 @@ class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
-    # TODO: move to scene
-    def mousePressEvent(self, event):
-        pos = self.view.mapToScene(event.pos())
-        items = self.scene.items(pos)
-        nodes = [i for i in items if isinstance(i, Node)]
-        if nodes:
-            node = nodes[0]
-            if event.modifiers() & Qt:  # Shift+Click for arrows
-                if self.selected_node and self.selected_node != node:
-                    arrow = self.selected_node.add_arrow_to(node)
-                    self.scene.addItem(arrow)
-                    self.scene.addItem(arrow.text_item)
-                    self.selected_node = None
-                else:
-                    self.selected_node = node
-            else:  # Normal click selects node
-                self.selected_node = node
+    def toggle_arrow_mode(self):
+        if not self.delete_mode:
+            self.arrow_mode = self.add_arrow_btn.isChecked()
         else:
-            self.selected_node = None
-        super().mousePressEvent(event)
+            self.add_arrow_btn.setChecked(False)
+    # ------------------------------------------------------------------------------------------------
+
+    # ------------------------------------------------------------------------------------------------
+    def toggle_delete_mode(self):
+        if not self.arrow_mode:
+            self.delete_mode = self.delete_btn.isChecked()
+        else:
+            self.delete_btn.setChecked(False)
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -242,13 +243,31 @@ class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
-    def toggle_delete_mode(self):
-        self.delete_mode = self.delete_btn.isChecked()
+    def need_help(self):
+        return
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
-    def need_help(self):
-        return
+    # TODO: move to scene
+    def mousePressEvent(self, event):
+        pos = self.view.mapToScene(event.pos())
+        items = self.scene.items(pos)
+        nodes = [i for i in items if isinstance(i, Node)]
+        if nodes:
+            node = nodes[0]
+            if event.modifiers() & Qt:  # Shift+Click for arrows
+                if self.selected_node and self.selected_node != node:
+                    arrow = self.selected_node.add_arrow_to(node)
+                    self.scene.addItem(arrow)
+                    self.scene.addItem(arrow.text_item)
+                    self.selected_node = None
+                else:
+                    self.selected_node = node
+            else:  # Normal click selects node
+                self.selected_node = node
+        else:
+            self.selected_node = None
+        super().mousePressEvent(event)
     # ------------------------------------------------------------------------------------------------
 
 
