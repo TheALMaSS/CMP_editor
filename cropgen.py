@@ -13,7 +13,7 @@ def load_operations():
     with open(OPERATIONS_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
 
-class FlowchartApp(QMainWindow):
+class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
     def __init__(self):
         super().__init__()
@@ -255,6 +255,6 @@ class FlowchartApp(QMainWindow):
 # MAIN
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = FlowchartApp()
+    window = FlowchartWindow()
     window.show()
     sys.exit(app.exec_())
