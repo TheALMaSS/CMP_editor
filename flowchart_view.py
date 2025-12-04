@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt, QPoint, QRectF
 from PyQt5.QtGui import QPainter
 from node import Node
 from prob_node import ProbNode
+from cond_node import CondNode
 from arrow import BendPoint, Arrow
 
 # Displays a portion of the SCENE and handles user interaction
@@ -48,9 +49,15 @@ class FlowchartView(QGraphicsView):
                             self.scene().addItem(arrow.text_item)
                             self.arrow_done = True
 
-                            # If the starting node is a probnode, then arrow needs %
+                            # If the starting node is a probnode, then arrow needs text with %
+                            if isinstance(self.selected_node, CondNode):
+                                arrow.text_item.setVisible(True)
+                                arrow.set_text("YES/NO")
+
+                            # If the starting node is a condnode, then arrow needs text with yes/no
                             if isinstance(self.selected_node, ProbNode):
                                 arrow.text_item.setVisible(True)
+                                arrow.set_text("XX%")
                 
                     # If a start node has NOT already been selected
                     else:

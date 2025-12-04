@@ -20,7 +20,7 @@ class BendPoint(QGraphicsEllipseItem):
         return super().itemChange(change, value)
 
 class Arrow(QGraphicsPathItem):
-    def __init__(self, start_node, end_node, text="XX%"):
+    def __init__(self, start_node, end_node, text=""):
         super().__init__()
         self.start_node = start_node
         self.end_node = end_node
@@ -44,6 +44,10 @@ class Arrow(QGraphicsPathItem):
         self.end_node.incoming_arrows.append(self)
 
         self.update_path()
+
+    def set_text(self, text):
+        self.text_item.setPlainText(text)
+        self.update_text_position()
 
     def add_bend_point(self, pos):
         bend = BendPoint(self, pos)

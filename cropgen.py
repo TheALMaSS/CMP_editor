@@ -124,6 +124,7 @@ class FlowchartWindow(QMainWindow):
         self.setFocusPolicy(Qt.StrongFocus)
     # ------------------------------------------------------------------------------------------------
 
+    # TODO: warnings should be triggered by QT SIGNALS
     # ------------------------------------------------------------------------------------------------
     def update_warnings(self, type="None"):
         warnings = []
