@@ -1,10 +1,8 @@
 {
     "FARM": {
-        "SOIL": ["CLAY", "SAND", "LOAM"],
-        "CROP": ["WHEAT", "CORN", "RICE"]
+        "TYPE": ["Cattle", "Pig", "Plant", "Organic Cattle", "Organic Pig", "Organic Plant"]
     },
     "FIELD": {
-        "WATER": ["LOW", "MEDIUM", "HIGH"],
-        "NUTRIENTS": ["POOR", "AVERAGE", "RICH"]
+        "SOIL": ["Water", "Sand (unspecified)", "Loamy sand", "Sandy loam", "Sandy clay loam", "Silt loam", "Silty clay loam", "Clay loam", "Loam", "Silt", "Sandy clay", "Silty clay", "Clay", "Heavy clay", "Organic & peat"]
     }
 }
