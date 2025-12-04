@@ -49,7 +49,7 @@ class Node(QGraphicsRectItem):
         super().__init__(0, 0, width, height)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         self.setFlag(QGraphicsRectItem.ItemIsMovable)
-        self.setFlag(QGraphicsRectItem.ItemIsSelectable)
+        #self.setFlag(QGraphicsRectItem.ItemIsSelectable)
         self.setPos(x, y)
         self.radius = radius
         self.resizing = False

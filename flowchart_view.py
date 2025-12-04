@@ -132,7 +132,6 @@ class FlowchartView(QGraphicsView):
                 # MOVE BEND POINT (click on bend point)
                 # ----------------------------------------------------------------------------------------------
                 if isinstance(item, BendPoint):
-                    # TODO: check this. I think it causes a glitch when first a click is made on a node, and then a bend point is moved around
                     super().mousePressEvent(event)
 
                 # ----------------------------------------------------------------------------------------------
