@@ -180,6 +180,10 @@ class FlowchartWindow(QMainWindow):
         if "END" not in ids:
             warnings.append("△ PROBLEM: No operation with id 'END' exists.")
 
+        # Check no repetitions in ids
+        if len(ids) != len(set(ids)):
+            warnings.append("△ PROBLEM: Two or more Operation Nodes share the same ID.")
+
         # Check that all prob nodes have arrows with a total outgoing flow of 100%
         for prob_node in self.prob_nodes:
             total_flow = 0.0
