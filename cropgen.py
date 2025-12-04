@@ -1,4 +1,4 @@
-import sys, json
+import sys, json, re
 from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QColor, QBrush
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter
@@ -11,6 +11,7 @@ from op_node import OpNode
 from prob_node import ProbNode
 from cond_node import CondNode
 from choose_condition_dialog import ChooseConditionDialog
+from validate_dialog import ValidateDialog
 from css_styles import button_style, validate_button_style, left_panel_style, delete_button_style, arrow_button_style, delete_mode_label_style, arrow_mode_label_style
 OPERATIONS_FILE = "operations.json"
 CONDITIONS_FILE = "conditions.json"
@@ -30,7 +31,9 @@ class FlowchartWindow(QMainWindow):
         self.setWindowTitle("CMP Editor")
         self.setGeometry(100, 100, 1100, 600)
 
-        self.nodes = []
+        self.op_nodes = []
+        self.prob_nodes = []
+        self.cond_nodes = []
         self.arrows = []
         self.delete_mode = False
         self.arrow_mode = False
@@ -163,26 +166,67 @@ class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
-    def validate(self, type="None"):
+    def validate(self):
         warnings = []
 
-        if type == "start_and_end_nodes":
-            # CHECK FOR START NODE
-            names = [node.name_text.toPlainText() for node in self.nodes]
-            if "START" not in names:
-                warnings.append("△ Warning: No node named 'START' exists.")
+        op_names = [op_node.name_text.toPlainText() for op_node in self.op_nodes]
+        ids = [node.id_text.toPlainText() for node in self.op_nodes]
 
-            # CHECK FOR END NODE
-            ids = [node.id_text.toPlainText() for node in self.nodes]
-            if "END" not in ids:
-                warnings.append("△ Warning: No node with id 'END' exists.")
+        # CHECK FOR START NODE
+        if "START" not in op_names:
+            warnings.append("△ PROBLEM: No operation named 'START' exists.")
 
-        elif type == "branching_text":
-            # CHECK FOR BRANCHING CONDITIONS TO BE %
-            warnings.append("△ Warning: Some branching text is not in the correct format (xx%).")
+        # CHECK FOR END NODE
+        if "END" not in ids:
+            warnings.append("△ PROBLEM: No operation with id 'END' exists.")
+
+        # Check that all prob nodes have arrows with a total outgoing flow of 100%
+        for prob_node in self.prob_nodes:
+            total_flow = 0.0
+            for arrow in prob_node.outgoing_arrows:
+                flow_str = arrow.text_item.toPlainText().strip()
+
+                # Validate format: must be "X%" or "XX%"
+                if not re.fullmatch(r'\d{1,2}%', flow_str):
+                    warnings.append(
+                        "△ PROBLEM: One of your arrows has an invalid probability format. Must be a percentage in the format XX%."
+                    )
+
+                # Sum numeric values
+                flow_value = 0.0
+                try:
+                    flow_value = float(flow_str.replace('%',''))
+                except ValueError:
+                    pass  # already reported format issue
+                total_flow += flow_value
+
+            # Check total outgoing flow
+            if abs(total_flow - 100.0) > 0.01:
+                warnings.append(
+                    "△ PROBLEM: One of your Probability Nodes has an outgoing probability flow different than 100%."
+                )
+
+        # Check conditional nodes
+        for cond_node in self.cond_nodes:
+            outgoing = cond_node.outgoing_arrows
+            if len(outgoing) != 2:
+                warnings.append(
+                    "△ PROBLEM: One of your Conditional Nodes does not have exactly 2 outgoing arrows."
+                )
+                continue  # skip further checks if count is wrong
+
+            texts = [arrow.flow_text.toPlainText().strip().upper() for arrow in outgoing]
+            if "YES" not in texts or "NO" not in texts:
+                warnings.append(
+                    "△ PROBLEM: One of your Conditional Nodes must have one arrow labeled 'YES' and one labeled 'NO'."
+                )
 
         # Join the warnings
-        self.warnings_box.setPlainText("\n".join(warnings))
+        warnings_string = "<br>".join(warnings)
+
+        dlg = ValidateDialog(warnings_string, self)
+        #dlg.exec_() # blocks interactions with main window
+        dlg.show()
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -192,36 +236,36 @@ class FlowchartWindow(QMainWindow):
             return
         operation = dlg.selected
 
-        node = OpNode(100 + len(self.nodes)*50, 100)
+        node = OpNode(100 + len(self.op_nodes)*50, 100)
         node.setZValue(1)
         node.operation_data = operation
         node.name_text.setPlainText(operation["name"])
 
         self.scene.addItem(node)
-        self.nodes.append(node)
+        self.op_nodes.append(node)
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
     def add_probability_node(self):
-        node = ProbNode(100 + len(self.nodes)*50, 100)
+        node = ProbNode(100 + len(self.op_nodes)*50, 100)
         node.setZValue(1)
 
         self.scene.addItem(node)
-        self.nodes.append(node)
+        self.prob_nodes.append(node)
     # ------------------------------------------------------------------------------------------------
 
-        # ------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------
     def add_conditional_node(self):
         dlg = ChooseConditionDialog(self._conditions, self)
         if dlg.exec_() != QDialog.Accepted:
             return
         condition = dlg.composed_condition
 
-        node = CondNode(100 + len(self.nodes)*50, 100, condition)
+        node = CondNode(100 + len(self.op_nodes)*50, 100, condition)
         node.setZValue(1)
 
         self.scene.addItem(node)
-        self.nodes.append(node)
+        self.cond_nodes.append(node)
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -251,7 +295,7 @@ class FlowchartWindow(QMainWindow):
             return
 
         data = []
-        for node in self.nodes:
+        for node in self.op_nodes:
             outgoing = []
             for arrow in node.outgoing_arrows:
                 outgoing.append({
@@ -282,7 +326,7 @@ class FlowchartWindow(QMainWindow):
             return
 
         # Clear all arrows
-        for node in list(self.nodes):
+        for node in list(self.op_nodes):
             for arrow in list(node.outgoing_arrows):
                 if arrow.text_item:
                     self.scene.removeItem(arrow.text_item)
@@ -299,9 +343,9 @@ class FlowchartWindow(QMainWindow):
                 node.incoming_arrows.remove(arrow)
 
         # Clear nodes
-        for node in list(self.nodes):
+        for node in list(self.op_nodes):
             self.scene.removeItem(node)
-        self.nodes.clear()
+        self.op_nodes.clear()
 
         # Load nodes
         with open(filename, "r") as f:
@@ -318,7 +362,7 @@ class FlowchartWindow(QMainWindow):
             node.name_text.setPlainText(node_data.get("operation_name", ""))
             node.update_text_positions()
             self.scene.addItem(node)
-            self.nodes.append(node)
+            self.op_nodes.append(node)
             node_map[node_data["operation_id"]] = node
 
         # Create arrows with bend points
