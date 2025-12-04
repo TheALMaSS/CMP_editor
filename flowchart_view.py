@@ -121,8 +121,14 @@ class FlowchartView(QGraphicsView):
                         arrow.bend_points.clear()
                         self.scene().removeItem(arrow)
 
-                    if item in self.my_window.nodes:
-                        self.my_window.nodes.remove(item)
+                    if item in self.my_window.op_nodes:
+                        self.my_window.op_nodes.remove(item)
+
+                    if item in self.my_window.prob_nodes:
+                        self.my_window.prob_nodes.remove(item)
+
+                    if item in self.my_window.cond_nodes:
+                        self.my_window.cond_nodes.remove(item)
 
                     self.scene().removeItem(item)
                     return

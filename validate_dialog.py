@@ -12,7 +12,22 @@ class ValidateDialog(QDialog):
 
         text_box = QTextEdit()
         text_box.setReadOnly(True)
+        self.text_box = text_box  # store as instance variable so we can refresh later
+        layout.addWidget(text_box)
 
+        # Refresh button
+        refresh_btn = QPushButton("Refresh")
+        refresh_btn.clicked.connect(self.refresh_warnings)
+        layout.addWidget(refresh_btn)
+
+        # OK button
+        ok_btn = QPushButton("OK")
+        ok_btn.clicked.connect(self.accept)
+        layout.addWidget(ok_btn)
+
+        self.update_text(warnings)
+
+    def update_text(self, warnings):
         if isinstance(warnings, list):
             if not warnings:
                 text_to_show = '<span style="color: #006400; font-weight: bold; font-size: 14pt;">No problems found! :)</span>'
@@ -24,9 +39,9 @@ class ValidateDialog(QDialog):
             else:
                 text_to_show = f'<span style="color: #B22222; font-size: 10pt;">{warnings}</span>'
 
-        text_box.setHtml(text_to_show)
-        layout.addWidget(text_box)
+        self.text_box.setHtml(text_to_show)
 
-        ok_btn = QPushButton("OK")
-        ok_btn.clicked.connect(self.accept)
-        layout.addWidget(ok_btn)
+    def refresh_warnings(self):
+        if self.parent():
+            new_warnings = self.parent().validate(return_warnings=True)  # parent.validate should return warnings list
+            self.update_text(new_warnings)

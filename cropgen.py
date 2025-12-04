@@ -166,7 +166,7 @@ class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
-    def validate(self):
+    def validate(self, return_warnings=False):
         warnings = []
 
         op_names = [op_node.name_text.toPlainText() for op_node in self.op_nodes]
@@ -221,8 +221,21 @@ class FlowchartWindow(QMainWindow):
                     "△ PROBLEM: One of your Conditional Nodes must have one arrow labeled 'YES' and one labeled 'NO'."
                 )
 
+        # Check operation nodes' dates format
+        for op_node in self.op_nodes:
+            dates_str = op_node.dates_text.toPlainText().strip()
+            # Regex: two digits / two digits, space-dash-space, two digits / two digits
+            if not re.fullmatch(r'\d{2}/\d{2} - \d{2}/\d{2}', dates_str):
+                warnings.append(
+                    "△ PROBLEM: One of your Operation Nodes has an invalid date format. Must be 'xx/xx - xx/xx'."
+                )
+
         # Join the warnings
         warnings_string = "<br>".join(warnings)
+
+        # TODO: Add previous logic to helper funcs
+        if return_warnings:
+            return warnings
 
         dlg = ValidateDialog(warnings_string, self)
         #dlg.exec_() # blocks interactions with main window
