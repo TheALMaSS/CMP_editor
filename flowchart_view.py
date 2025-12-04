@@ -123,7 +123,6 @@ class FlowchartView(QGraphicsView):
 
                     if item in self.my_window.nodes:
                         self.my_window.nodes.remove(item)
-                        self.my_window.update_warnings()
 
                     self.scene().removeItem(item)
                     return
@@ -236,6 +235,7 @@ class FlowchartView(QGraphicsView):
         if self.arrow_done:
             self.window().arrow_mode = False
             self.window().add_arrow_btn.setChecked(False)
+            self.window().update_mode_indicator()
             self.selected_node = None
             self.arrow_done = False
 

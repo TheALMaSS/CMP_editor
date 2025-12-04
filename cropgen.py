@@ -11,7 +11,7 @@ from op_node import OpNode
 from prob_node import ProbNode
 from cond_node import CondNode
 from choose_condition_dialog import ChooseConditionDialog
-from css_styles import button_style, warnings_box_style, warnings_title_style, left_panel_style
+from css_styles import button_style, validate_button_style, left_panel_style, delete_button_style, arrow_button_style, delete_mode_label_style, arrow_mode_label_style
 OPERATIONS_FILE = "operations.json"
 CONDITIONS_FILE = "conditions.json"
 
@@ -51,7 +51,7 @@ class FlowchartWindow(QMainWindow):
         self.left_panel.setMinimumWidth(100)
 
         left_layout = QVBoxLayout(self.left_panel)
-        left_layout.setContentsMargins(10, 10, 10, 10)
+        left_layout.setContentsMargins(20, 12, 20, 12)
         left_layout.setSpacing(10)
 
         # -------------------------------------------------------------------
@@ -71,17 +71,29 @@ class FlowchartWindow(QMainWindow):
         self.add_cond_node_btn.clicked.connect(self.add_conditional_node)
         left_layout.addWidget(self.add_cond_node_btn)
 
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Plain)
+        line.setStyleSheet("color: #525252;")
+        left_layout.addWidget(line)
+
         self.add_arrow_btn = QPushButton("Add Arrow")
         self.add_arrow_btn.setCheckable(True)
-        self.add_arrow_btn.setStyleSheet(button_style)
+        self.add_arrow_btn.setStyleSheet(arrow_button_style)
         self.add_arrow_btn.clicked.connect(self.toggle_arrow_mode)
         left_layout.addWidget(self.add_arrow_btn)
 
         self.delete_btn = QPushButton("Delete")
         self.delete_btn.setCheckable(True)
-        self.delete_btn.setStyleSheet(button_style)
+        self.delete_btn.setStyleSheet(delete_button_style)
         self.delete_btn.clicked.connect(self.toggle_delete_mode)
         left_layout.addWidget(self.delete_btn)
+
+        line2 = QFrame()
+        line2.setFrameShape(QFrame.HLine)
+        line2.setFrameShadow(QFrame.Plain)
+        line2.setStyleSheet("color: #525252;")
+        left_layout.addWidget(line2)
 
         self.export_btn = QPushButton("Export JSON")
         self.export_btn.setStyleSheet(button_style)
@@ -93,22 +105,23 @@ class FlowchartWindow(QMainWindow):
         self.load_btn.clicked.connect(self.load_json)
         left_layout.addWidget(self.load_btn)
 
+        self.validate_btn = QPushButton("VALIDATE CMP")
+        self.validate_btn.setStyleSheet(validate_button_style)
+        self.validate_btn.clicked.connect(self.validate)
+        left_layout.addWidget(self.validate_btn)
+
+        line3 = QFrame()
+        line3.setFrameShape(QFrame.HLine)
+        line3.setFrameShadow(QFrame.Plain)
+        line3.setStyleSheet("color: #525252;")
+        left_layout.addWidget(line3)
+
         self.help_btn = QPushButton("Need Help?")
         self.help_btn.setStyleSheet(button_style)
         self.help_btn.clicked.connect(self.need_help)
         left_layout.addWidget(self.help_btn)
 
         left_layout.addStretch()
-
-        # Warnings box with title, add to the left panel
-        title_label = QLabel("Warnings")
-        title_label.setStyleSheet(warnings_title_style)
-        left_layout.addWidget(title_label)
-        self.warnings_box = QTextEdit()
-        self.warnings_box.setReadOnly(True)
-        self.warnings_box.setFixedHeight(240)
-        self.warnings_box.setStyleSheet(warnings_box_style)
-        left_layout.addWidget(self.warnings_box)
 
         # -------------------------------------------------------------------
         # SPLITTER: LEFT PANEL | MAIN SCENE
@@ -120,13 +133,37 @@ class FlowchartWindow(QMainWindow):
         splitter.setHandleWidth(6)
 
         self.setCentralWidget(splitter)
+
+        # MODE INDICATOR LABEL
+        self.mode_indicator = QLabel(self.view)
+        self.mode_indicator.move(20, 20)
+        self.mode_indicator.setObjectName("modeLabel")
+        self.mode_indicator.hide()
+
         # TODO: fix this issue when unfocusing on a text box
-        self.setFocusPolicy(Qt.StrongFocus)
+        #self.setFocusPolicy(Qt.StrongFocus)
     # ------------------------------------------------------------------------------------------------
 
-    # TODO: warnings should be triggered by QT SIGNALS
     # ------------------------------------------------------------------------------------------------
-    def update_warnings(self, type="None"):
+    def update_mode_indicator(self):
+        txt = ""
+        if self.delete_mode:
+            txt += "DELETE MODE"
+            self.setStyleSheet(delete_mode_label_style)
+        if self.arrow_mode:
+            txt += (" | " if txt else "") + "ARROW MODE"
+            self.setStyleSheet(arrow_mode_label_style)
+
+        if txt:
+            self.mode_indicator.setText(txt)
+            self.mode_indicator.adjustSize()
+            self.mode_indicator.show()
+        else:
+            self.mode_indicator.hide()
+    # ------------------------------------------------------------------------------------------------
+
+    # ------------------------------------------------------------------------------------------------
+    def validate(self, type="None"):
         warnings = []
 
         if type == "start_and_end_nodes":
@@ -162,7 +199,6 @@ class FlowchartWindow(QMainWindow):
 
         self.scene.addItem(node)
         self.nodes.append(node)
-        self.update_warnings()
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -172,7 +208,6 @@ class FlowchartWindow(QMainWindow):
 
         self.scene.addItem(node)
         self.nodes.append(node)
-        self.update_warnings()
     # ------------------------------------------------------------------------------------------------
 
         # ------------------------------------------------------------------------------------------------
@@ -187,7 +222,6 @@ class FlowchartWindow(QMainWindow):
 
         self.scene.addItem(node)
         self.nodes.append(node)
-        self.update_warnings()
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -196,6 +230,8 @@ class FlowchartWindow(QMainWindow):
             self.arrow_mode = self.add_arrow_btn.isChecked()
         else:
             self.add_arrow_btn.setChecked(False)
+            self.update_mode_indicator()
+        self.update_mode_indicator()
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -204,6 +240,8 @@ class FlowchartWindow(QMainWindow):
             self.delete_mode = self.delete_btn.isChecked()
         else:
             self.delete_btn.setChecked(False)
+            self.update_mode_indicator()
+        self.update_mode_indicator()
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
