@@ -1,0 +1,10 @@
+{
+    "FARM": {
+        "SOIL": ["CLAY", "SAND", "LOAM"],
+        "CROP": ["WHEAT", "CORN", "RICE"]
+    },
+    "FIELD": {
+        "WATER": ["LOW", "MEDIUM", "HIGH"],
+        "NUTRIENTS": ["POOR", "AVERAGE", "RICH"]
+    }
+}

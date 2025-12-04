@@ -23,7 +23,7 @@ button_style = """
 
     QPushButton:checked {
         background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                        stop:0 #5C7BB8, stop:1 #3D5F9F);
+                                        stop:0 #3D5F9F, stop:1 #5C7BB8);
     }
 """
 

@@ -5,13 +5,23 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog,
 from flowchart_view import FlowchartView
 from flowchart_scene import FlowchartScene
 from node import Node
+from prob_node import ProbNode
 from choose_operation_dialog import ChooseOperationDialog
+from op_node import OpNode
+from prob_node import ProbNode
+from cond_node import CondNode
+from choose_condition_dialog import ChooseConditionDialog
 from css_styles import button_style, warnings_box_style, warnings_title_style, left_panel_style
 OPERATIONS_FILE = "operations.json"
+CONDITIONS_FILE = "conditions.json"
 
 def load_operations():
     with open(OPERATIONS_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
+    
+def load_conditions():
+        with open(CONDITIONS_FILE,  "r", encoding="utf-8") as f:
+            return json.load(f)
 
 class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
@@ -25,6 +35,7 @@ class FlowchartWindow(QMainWindow):
         self.delete_mode = False
         self.arrow_mode = False
         self._operations = load_operations()
+        self._conditions = load_conditions()
 
         # -------------------------------------------------------------------
         # SCENE AND VIEW
@@ -45,10 +56,20 @@ class FlowchartWindow(QMainWindow):
 
         # -------------------------------------------------------------------
         # BUTTONS
-        self.add_node_btn = QPushButton("Add Node")
+        self.add_node_btn = QPushButton("Add Operation Node")
         self.add_node_btn.setStyleSheet(button_style)
         self.add_node_btn.clicked.connect(self.add_node)
         left_layout.addWidget(self.add_node_btn)
+
+        self.add_prob_node_btn = QPushButton("Add Probability Node")
+        self.add_prob_node_btn.setStyleSheet(button_style)
+        self.add_prob_node_btn.clicked.connect(self.add_probability_node)
+        left_layout.addWidget(self.add_prob_node_btn)
+
+        self.add_cond_node_btn = QPushButton("Add Conditional Node")
+        self.add_cond_node_btn.setStyleSheet(button_style)
+        self.add_cond_node_btn.clicked.connect(self.add_conditional_node)
+        left_layout.addWidget(self.add_cond_node_btn)
 
         self.add_arrow_btn = QPushButton("Add Arrow")
         self.add_arrow_btn.setCheckable(True)
@@ -133,10 +154,35 @@ class FlowchartWindow(QMainWindow):
             return
         operation = dlg.selected
 
-        node = Node(100 + len(self.nodes)*50, 100)
+        node = OpNode(100 + len(self.nodes)*50, 100)
         node.setZValue(1)
         node.operation_data = operation
         node.name_text.setPlainText(operation["name"])
+
+        self.scene.addItem(node)
+        self.nodes.append(node)
+        self.update_warnings()
+    # ------------------------------------------------------------------------------------------------
+
+    # ------------------------------------------------------------------------------------------------
+    def add_probability_node(self):
+        node = ProbNode(100 + len(self.nodes)*50, 100)
+        node.setZValue(1)
+
+        self.scene.addItem(node)
+        self.nodes.append(node)
+        self.update_warnings()
+    # ------------------------------------------------------------------------------------------------
+
+        # ------------------------------------------------------------------------------------------------
+    def add_conditional_node(self):
+        dlg = ChooseConditionDialog(self._conditions, self)
+        if dlg.exec_() != QDialog.Accepted:
+            return
+        condition = dlg.composed_condition
+
+        node = CondNode(100 + len(self.nodes)*50, 100, condition)
+        node.setZValue(1)
 
         self.scene.addItem(node)
         self.nodes.append(node)

@@ -20,7 +20,7 @@ class BendPoint(QGraphicsEllipseItem):
         return super().itemChange(change, value)
 
 class Arrow(QGraphicsPathItem):
-    def __init__(self, start_node, end_node, text="Branching\nConditions"):
+    def __init__(self, start_node, end_node, text="XX%"):
         super().__init__()
         self.start_node = start_node
         self.end_node = end_node
@@ -34,6 +34,7 @@ class Arrow(QGraphicsPathItem):
         self.text_item.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.text_item.setDefaultTextColor(Qt.black)
         self.text_item.document().contentsChanged.connect(self.update_text_position)
+        self.text_item.setVisible(False)
 
         # Bend points list
         self.bend_points = []
@@ -50,10 +51,11 @@ class Arrow(QGraphicsPathItem):
         self.scene().addItem(bend)
         self.update_path()
 
+    # TODO: fix graphic glitches when the arrow needs to connect to shapes other than rect
     def update_path(self):
         # Start and end centers
-        start_center = self.start_node.pos() + self.start_node.rect().center()
-        end_center = self.end_node.pos() + self.end_node.rect().center()
+        start_center = self.start_node.pos() + self.start_node.boundingRect().center()
+        end_center = self.end_node.pos() + self.end_node.boundingRect().center()
 
         # Determine "first point" that intersects the start node
         first_target = self.bend_points[0].scenePos() if self.bend_points else end_center

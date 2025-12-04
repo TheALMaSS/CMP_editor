@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QGraphicsView, QApplication, QMenu, QAction, QColorD
 from PyQt5.QtCore import Qt, QPoint, QRectF
 from PyQt5.QtGui import QPainter
 from node import Node
+from prob_node import ProbNode
 from arrow import BendPoint, Arrow
 
 # Displays a portion of the SCENE and handles user interaction
@@ -38,14 +39,18 @@ class FlowchartView(QGraphicsView):
                     # If a start node has already been selected
                     if (self.selected_node is not None):
 
-                        if Node == self.selected_node:
-                            return
+                        if item == self.selected_node:
+                            self.arrow_done = True
                         
-                        arrow = self.selected_node.add_arrow_to(item)
-                        self.scene().addItem(arrow)
-                        self.scene().addItem(arrow.text_item)
-                        self.selected_node = None
-                        self.arrow_done = True
+                        else:
+                            arrow = self.selected_node.add_arrow_to(item)
+                            self.scene().addItem(arrow)
+                            self.scene().addItem(arrow.text_item)
+                            self.arrow_done = True
+
+                            # If the starting node is a probnode, then arrow needs %
+                            if isinstance(self.selected_node, ProbNode):
+                                arrow.text_item.setVisible(True)
                 
                     # If a start node has NOT already been selected
                     else:
@@ -139,7 +144,7 @@ class FlowchartView(QGraphicsView):
                 # ----------------------------------------------------------------------------------------------
                 if isinstance(item, Node):
                     pos_in_node = item.mapFromScene(self.mapToScene(event.pos()))
-                    rect = item.rect()
+                    rect = item.boundingRect()
                     if rect.right() - Node.CORNER_SIZE < pos_in_node.x() < rect.right() and \
                     rect.bottom() - Node.CORNER_SIZE < pos_in_node.y() < rect.bottom():
                         self.resizing_node = item
@@ -167,70 +172,6 @@ class FlowchartView(QGraphicsView):
             # IF NODE -> SHOW OPTIONS
             elif isinstance(item, Node):
                 menu = QMenu()
-
-                # CHANGE NODE COLOR
-                change_color_action = QAction("Change Color", self)
-                def on_change_color():
-                    color = QColorDialog.getColor(item.brush().color(), self.my_window, "Select Node Color")
-                    item.change_color(color)
-                change_color_action.triggered.connect(on_change_color)
-                menu.addAction(change_color_action)
-
-                # TOGGLE ON CONSTRAINTS
-                toggle_on_constraints_action = QAction("Toggle ON Constraints", self)
-                def on_toggle_on_constraints():
-                    if not item.constraints_on:
-                        item.constraints_on = True
-                        item.constraints_text.setVisible(True)
-                        item.constraints_text.setTextInteractionFlags(Qt.TextEditorInteraction)
-                        old_rect = item.rect()
-                        new_height = old_rect.height() + 50
-                        item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
-                        item.update_text_positions()
-                toggle_on_constraints_action.triggered.connect(on_toggle_on_constraints)
-                menu.addAction(toggle_on_constraints_action)
-
-                # TOGGLE OFF CONSTRAINTS
-                toggle_off_constraints_action = QAction("Toggle OFF Constraints", self)
-                def on_toggle_off_constraints():
-                    if item.constraints_on:
-                        item.constraints_on = False
-                        item.constraints_text.setVisible(False)
-                        item.constraints_text.setTextInteractionFlags(Qt.NoTextInteraction)
-                        old_rect = item.rect()
-                        new_height = old_rect.height() - 50
-                        item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
-                        item.update_text_positions()
-                toggle_off_constraints_action.triggered.connect(on_toggle_off_constraints)
-                menu.addAction(toggle_off_constraints_action)
-
-                # TOGGLE ON RANDOM CHANCE
-                toggle_on_random_chance_action = QAction("Toggle ON Random Chance", self)
-                def on_toggle_on_random_chance():
-                    if not item.random_chance_on:
-                        item.random_chance_on = True
-                        item.random_chance_text.setVisible(True)
-                        item.random_chance_text.setTextInteractionFlags(Qt.TextEditorInteraction)
-                        old_rect = item.rect()
-                        new_height = old_rect.height() + 50
-                        item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
-                        item.update_text_positions()
-                toggle_on_random_chance_action.triggered.connect(on_toggle_on_random_chance)
-                menu.addAction(toggle_on_random_chance_action)
-
-                # TOGGLE OFF RANDOM CHANCE
-                toggle_off_random_chance_action = QAction("Toggle OFF Random Chance", self)
-                def on_toggle_off_random_chance():
-                    if item.random_chance_on:
-                        item.random_chance_on = False
-                        item.random_chance_text.setVisible(False)
-                        item.random_chance_text.setTextInteractionFlags(Qt.NoTextInteraction)
-                        old_rect = item.rect()
-                        new_height = old_rect.height() - 50
-                        item.setRect(old_rect.x(), old_rect.y(), old_rect.width(), new_height)
-                        item.update_text_positions()
-                toggle_off_random_chance_action.triggered.connect(on_toggle_off_random_chance)
-                menu.addAction(toggle_off_random_chance_action)
 
                 menu.exec_(event.globalPos())
 
@@ -290,8 +231,7 @@ class FlowchartView(QGraphicsView):
             self.window().add_arrow_btn.setChecked(False)
             self.selected_node = None
             self.arrow_done = False
-        
-        # TODO: maybe optimize by not redrawing entire scene, but just the nodes in the node lists
+
         self.scene().update()
 
         super().mouseReleaseEvent(event)
