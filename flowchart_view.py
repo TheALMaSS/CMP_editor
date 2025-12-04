@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QGraphicsView, QApplication, QMenu, QAction, QColorDialog, QGraphicsTextItem, QColorDialog
-from PyQt5.QtCore import Qt, QPoint, QRectF
+from PyQt5.QtWidgets import QGraphicsView, QApplication, QMenu, QGraphicsTextItem
+from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPainter
 from node import Node
 from prob_node import ProbNode
