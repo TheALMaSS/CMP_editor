@@ -58,7 +58,7 @@ class FlowchartWindow(QMainWindow):
         # BUTTONS
         self.add_node_btn = QPushButton("Add Operation Node")
         self.add_node_btn.setStyleSheet(button_style)
-        self.add_node_btn.clicked.connect(self.add_node)
+        self.add_node_btn.clicked.connect(self.add_operation_node)
         left_layout.addWidget(self.add_node_btn)
 
         self.add_prob_node_btn = QPushButton("Add Probability Node")
@@ -148,7 +148,7 @@ class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
-    def add_node(self):
+    def add_operation_node(self):
         dlg = ChooseOperationDialog(self._operations, self)
         if dlg.exec_() != QDialog.Accepted:
             return
