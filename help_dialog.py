@@ -41,6 +41,7 @@ CMP Editor lets you design your Crop Management Plan, using a decision tree stru
 
 <b>User Controls</b><br>
 • Drag nodes to reposition them.<br>
+• Drag the bottom right corner of a node to resize it. (Only for operation nodes!)<br>
 • Left-click on arrows to create bending points. Right-click on a bending point to delete it.<br>
 • Zoom in/out by pressing the mouse wheel.<br><br>
 
