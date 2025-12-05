@@ -178,8 +178,8 @@ class FlowchartWindow(QMainWindow):
             warnings.append("△ PROBLEM: No operation named 'START' exists.")
 
         # CHECK FOR END NODE
-        if "END" not in ids:
-            warnings.append("△ PROBLEM: No operation with id 'END' exists.")
+        if "END" not in op_names:
+            warnings.append("△ PROBLEM: No operation named 'END' exists.")
 
         # Check no repetitions in ids
         if len(ids) != len(set(ids)):
