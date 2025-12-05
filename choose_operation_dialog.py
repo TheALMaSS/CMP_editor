@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QDialog, QListWidget, QTextEdit, QLabel, QHBoxLayout, QVBoxLayout, QDialogButtonBox
+from PyQt5.QtWidgets import QWidget, QPushButton, QDialog, QListWidget, QTextEdit, QLabel, QHBoxLayout, QVBoxLayout, QDialogButtonBox, QLineEdit
 from PyQt5.QtCore import Qt
 
 help_text_choose_operation = "Select a crop operation on the left to see its description.\n\n" \
@@ -19,13 +19,22 @@ class ChooseOperationDialog(QDialog):
         super().__init__(parent, Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
 
         self.setWindowTitle("Select Crop Operation")
-        self.resize(700, 400)
+        self.resize(650, 400)
         self.operations = operations
+        self.filtered_operations = operations
         self.selected = None
 
+        self.search_field = QLineEdit()
+        self.search_field.setPlaceholderText("Search operations...")
+        self.search_btn = QPushButton("Search")
+        self.search_btn.clicked.connect(self.perform_search)
+
+        search_layout = QHBoxLayout()
+        search_layout.addWidget(self.search_field)
+        search_layout.addWidget(self.search_btn)
+
         self.list_widget = QListWidget()
-        for a in operations:
-            self.list_widget.addItem(a["name"])
+        self.update_list(self.operations)
 
         self.desc = QTextEdit()
         self.desc.setReadOnly(True)
@@ -44,6 +53,7 @@ class ChooseOperationDialog(QDialog):
 
         left_layout = QVBoxLayout()
         left_layout.addLayout(header_layout)
+        left_layout.addLayout(search_layout)
         left_layout.addWidget(self.list_widget)
 
         right_layout = QVBoxLayout()
@@ -52,7 +62,7 @@ class ChooseOperationDialog(QDialog):
 
         left_container = QWidget()
         left_container.setLayout(left_layout)
-        left_container.setMinimumWidth(300)
+        left_container.setMinimumWidth(350)
 
         main_layout = QHBoxLayout()
         main_layout.addWidget(left_container)
@@ -70,6 +80,21 @@ class ChooseOperationDialog(QDialog):
         self.list_widget.currentRowChanged.connect(self.on_row_changed)
         if self.list_widget.count():
             self.list_widget.setCurrentRow(0)
+
+    def perform_search(self):
+        text = self.search_field.text().lower()
+        if not text:
+            self.filtered_operations = self.operations
+        else:
+            self.filtered_operations = [op for op in self.operations if text in op["name"].lower()]
+        self.update_list(self.filtered_operations)
+        if self.list_widget.count():
+            self.list_widget.setCurrentRow(0)
+
+    def update_list(self, ops):
+        self.list_widget.clear()
+        for op in ops:
+            self.list_widget.addItem(op["name"])
 
     def open_help(self):
         dlg = QDialog(self, Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
@@ -91,15 +116,15 @@ class ChooseOperationDialog(QDialog):
         dlg.exec_()
 
     def on_row_changed(self, row):
-        if row < 0 or row >= len(self.operations):
+        if row < 0 or row >= len(self.filtered_operations):
             self.desc.setPlainText("")
             return
-        self.desc.setPlainText(self.operations[row].get("description", ""))
+        self.desc.setPlainText(self.filtered_operations[row].get("description", ""))
 
     def accept(self):
         row = self.list_widget.currentRow()
         if row < 0:
             super().reject()
             return
-        self.selected = self.operations[row]
+        self.selected = self.filtered_operations[row]
         super().accept()

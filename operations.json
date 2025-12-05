@@ -1,66 +1,307 @@
 [
   {
-    "name": "START",
-    "description": "The START operation should always be the starting point of your CMP. No farm actions are carried out in this step."
+    "name": "Ammonium Sulphate",
+    "description": "Apply ammonium sulphate fertilizer.",
+    "cpp_func": "AmmoniumSulphate"
   },
   {
-    "name": "Autumn plough",
-    "description": "..."
+    "name": "Autumn Harrow",
+    "description": "Harrow the soil in autumn.",
+    "cpp_func": "AutumnHarrow"
   },
   {
-    "name": "Fertilizer, ammonium sulphate",
-    "description": "..."
+    "name": "Autumn Plough",
+    "description": "Plough the soil in autumn.",
+    "cpp_func": "AutumnPlough"
   },
   {
-    "name": "Fertilizer, boron",
-    "description": "..."
+    "name": "Autumn Roll",
+    "description": "Roll the soil in autumn, usually after ploughing or harrowing.",
+    "cpp_func": "AutumnRoll"
   },
   {
-    "name": "Fertilizer, slurry",
-    "description": "..."
+    "name": "Autumn Sow",
+    "description": "Sow crops in autumn.",
+    "cpp_func": "AutumnSow"
+  },
+  {
+    "name": "Autumn Sow with Fertilizer",
+    "description": "Sow in autumn while applying starter fertilizer.",
+    "cpp_func": "AutumnSowWithFerti"
+  },
+  {
+    "name": "Boron",
+    "description": "Apply soluble boron fertilizer.",
+    "cpp_func": "Boron"
+  },
+  {
+    "name": "Bed Forming",
+    "description": "Shape raised beds for planting.",
+    "cpp_func": "BedForming"
+  },
+  {
+    "name": "Biocide",
+    "description": "Apply a general biocide.",
+    "cpp_func": "BiocideTreat"
+  },
+  {
+    "name": "Burn Straw Stubble",
+    "description": "Burn straw or stubble after harvest.",
+    "cpp_func": "BurnStrawStubble"
+  },
+  {
+    "name": "Burn Tops",
+    "description": "Burn crop tops such as potato haulms.",
+    "cpp_func": "BurnTop"
+  },
+  {
+    "name": "Bulb Harvest",
+    "description": "Harvest flower bulbs such as tulips.",
+    "cpp_func": "BulbHarvest"
+  },
+  {
+    "name": "Cut Orchard Vegetation",
+    "description": "Cut vegetation in orchards.",
+    "cpp_func": "CutOrch"
+  },
+  {
+    "name": "Cut Weeds",
+    "description": "Top weeds without disturbing the crop.",
+    "cpp_func": "CutWeeds"
+  },
+  {
+    "name": "Cut to Hay",
+    "description": "Cut forage for haymaking.",
+    "cpp_func": "CutToHay"
+  },
+  {
+    "name": "Cut to Silage",
+    "description": "Cut vegetation for silage.",
+    "cpp_func": "CutToSilage"
+  },
+  {
+    "name": "Deep Plough",
+    "description": "Perform deep ploughing to improve soil structure or water retention.",
+    "cpp_func": "DeepPlough"
+  },
+  {
+    "name": "End",
+    "description": "The final point of the CMP. No farm actions are carried out in this step.",
+    "cpp_func": "[no function associated]"
   },
   {
     "name": "Fungicide",
-    "description": "..."
+    "description": "Apply fungicide.",
+    "cpp_func": "FungicideTreat"
   },
   {
-    "name": "Growth regulator",
-    "description": "..."
+    "name": "Flower Cutting",
+    "description": "Remove flowers to promote bulb development.",
+    "cpp_func": "FlowerCutting"
+  },
+  {
+    "name": "Green Manure",
+    "description": "Apply green manure material.",
+    "cpp_func": "GreenManure"
   },
   {
     "name": "Harvest",
-    "description": "..."
+    "description": "Harvest the crop.",
+    "cpp_func": "Harvest"
   },
   {
-    "name": "Herbicide",
-    "description": "..."
+    "name": "Harvest (Long Duration)",
+    "description": "Harvest with a different operational profile.",
+    "cpp_func": "HarvestLong"
+  },
+  {
+    "name": "Harvest Bush Fruit (Hand)",
+    "description": "Harvest bush fruit by hand while preserving plant structure.",
+    "cpp_func": "HarvestBushFruit"
+  },
+  {
+    "name": "Harvest Bush Fruit (Machine)",
+    "description": "Harvest bush fruit using machinery while preserving plant structure.",
+    "cpp_func": "HarvestBF_Machine"
+  },
+  {
+    "name": "Heavy Cultivator Aggregate",
+    "description": "Heavy non-inversion cultivation, often after fertilizer on spring crops.",
+    "cpp_func": "HeavyCultivatorAggregate"
+  },
+  {
+    "name": "Hilling Up",
+    "description": "Hill soil around plants to support growth.",
+    "cpp_func": "HillingUp"
   },
   {
     "name": "Insecticide",
-    "description": "..."
+    "description": "Apply insecticide.",
+    "cpp_func": "InsecticideTreat"
   },
   {
-    "name": "Row cultivation",
-    "description": "..."
+    "name": "Manganese Sulphate",
+    "description": "Apply manganese sulphate.",
+    "cpp_func": "ManganeseSulphate"
   },
   {
-    "name": "Shallow stubble harrow",
-    "description": "..."
+    "name": "Manure",
+    "description": "Spread solid manure.",
+    "cpp_func": "Manure"
   },
   {
-    "name": "Sow",
-    "description": "..."
+    "name": "Molluscicide",
+    "description": "Apply molluscicide.",
+    "cpp_func": "Molluscicide"
   },
   {
-    "name": "Sow with special sow machine (no plough)",
-    "description": "..."
+    "name": "Organic Fungicide",
+    "description": "Apply organic fungicide.",
+    "cpp_func": "OrganicFungicide"
   },
   {
-    "name": "Swathing",
-    "description": "..."
+    "name": "Organic Herbicide",
+    "description": "Apply organic herbicide.",
+    "cpp_func": "OrganicHerbicide"
   },
   {
-    "name": "Wait",
-    "description": "..."
+    "name": "Organic Insecticide",
+    "description": "Apply organic insecticide.",
+    "cpp_func": "OrganicInsecticide"
+  },
+  {
+    "name": "Pheromone Treatment",
+    "description": "Apply pheromones for pest management.",
+    "cpp_func": "Pheromone"
+  },
+  {
+    "name": "Preseeding Cultivator",
+    "description": "Cultivate the soil before sowing to prepare the seedbed.",
+    "cpp_func": "PreseedingCultivator"
+  },
+  {
+    "name": "Preseeding Cultivator + Sow",
+    "description": "Cultivate and sow in a single operation using a combined implement.",
+    "cpp_func": "PreseedingCultivatorSow"
+  },
+  {
+    "name": "Row Cultivation",
+    "description": "Mechanically weed between crop rows.",
+    "cpp_func": "RowCultivation"
+  },
+  {
+    "name": "Slurry",
+    "description": "Spread slurry.",
+    "cpp_func": "Slurry"
+  },
+  {
+    "name": "Sleep / Wait",
+    "description": "No activity for the day.",
+    "cpp_func": "SleepAllDay"
+  },
+  {
+    "name": "Shallow Harrow",
+    "description": "Light harrowing, often after grass cutting.",
+    "cpp_func": "ShallowHarrow"
+  },
+  {
+    "name": "Shallow Stubble Harrow",
+    "description": "Shallow harrowing of stubble in autumn.",
+    "cpp_func": "AutumnHarrow"
+  },
+  {
+    "name": "Stubble Cultivator Heavy",
+    "description": "Deep non-inversion cultivation as an alternative to autumn ploughing.",
+    "cpp_func": "StubbleCultivatorHeavy"
+  },
+  {
+    "name": "Stubble Harrowing",
+    "description": "Harrow stubble after harvest.",
+    "cpp_func": "StubbleHarrowing"
+  },
+  {
+    "name": "Stubble Plough",
+    "description": "Light ploughing after harvest to manage stubble.",
+    "cpp_func": "StubblePlough"
+  },
+  {
+    "name": "Spring Harrow",
+    "description": "Harrow the soil in spring.",
+    "cpp_func": "SpringHarrow"
+  },
+  {
+    "name": "Spring Plough",
+    "description": "Plough the soil in spring.",
+    "cpp_func": "SpringPlough"
+  },
+  {
+    "name": "Spring Roll",
+    "description": "Roll the soil in spring, usually after ploughing or harrowing.",
+    "cpp_func": "SpringRoll"
+  },
+  {
+    "name": "Spring Sow",
+    "description": "Sow crops in spring.",
+    "cpp_func": "SpringSow"
+  },
+  {
+    "name": "Spring Sow with Fertilizer",
+    "description": "Sow in spring while applying starter fertilizer.",
+    "cpp_func": "SpringSowWithFerti"
+  },
+  {
+    "name": "Straw Chopping",
+    "description": "Chop straw residue after harvest.",
+    "cpp_func": "StrawChopping"
+  },
+  {
+    "name": "Straw Covering",
+    "description": "Cover the soil surface with straw.",
+    "cpp_func": "StrawCovering"
+  },
+  {
+    "name": "Straw Removal",
+    "description": "Remove straw from the soil surface.",
+    "cpp_func": "StrawRemoval"
+  },
+  {
+    "name": "Strigling",
+    "description": "Perform tine-weeding to control small weeds.",
+    "cpp_func": "Strigling"
+  },
+  {
+    "name": "Strigling + Hill",
+    "description": "Perform tine-weeding followed by hilling.",
+    "cpp_func": "StriglingHill"
+  },
+  {
+    "name": "Strigling + Sow",
+    "description": "Perform tine-weeding followed by sowing.",
+    "cpp_func": "StriglingSow"
+  },
+  {
+    "name": "START",
+    "description": "The START operation should always be the starting point of your CMP. No farm actions are carried out in this step.",
+    "cpp_func": "[no function associated]"
+  },
+  {
+    "name": "Topping",
+    "description": "Remove the top of the crop and leave it in the field.",
+    "cpp_func": "Topping"
+  },
+  {
+    "name": "Water",
+    "description": "Perform watering or irrigation.",
+    "cpp_func": "Water"
+  },
+  {
+    "name": "Winter Harrow",
+    "description": "Harrow the soil during winter.",
+    "cpp_func": "WinterHarrow"
+  },
+  {
+    "name": "Winter Plough",
+    "description": "Plough the soil during winter.",
+    "cpp_func": "WinterPlough"
   }
 ]
