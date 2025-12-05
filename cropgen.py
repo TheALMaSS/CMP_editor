@@ -12,6 +12,7 @@ from prob_node import ProbNode
 from cond_node import CondNode
 from choose_condition_dialog import ChooseConditionDialog
 from validate_dialog import ValidateDialog
+from help_dialog import HelpDialog
 from css_styles import button_style, validate_button_style, left_panel_style, delete_button_style, arrow_button_style, delete_mode_label_style, arrow_mode_label_style
 OPERATIONS_FILE = "operations.json"
 CONDITIONS_FILE = "conditions.json"
@@ -402,7 +403,8 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def need_help(self):
-        return
+        dlg = HelpDialog(self)
+        dlg.exec_()
     # ------------------------------------------------------------------------------------------------
 
 
