@@ -5,12 +5,9 @@ from PyQt5.QtWidgets import QPushButton, QDialog, QListWidget, QTextEdit, QHBoxL
 help_text_choose_condition = """
 Select a condition for branching by navigating the three columns:
 
-1. First Column – Choose the main category.
-2. Second Column – Pick a sub-category based on the first selection.
-3. Third Column – Select the final property, value, flag, or state that will define your branching.
-
-The full path will be recorded as:
-First -> Second -> Third
+1. First Column: choose the main category.
+2. Second Column: pick a property associated to the main category.
+3. Third Column: select the value of the property that will define your branching.
 
 Example: FARM -> SOIL -> CLAY will generate the branching condition:
 FARM->SOIL is CLAY?

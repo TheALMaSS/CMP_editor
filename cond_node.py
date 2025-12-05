@@ -5,7 +5,7 @@ from node import Node
 
 class CondNode(QGraphicsPolygonItem, Node):
     MAX_WIDTH = 300  # maximum allowed width before wrapping text
-    PADDING = 60     # padding around text inside the diamond
+    PADDING = 70     # padding around text inside the diamond
 
     def __init__(self, x, y, text="conditional expr here"):
         QGraphicsPolygonItem.__init__(self)

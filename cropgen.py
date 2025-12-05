@@ -217,7 +217,7 @@ class FlowchartWindow(QMainWindow):
                 warnings.append(
                     "△ PROBLEM: One of your Conditional Nodes does not have exactly 2 outgoing arrows."
                 )
-                continue  # skip further checks if count is wrong
+                break
 
             texts = [arrow.flow_text.toPlainText().strip().upper() for arrow in outgoing]
             if "YES" not in texts or "NO" not in texts:
@@ -233,6 +233,7 @@ class FlowchartWindow(QMainWindow):
                 warnings.append(
                     "△ PROBLEM: One of your Operation Nodes has an invalid date format. Must be 'xx/xx - xx/xx'."
                 )
+                break
 
         # Join the warnings
         warnings_string = "<br>".join(warnings)
