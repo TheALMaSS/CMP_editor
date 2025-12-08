@@ -176,19 +176,19 @@ class FlowchartWindow(QMainWindow):
         warnings = []
 
         op_names = [op_node.name_text.toPlainText() for op_node in self.op_nodes]
-        ids = [node.id_text.toPlainText() for node in self.op_nodes]
+        ids = [node.id_text.toPlainText() for node in (self.op_nodes + self.prob_nodes + self.cond_nodes)]
 
         # CHECK FOR START NODE
         if "START" not in op_names:
-            warnings.append("△ PROBLEM: No operation named 'START' exists.")
+            warnings.append("⚠ <b>WARNING:</b> no operation named 'START' exists.")
 
         # CHECK FOR END NODE
         if "END" not in op_names:
-            warnings.append("△ PROBLEM: No operation named 'END' exists.")
+            warnings.append("⚠ <b>WARNING:</b> no operation named 'END' exists.")
 
         # Check no repetitions in ids
         if len(ids) != len(set(ids)):
-            warnings.append("△ PROBLEM: Two or more Operation Nodes share the same ID.")
+            warnings.append("⚠ <b>WARNING:</b> two or more Nodes share the same ID.")
 
         # Check that all prob nodes have arrows with a total outgoing flow of 100%
         for prob_node in self.prob_nodes:
@@ -199,7 +199,7 @@ class FlowchartWindow(QMainWindow):
                 # Validate format: must be "X%" or "XX%"
                 if not re.fullmatch(r'\d{1,2}%', flow_str):
                     warnings.append(
-                        "△ PROBLEM: One of your arrows has an invalid probability format. Must be a percentage in the format XX%."
+                        "⚠ <b>WARNING:</b> one of your arrows has an invalid probability format. Must be a percentage in the format XX%."
                     )
 
                 # Sum numeric values
@@ -213,7 +213,7 @@ class FlowchartWindow(QMainWindow):
             # Check total outgoing flow
             if abs(total_flow - 100.0) > 0.01:
                 warnings.append(
-                    "△ PROBLEM: One of your Probability Nodes has an outgoing probability flow different than 100%."
+                    "⚠ <b>WARNING:</b> Node '" + str(prob_node.id_text.toPlainText()) + "' has an outgoing probability flow different than 100%."
                 )
 
         # Check conditional nodes
@@ -221,14 +221,14 @@ class FlowchartWindow(QMainWindow):
             outgoing = cond_node.outgoing_arrows
             if len(outgoing) != 2:
                 warnings.append(
-                    "△ PROBLEM: One of your Conditional Nodes does not have exactly 2 outgoing arrows."
+                    "⚠ <b>WARNING:</b> Node '" + str(prob_node.id_text.toPlainText()) + "' does not have exactly 2 outgoing arrows."
                 )
                 break
 
             texts = [arrow.flow_text.toPlainText().strip().upper() for arrow in outgoing]
             if "YES" not in texts or "NO" not in texts:
                 warnings.append(
-                    "△ PROBLEM: One of your Conditional Nodes must have one arrow labeled 'YES' and one labeled 'NO'."
+                    "⚠ <b>WARNING:</b> Node '" + str(prob_node.id_text.toPlainText()) + "' must have one arrow labeled 'YES' and one labeled 'NO'."
                 )
 
         # Check operation nodes' dates format
@@ -237,7 +237,7 @@ class FlowchartWindow(QMainWindow):
             # Regex: two digits / two digits, space-dash-space, two digits / two digits
             if not re.fullmatch(r'\d{2}/\d{2} - \d{2}/\d{2}', dates_str):
                 warnings.append(
-                    "△ PROBLEM: One of your Operation Nodes has an invalid date format. Must be 'xx/xx - xx/xx'."
+                    "⚠ <b>WARNING:</b> Node '" + str(prob_node.id_text.toPlainText()) + "' has an invalid date format. Must be 'xx/xx - xx/xx'."
                 )
                 break
 
@@ -361,7 +361,6 @@ class FlowchartWindow(QMainWindow):
                 json.dump(data, f, indent=4)
     # ------------------------------------------------------------------------------------------------
 
-    # TODO: finish this. Also add ID to all nodes.
     # ------------------------------------------------------------------------------------------------
     def load_CMP(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open JSON", "", "JSON Files (*.json)")

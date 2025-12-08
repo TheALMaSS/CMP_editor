@@ -6,7 +6,7 @@ class ValidateDialog(QDialog):
         super().__init__(parent, Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
 
         self.setWindowTitle("Validate CMP")
-        self.resize(400, 300)
+        self.resize(600, 300)
 
         layout = QVBoxLayout(self)
 
