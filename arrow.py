@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsEllipseItem, QGraphicsTextItem, QGraphicsItem
-from PyQt5.QtCore import Qt, QPointF
+from PyQt5.QtCore import Qt, QPointF, QRectF
 from PyQt5.QtGui import QPen, QPainterPath, QPolygonF, QFont
-from helper_funcs import line_rect_intersection
 import math
+from helper_funcs import shape_line_intersection  # your existing helper
 
 class BendPoint(QGraphicsEllipseItem):
     def __init__(self, arrow, pos, radius=8):
@@ -22,9 +22,9 @@ class BendPoint(QGraphicsEllipseItem):
 class Arrow(QGraphicsPathItem):
     def __init__(self, start_node, end_node, text=""):
         super().__init__()
-        self.start_node = start_node
-        self.end_node = end_node
+        self.start_node, self.end_node = start_node, end_node
         self.setPen(QPen(Qt.black, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+        self.bend_points = []
 
         # Text label
         self.text_item = QGraphicsTextItem(text, self)
@@ -33,13 +33,10 @@ class Arrow(QGraphicsPathItem):
         self.text_item.setFont(font)
         self.text_item.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.text_item.setDefaultTextColor(Qt.black)
-        self.text_item.document().contentsChanged.connect(self.update_text_position)
+        self.text_item.document().contentsChanged.connect(lambda: self.update_text_position())
         self.text_item.setVisible(False)
 
-        # Bend points list
-        self.bend_points = []
-
-        # Register this arrow with the end node
+        # Register arrow with end node
         self.end_node.incoming_arrows = getattr(self.end_node, "incoming_arrows", [])
         self.end_node.incoming_arrows.append(self)
 
@@ -55,21 +52,16 @@ class Arrow(QGraphicsPathItem):
         self.scene().addItem(bend)
         self.update_path()
 
-    # TODO: fix graphic glitches when the arrow needs to connect to shapes other than rect
     def update_path(self):
-        # Start and end centers
-        start_center = self.start_node.pos() + self.start_node.boundingRect().center()
-        end_center = self.end_node.pos() + self.end_node.boundingRect().center()
+        start_center = self.start_node.sceneBoundingRect().center()
+        end_center = self.end_node.sceneBoundingRect().center()
 
-        # Determine "first point" that intersects the start node
         first_target = self.bend_points[0].scenePos() if self.bend_points else end_center
-        start = line_rect_intersection(self.start_node.sceneBoundingRect(), first_target, start_center)
-
-        # Determine "last point" that intersects the end node
         last_target = self.bend_points[-1].scenePos() if self.bend_points else start_center
-        end = line_rect_intersection(self.end_node.sceneBoundingRect(), last_target, end_center)
 
-        # Build the path
+        start = shape_line_intersection(self.start_node, first_target, start_center)
+        end = shape_line_intersection(self.end_node, last_target, end_center)
+
         path = QPainterPath(start)
         for bend in self.bend_points:
             path.lineTo(bend.scenePos())
@@ -83,56 +75,45 @@ class Arrow(QGraphicsPathItem):
         if path.elementCount() < 2:
             return
 
-        # Build a list of points along the path
         points = [QPointF(path.elementAt(i).x, path.elementAt(i).y) for i in range(path.elementCount())]
-
-        # Compute cumulative distances
-        total_length = 0
-        segment_lengths = []
-        for i in range(len(points) - 1):
-            dx = points[i+1].x() - points[i].x()
-            dy = points[i+1].y() - points[i].y()
-            seg_len = math.hypot(dx, dy)
-            segment_lengths.append(seg_len)
-            total_length += seg_len
-
-        # Find midpoint along the polyline
+        seg_lengths = [math.hypot(points[i+1].x()-points[i].x(), points[i+1].y()-points[i].y()) for i in range(len(points)-1)]
+        total_length = sum(seg_lengths)
         mid_dist = total_length / 2
+
         accumulated = 0
-        for i, seg_len in enumerate(segment_lengths):
+        for i, seg_len in enumerate(seg_lengths):
             if accumulated + seg_len >= mid_dist:
                 t = (mid_dist - accumulated) / seg_len
                 mid_x = points[i].x() + t * (points[i+1].x() - points[i].x())
                 mid_y = points[i].y() + t * (points[i+1].y() - points[i].y())
-                dx = points[i+1].x() - points[i].x()
-                dy = points[i+1].y() - points[i].y()
+                dx, dy = points[i+1].x() - points[i].x(), points[i+1].y() - points[i].y()
                 break
             accumulated += seg_len
 
-        # perpendicular offset
         length = math.hypot(dx, dy) or 1
-        perp_x = -dy / length * offset
-        perp_y = dx / length * offset
-
+        perp_x, perp_y = -dy / length * offset, dx / length * offset
         rect = self.text_item.boundingRect()
-        self.text_item.setPos(mid_x - rect.width() / 2 + perp_x,
-                            mid_y - rect.height() / 2 + perp_y)
+        self.text_item.setPos(mid_x - rect.width()/2 + perp_x, mid_y - rect.height()/2 + perp_y)
 
     def paint(self, painter, option, widget=None):
         super().paint(painter, option, widget)
-
-        # Draw arrowhead at last segment
         path = self.path()
         if path.elementCount() < 2:
             return
 
-        p1_elem = path.elementAt(path.elementCount() - 2)
-        p2_elem = path.elementAt(path.elementCount() - 1)
-        p1 = QPointF(p1_elem.x, p1_elem.y)
-        p2 = QPointF(p2_elem.x, p2_elem.y)
+        # Use last two points of the path
+        e1, e2 = path.elementAt(path.elementCount() - 2), path.elementAt(path.elementCount() - 1)
+        p1, p2 = QPointF(e1.x, e1.y), QPointF(e2.x, e2.y)
 
-        angle = math.atan2(p2.y() - p1.y(), p2.x() - p1.x())
+        dx, dy = p2.x() - p1.x(), p2.y() - p1.y()
+        length = math.hypot(dx, dy)
+        if length == 0:
+            return  # avoid division by zero / NaN
+
+        angle = math.atan2(dy, dx)
         arrow_size = 14
+
+        # Compute arrowhead points
         point1 = QPointF(
             p2.x() - arrow_size * math.cos(angle - math.pi / 6),
             p2.y() - arrow_size * math.sin(angle - math.pi / 6)
@@ -141,6 +122,7 @@ class Arrow(QGraphicsPathItem):
             p2.x() - arrow_size * math.cos(angle + math.pi / 6),
             p2.y() - arrow_size * math.sin(angle + math.pi / 6)
         )
-        polygon = QPolygonF([p2, point1, point2])
+
+        arrow_head = QPolygonF([p2, point1, point2])
         painter.setBrush(Qt.black)
-        painter.drawPolygon(polygon)
+        painter.drawPolygon(arrow_head)

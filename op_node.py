@@ -1,84 +1,37 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor, QPen, QFont
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsRectItem, QGraphicsTextItem
-
+from PyQt5.QtCore import Qt, QRectF
+from PyQt5.QtWidgets import QGraphicsTextItem
 from node import Node
+from PyQt5.QtGui import QTextDocument, QTextOption, QFont, QColor
 
-class OpNode(QGraphicsRectItem, Node):
+class OpNode(Node):
+    def __init__(self, name):
+        super().__init__(name)
 
-    def __init__(self, x, y, width=200, height=120, radius=10):
-        QGraphicsRectItem.__init__(self, 0, 0, width, height)
-        Node.__init__(self)
-        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
-        self.setPos(x, y)
-
-        # RECT SHAPE WITH ROUNDED CORNERS
-        self.radius = radius
-        self.width = width
-        self.height = height
-
-        # KEEPING TRACK OF STATE
-        self.resizing = False
-
-        # APPEARANCE
-        self.setBrush(QColor("#F0F0F0"))
-        self.setPen(QPen(Qt.black, 2))
-
-        # TEXT FIELDS
-        self.id_text = QGraphicsTextItem("ID", self)
-        self.name_text = QGraphicsTextItem("Name", self)
-        self.dates_text = QGraphicsTextItem("dd/MM - dd/MM", self)
-
-        self.id_text.setTextInteractionFlags(Qt.TextEditorInteraction)
+        self.dates_text = QGraphicsTextItem(self)
+        self.dates_doc = QTextDocument()
+        self.dates_doc.setDefaultTextOption(QTextOption(Qt.AlignCenter))
+        self.dates_doc.setPlainText("dd/MM - dd/MM")
+        font = QFont()
+        font.setPointSize(9)
+        self.dates_doc.setDefaultFont(font)
+        self.dates_text.setDocument(self.dates_doc)
         self.dates_text.setTextInteractionFlags(Qt.TextEditorInteraction)
 
-        self.dates_text.document().contentsChanged.connect(self.update_text_positions)
-        self.id_text.document().contentsChanged.connect(self.update_text_positions)
-        self.name_text.document().contentsChanged.connect(self.update_text_positions)
-        self.update_text_positions()
+        self.vertical_offset_name = 0
+        self.vertical_offset_id = 0
+        self.padding_vertical = 60
+        self.padding_horizontal = 100
 
-    # -----------------------------------------------------------------------------------
-    # CALLBACK FUNCTION FOR WHEN THE SHAPE AND POSITION OF PARENT CHANGE
-    # -----------------------------------------------------------------------------------
-    def update_text_positions(self):
-        rect = self.rect()
-        # ID
-        self.id_text.setFont(QFont("Arial", 12, QFont.Bold))
-        bounds = self.id_text.boundingRect()
-        x = (rect.width() - bounds.width()) / 2
-        y = 5
-        self.id_text.setPos(x, y)
-        # Name
-        self.name_text.setFont(QFont("Arial", 10, QFont.Bold))
-        bounds = self.name_text.boundingRect()
-        x = (rect.width() - bounds.width()) / 2
-        y = 40
-        self.name_text.setPos(x, y)
-        # Dates range
-        self.dates_text.setFont(QFont("Arial", 10))
-        bounds = self.dates_text.boundingRect()
-        x = (rect.width() - bounds.width()) / 2
-        y = 70
-        self.dates_text.setPos(x, y)
+        self.adjust_size()
 
-        self.width = rect.width()
-        self.height = rect.height()
+    def update_positions(self):
+        super().update_positions()
+        vertical_offset = 5
+        margin_horizontal = 0
+        # Make dates_text slightly narrower than parent rectangle
+        self.dates_doc.setTextWidth(self.width - margin_horizontal)
+        self.dates_text.setPos(margin_horizontal/2, self.height - self.dates_text.boundingRect().height() - vertical_offset)
 
-    # -----------------------------------------------------------------------------------
-    # CALLBACK FUNCTION FOR WHEN THE PARENT CHANGES - ALL ARROWS CONNECTED FOLLOW IT
-    # -----------------------------------------------------------------------------------
-    def itemChange(self, change, value):
-        if change == QGraphicsItem.ItemPositionChange:
-            for arrow in getattr(self, "outgoing_arrows", []):
-                arrow.update_path()
-            for arrow in getattr(self, "incoming_arrows", []):
-                arrow.update_path()
-        return super().itemChange(change, value)
-
-    # -----------------------------------------------------------------------------------
-    # PAINT
-    # -----------------------------------------------------------------------------------
-    def paint(self, painter, option, widget=None):
-        painter.setBrush(self.brush())
-        painter.setPen(self.pen())
-        painter.drawRoundedRect(self.rect(), self.radius, self.radius)
+    def paint(self, painter, option, widget):
+        painter.setBrush(QColor("#ECECEC"))
+        painter.drawRoundedRect(QRectF(0, 0, self.width, self.height), 10, 10)

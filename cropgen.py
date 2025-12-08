@@ -1,4 +1,4 @@
-import sys, json, re
+import sys, json, re, os
 from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QColor, QBrush
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox
@@ -13,8 +13,14 @@ from choose_condition_dialog import ChooseConditionDialog
 from validate_dialog import ValidateDialog
 from help_dialog import HelpDialog
 from css_styles import button_style, validate_button_style, left_panel_style, delete_button_style, arrow_button_style, delete_mode_label_style, arrow_mode_label_style
-OPERATIONS_FILE = "operations.json"
-CONDITIONS_FILE = "conditions.json"
+
+def resource_path(relative_path):
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+
+OPERATIONS_FILE = resource_path("operations.json")
+CONDITIONS_FILE = resource_path("conditions.json")
 
 def load_operations():
     with open(OPERATIONS_FILE, "r", encoding="utf-8") as f:
@@ -43,7 +49,7 @@ class FlowchartWindow(QMainWindow):
         # -------------------------------------------------------------------
         # SCENE AND VIEW
         self.scene = FlowchartScene()
-        self.scene.setBackgroundBrush(QBrush(QColor("#C1C1C1")))
+        self.scene.setBackgroundBrush(QBrush(QColor("#BCBCBC")))
         self.scene.setSceneRect(-5000, -5000, 10000, 10000)
         self.view = FlowchartView(self.scene, self)
 
@@ -175,6 +181,7 @@ class FlowchartWindow(QMainWindow):
         warnings = []
 
         op_names = [op_node.name_text.toPlainText() for op_node in self.op_nodes]
+        print(op_names)
         ids = [node.id_text.toPlainText() for node in (self.op_nodes + self.prob_nodes + self.cond_nodes)]
 
         # CHECK FOR START NODE
@@ -227,16 +234,16 @@ class FlowchartWindow(QMainWindow):
             texts = [arrow.flow_text.toPlainText().strip().upper() for arrow in outgoing]
             if "YES" not in texts or "NO" not in texts:
                 warnings.append(
-                    "⚠ <b>WARNING:</b> Node '" + str(prob_node.id_text.toPlainText()) + "' must have one arrow labeled 'YES' and one labeled 'NO'."
+                    "⚠ <b>WARNING:</b> Node '" + str(cond_node.id_text.toPlainText()) + "' must have one arrow labeled 'YES' and one labeled 'NO'."
                 )
 
         # Check operation nodes' dates format
         for op_node in self.op_nodes:
             dates_str = op_node.dates_text.toPlainText().strip()
             # Regex: two digits / two digits, space-dash-space, two digits / two digits
-            if not re.fullmatch(r'\d{2}/\d{2} - \d{2}/\d{2}', dates_str):
+            if not re.fullmatch(r'\d{2}/\d{2} - \d{2}/\d{2}', dates_str) and op_node.name_text.toPlainText() != "START" and op_node.name_text.toPlainText() != "END":
                 warnings.append(
-                    "⚠ <b>WARNING:</b> Node '" + str(prob_node.id_text.toPlainText()) + "' has an invalid date format. Must be 'xx/xx - xx/xx'."
+                    "⚠ <b>WARNING:</b> Node '" + str(op_node.id_text.toPlainText()) + "' has an invalid date format. Must be 'xx/xx - xx/xx'."
                 )
                 break
 
@@ -259,10 +266,8 @@ class FlowchartWindow(QMainWindow):
             return
         operation = dlg.selected
 
-        node = OpNode(100 + len(self.op_nodes)*50, 100)
+        node = OpNode('<span style="font-size:9pt;">' + str(operation["name"]) + '</span>')
         node.setZValue(1)
-        node.operation_data = operation
-        node.name_text.setPlainText(operation["name"])
 
         self.scene.addItem(node)
         self.op_nodes.append(node)
@@ -270,7 +275,7 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def add_probability_node(self):
-        node = ProbNode(100 + len(self.op_nodes)*50, 100)
+        node = ProbNode('<span style="font-size:9pt; font-weight:bold;">Probability<br>Node</span>')
         node.setZValue(1)
 
         self.scene.addItem(node)
@@ -284,7 +289,7 @@ class FlowchartWindow(QMainWindow):
             return
         condition = dlg.composed_condition
 
-        node = CondNode(x=100 + len(self.op_nodes)*50, y=100, text=condition)
+        node = CondNode('<span style="font-size:9pt; font-weight:bold;">' + str(condition) + '</span>')
         node.setZValue(1)
 
         self.scene.addItem(node)
@@ -345,7 +350,7 @@ class FlowchartWindow(QMainWindow):
                 "width": getattr(node, "width", 120),
                 "height": getattr(node, "height", 60),
                 "id": node.id_text.toPlainText(),
-                "main_text": node.name_text.toPlainText(),
+                "name": node.name_text.toPlainText(),
                 "outgoing": []
             }
 
@@ -415,42 +420,33 @@ class FlowchartWindow(QMainWindow):
         for node_data in data:
             node_type = node_data.get("type", "OpNode")
             if node_type == "OpNode":
-                node = OpNode(
-                    node_data["x"],
-                    node_data["y"],
-                    width=node_data.get("width", 200),
-                    height=node_data.get("height", 120)
-                )
-                node.dates_text.setPlainText(node_data.get("dates", ""))
+                node = OpNode('<span style="font-size:9pt;">' + str(node_data["name"]) + '</span>')
                 self.op_nodes.append(node)
-            elif node_type == "CondNode":
-                node = CondNode(x=node_data["x"], y=node_data["y"], width=node_data["width"], height=node_data["height"], text=node_data["main_text"])
-                self.cond_nodes.append(node)
             elif node_type == "ProbNode":
-                node = ProbNode(node_data["x"], node_data["y"])
+                node = ProbNode('<span style="font-size:9pt; font-weight:bold;">Probability<br>Node</span>')
                 self.prob_nodes.append(node)
-            else:
-                continue
+            elif node_type == "CondNode":
+                node = CondNode('<span style="font-size:9pt; font-weight:bold;">' + str(node_data["name"]) + '</span>')
+                self.cond_nodes.append(node)
 
-            # Common properties
-            if hasattr(node, "id_text"):
-                node.id_text.setPlainText(node_data.get("id", ""))
-            if hasattr(node, "name_text"):
-                node.name_text.setPlainText(node_data.get("main_text", ""))
-            elif hasattr(node, "text"):
-                node.text.setPlainText(node_data.get("main_text", ""))
+            node.setPos(node_data["x"], node_data["y"])
+            node.adjust_size()  # recompute dimensions
+
+            node.id_text.setPlainText(node_data.get("id", "ID"))
+            if hasattr(node, "dates_text") and "dates" in node_data:
+                node.dates_text.setPlainText(node_data["dates"])
 
             node.setZValue(1)
-            node.update_text_positions()
+            node.update_positions()
             self.scene.addItem(node)
 
             # Use id as key for node map for arrows
-            node_key = node_data.get("id", node_data.get("main_text", f"{id(node)}"))
+            node_key = node_data.get("id", node_data.get("name", f"{id(node)}"))
             node_map[node_key] = node
 
         # Recreate arrows
         for node_data in data:
-            source_key = node_data.get("id", node_data.get("main_text"))
+            source_key = node_data.get("id", node_data.get("name"))
             source_node = node_map.get(source_key)
             if not source_node:
                 continue
