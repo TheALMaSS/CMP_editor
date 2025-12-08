@@ -85,7 +85,7 @@
     "cpp_func": "DeepPlough"
   },
   {
-    "name": "End",
+    "name": "END",
     "description": "The final point of the CMP. No farm actions are carried out in this step.",
     "cpp_func": "[no function associated]"
   },
