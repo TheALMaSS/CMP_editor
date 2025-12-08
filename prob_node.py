@@ -17,7 +17,6 @@ class ProbNode(QGraphicsEllipseItem, Node):
         QGraphicsEllipseItem.__init__(self, 0, 0, width, height)
         Node.__init__(self)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
-        self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setPos(x, y)
         self.width = width
         self.height = height

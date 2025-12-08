@@ -10,7 +10,6 @@ class OpNode(QGraphicsRectItem, Node):
         QGraphicsRectItem.__init__(self, 0, 0, width, height)
         Node.__init__(self)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
-        self.setFlag(QGraphicsRectItem.ItemIsMovable)
         self.setPos(x, y)
 
         # RECT SHAPE WITH ROUNDED CORNERS

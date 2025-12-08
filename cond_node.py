@@ -14,7 +14,6 @@ class CondNode(QGraphicsPolygonItem, Node):
         QGraphicsPolygonItem.__init__(self)
         Node.__init__(self)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
-        self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setPos(x, y)
         
         self.width = width
