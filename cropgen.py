@@ -1,10 +1,9 @@
 import sys, json, re
 from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QColor, QBrush
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox
 from flowchart_view import FlowchartView
 from flowchart_scene import FlowchartScene
-from node import Node
 from prob_node import ProbNode
 from choose_operation_dialog import ChooseOperationDialog
 from op_node import OpNode
@@ -317,6 +316,26 @@ class FlowchartWindow(QMainWindow):
         data = []
 
         all_nodes = self.op_nodes + self.cond_nodes + self.prob_nodes
+        ids = [node.id_text.toPlainText() for node in all_nodes]
+        # Check no repetitions in ids
+        if len(ids) != len(set(ids)):
+            dlg = QDialog(self, Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
+            dlg.setWindowTitle("WARNING")
+            dlg.resize(400, 250)
+
+            text = QTextEdit()
+            text.setReadOnly(True)
+            text.setHtml('<span style="color: #B22222; font-weight: bold; font-size: 12pt;">Some of your nodes share the same ID. If you proceed with saving, your data will be corrupted.</span>')
+
+            layout = QVBoxLayout()
+            layout.addWidget(text)
+
+            buttons = QDialogButtonBox(QDialogButtonBox.Ok)
+            buttons.accepted.connect(dlg.accept)
+            layout.addWidget(buttons)
+
+            dlg.setLayout(layout)
+            dlg.exec_()
 
         for node in all_nodes:
             node_data = {
