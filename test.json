@@ -1,180 +1,65 @@
 [
-  {
-    "dates": "",
-    "operation_id": "0",
-    "operation_name": "START",
-    "x": 361.0,
-    "y": -294.0,
-    "width": 142.0,
-    "height": 77.0,
-    "outgoing": [
-      {
-        "destination_id": "1A",
-        "branching_condition": "50%",
-        "bend_points": [
-          [
-            158.0,
-            -121.0
-          ]
+    {
+        "type": "OpNode",
+        "x": -97.0,
+        "y": -193.0,
+        "width": 363.0,
+        "height": 100.0,
+        "id": "4",
+        "main_text": "Autumn Roll",
+        "outgoing": [
+            {
+                "destination_type": "OpNode",
+                "destination_id": "5",
+                "branching_condition": "",
+                "bend_points": []
+            }
+        ],
+        "dates": "dd/MM - dd/MM"
+    },
+    {
+        "type": "OpNode",
+        "x": -102.0,
+        "y": 7.0,
+        "width": 200.0,
+        "height": 120.0,
+        "id": "5",
+        "main_text": "Autumn Plough",
+        "outgoing": [
+            {
+                "destination_type": "ProbNode",
+                "destination_id": "6",
+                "branching_condition": "",
+                "bend_points": []
+            }
+        ],
+        "dates": "dd/MM - dd/MM"
+    },
+    {
+        "type": "CondNode",
+        "x": 75.0,
+        "y": 363.0,
+        "width": 226.0,
+        "height": 192.0,
+        "id": "21",
+        "main_text": "FARM->TYPE is Organic Pig?",
+        "outgoing": []
+    },
+    {
+        "type": "ProbNode",
+        "x": -39.0,
+        "y": 181.0,
+        "width": 140,
+        "height": 140,
+        "id": "6",
+        "main_text": "Probability\nNode",
+        "outgoing": [
+            {
+                "destination_type": "CondNode",
+                "destination_id": "21",
+                "branching_condition": "XX%",
+                "bend_points": []
+            }
         ]
-      },
-      {
-        "destination_id": "1B",
-        "branching_condition": "20%",
-        "bend_points": []
-      },
-      {
-        "destination_id": "1C",
-        "branching_condition": "30%",
-        "bend_points": [
-          [
-            763.0,
-            -152.0
-          ]
-        ]
-      }
-    ]
-  },
-  {
-    "dates": "10/08 - 20/08",
-    "operation_id": "1A",
-    "operation_name": "Autumn Plough",
-    "x": -19.0,
-    "y": 45.0,
-    "width": 248.0,
-    "height": 110.0,
-    "outgoing": [
-      {
-        "destination_id": "2",
-        "branching_condition": "",
-        "bend_points": []
-      }
-    ]
-  },
-  {
-    "dates": "10/08 - 20/08",
-    "operation_id": "1B",
-    "operation_name": "Shallow stubble harrow",
-    "x": 328.0,
-    "y": 30.0,
-    "width": 280.0,
-    "height": 116.0,
-    "outgoing": [
-      {
-        "destination_id": "2",
-        "branching_condition": "",
-        "bend_points": []
-      }
-    ]
-  },
-  {
-    "dates": "10/08 - 25/08",
-    "operation_id": "1C",
-    "operation_name": "Sow with special sow machine (no plough)",
-    "x": 728.0,
-    "y": 0.0,
-    "width": 442.0,
-    "height": 115.0,
-    "outgoing": [
-      {
-        "destination_id": "3C",
-        "branching_condition": "50%",
-        "bend_points": []
-      },
-      {
-        "destination_id": "3B",
-        "branching_condition": "25%",
-        "bend_points": []
-      },
-      {
-        "destination_id": "3A",
-        "branching_condition": "25%",
-        "bend_points": []
-      }
-    ]
-  },
-  {
-    "dates": "10/08 - 25/08",
-    "operation_id": "2",
-    "operation_name": "Sow",
-    "x": 173.0,
-    "y": 271.0,
-    "width": 180.0,
-    "height": 120.0,
-    "outgoing": [
-      {
-        "destination_id": "3A",
-        "branching_condition": "25%",
-        "bend_points": []
-      },
-      {
-        "destination_id": "3B",
-        "branching_condition": "25%",
-        "bend_points": []
-      },
-      {
-        "destination_id": "3C",
-        "branching_condition": "50%",
-        "bend_points": []
-      }
-    ]
-  },
-  {
-    "dates": "10/08 - 25/08",
-    "operation_id": "3A",
-    "operation_name": "Fertilizer, slurry",
-    "x": 78.0,
-    "y": 649.0,
-    "width": 180.0,
-    "height": 120.0,
-    "outgoing": [
-      {
-        "destination_id": "4",
-        "branching_condition": "",
-        "bend_points": []
-      }
-    ]
-  },
-  {
-    "dates": "01/09 - 30/09",
-    "operation_id": "3B",
-    "operation_name": "Fertilizer, slurry",
-    "x": 495.0,
-    "y": 650.0,
-    "width": 180.0,
-    "height": 120.0,
-    "outgoing": [
-      {
-        "destination_id": "4",
-        "branching_condition": "",
-        "bend_points": []
-      }
-    ]
-  },
-  {
-    "dates": "01/09 - 30/09",
-    "operation_id": "3C",
-    "operation_name": "Fertilizer, ammonium sulphate",
-    "x": 807.0,
-    "y": 647.0,
-    "width": 325.0,
-    "height": 124.0,
-    "outgoing": [
-      {
-        "destination_id": "4",
-        "branching_condition": "",
-        "bend_points": []
-      }
-    ]
-  },
-  {
-    "dates": "25/08 - 28/08",
-    "operation_id": "4",
-    "operation_name": "Herbicide",
-    "x": 495.0,
-    "y": 980.0,
-    "width": 180.0,
-    "height": 120.0,
-    "outgoing": []
-  }
+    }
 ]

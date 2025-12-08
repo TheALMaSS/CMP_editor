@@ -99,15 +99,20 @@ class FlowchartWindow(QMainWindow):
         line2.setStyleSheet("color: #525252;")
         left_layout.addWidget(line2)
 
-        self.export_btn = QPushButton("Export JSON")
-        self.export_btn.setStyleSheet(button_style)
-        self.export_btn.clicked.connect(self.export_json)
-        left_layout.addWidget(self.export_btn)
+        self.save_btn = QPushButton("Save CMP")
+        self.save_btn.setStyleSheet(button_style)
+        self.save_btn.clicked.connect(self.save_CMP)
+        left_layout.addWidget(self.save_btn)
 
-        self.load_btn = QPushButton("Load JSON")
+        self.load_btn = QPushButton("Load CMP")
         self.load_btn.setStyleSheet(button_style)
-        self.load_btn.clicked.connect(self.load_json)
+        self.load_btn.clicked.connect(self.load_CMP)
         left_layout.addWidget(self.load_btn)
+    
+        self.export_btn = QPushButton("Export to ALMaSS")
+        self.export_btn.setStyleSheet(button_style)
+        self.export_btn.clicked.connect(self.export_to_almass)
+        left_layout.addWidget(self.export_btn)
 
         self.validate_btn = QPushButton("VALIDATE CMP")
         self.validate_btn.setStyleSheet(validate_button_style)
@@ -280,7 +285,7 @@ class FlowchartWindow(QMainWindow):
             return
         condition = dlg.composed_condition
 
-        node = CondNode(100 + len(self.op_nodes)*50, 100, condition)
+        node = CondNode(x=100 + len(self.op_nodes)*50, y=100, text=condition)
         node.setZValue(1)
 
         self.scene.addItem(node)
@@ -308,95 +313,141 @@ class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
-    def export_json(self):
-        filename, _ = QFileDialog.getSaveFileName(self, "Save Diagram JSON", "", "JSON Files (*.json)")
-        if not filename:
-            return
-
+    def save_CMP(self):
         data = []
-        for node in self.op_nodes:
-            outgoing = []
-            for arrow in node.outgoing_arrows:
-                outgoing.append({
-                    "destination_id": arrow.end_node.id_text.toPlainText(),
-                    "branching_condition": arrow.text_item.toPlainText(),
-                    "bend_points": [[bp.scenePos().x(), bp.scenePos().y()] for bp in arrow.bend_points]
+
+        all_nodes = self.op_nodes + self.cond_nodes + self.prob_nodes
+
+        for node in all_nodes:
+            node_data = {
+                "type": node.__class__.__name__,
+                "x": node.scenePos().x(),
+                "y": node.scenePos().y(),
+                "width": getattr(node, "width", 120),
+                "height": getattr(node, "height", 60),
+                "id": node.id_text.toPlainText(),
+                "main_text": node.name_text.toPlainText(),
+                "outgoing": []
+            }
+
+            if isinstance(node, OpNode):
+                node_data.update({
+                    "dates": node.dates_text.toPlainText()
                 })
-            data.append({
-                "dates": node.dates_text.toPlainText(),
-                "operation_id": node.id_text.toPlainText(),
-                "operation_name": node.name_text.toPlainText(),
-                "x": node.x(),
-                "y": node.y(),
-                "width": node.rect().width(),
-                "height": node.rect().height(),
-                "outgoing": outgoing
-            })
 
-        with open(filename, "w") as f:
-            json.dump(data, f, indent=2)
-        print(f"Exported {filename}")
+            for arrow in node.outgoing_arrows:
+                if arrow.end_node:
+                    if hasattr(arrow.end_node, "id_text"):
+                        destination_id = arrow.end_node.id_text.toPlainText()
+                    else:
+                        destination_id = "no_id"
+
+                branching_condition = arrow.text_item.toPlainText() if arrow.text_item else ""
+
+                arrow_data = {
+                    "destination_type": arrow.end_node.__class__.__name__ if arrow.end_node else "",
+                    "destination_id": destination_id,
+                    "branching_condition": branching_condition,
+                    "bend_points": [[bp.pos().x(), bp.pos().y()] for bp in arrow.bend_points]
+                }
+
+                node_data["outgoing"].append(arrow_data)
+
+            data.append(node_data)
+
+        filename, _ = QFileDialog.getSaveFileName(self, "Save JSON", "", "JSON Files (*.json)")
+        if filename:
+            with open(filename, "w") as f:
+                json.dump(data, f, indent=4)
     # ------------------------------------------------------------------------------------------------
 
+    # TODO: finish this. Also add ID to all nodes.
     # ------------------------------------------------------------------------------------------------
-    def load_json(self):
+    def load_CMP(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open JSON", "", "JSON Files (*.json)")
         if not filename:
             return
 
-        # Clear all arrows
-        for node in list(self.op_nodes):
-            for arrow in list(node.outgoing_arrows):
-                if arrow.text_item:
-                    self.scene.removeItem(arrow.text_item)
-                for bp in arrow.bend_points:
-                    self.scene.removeItem(bp)
-                self.scene.removeItem(arrow)
-                node.outgoing_arrows.remove(arrow)
-            for arrow in list(node.incoming_arrows):
-                if arrow.text_item:
-                    self.scene.removeItem(arrow.text_item)
-                for bp in arrow.bend_points:
-                    self.scene.removeItem(bp)
-                self.scene.removeItem(arrow)
-                node.incoming_arrows.remove(arrow)
+        # Clear existing nodes and arrows
+        for node_list in [self.op_nodes, self.cond_nodes, self.prob_nodes]:
+            for node in list(node_list):
+                for arrow in list(node.outgoing_arrows):
+                    if arrow.text_item:
+                        self.scene.removeItem(arrow.text_item)
+                    for bp in arrow.bend_points:
+                        self.scene.removeItem(bp)
+                    self.scene.removeItem(arrow)
+                    node.outgoing_arrows.remove(arrow)
+                for arrow in list(node.incoming_arrows):
+                    if arrow.text_item:
+                        self.scene.removeItem(arrow.text_item)
+                    for bp in arrow.bend_points:
+                        self.scene.removeItem(bp)
+                    self.scene.removeItem(arrow)
+                    node.incoming_arrows.remove(arrow)
+            for node in list(node_list):
+                self.scene.removeItem(node)
+            node_list.clear()
 
-        # Clear nodes
-        for node in list(self.op_nodes):
-            self.scene.removeItem(node)
-        self.op_nodes.clear()
-
-        # Load nodes
         with open(filename, "r") as f:
             data = json.load(f)
 
         node_map = {}
+
         for node_data in data:
-            width = node_data.get("width", 120)
-            height = node_data.get("height", 60)
-            node = Node(node_data["x"], node_data["y"], width=width, height=height)
+            node_type = node_data.get("type", "OpNode")
+            if node_type == "OpNode":
+                node = OpNode(
+                    node_data["x"],
+                    node_data["y"],
+                    width=node_data.get("width", 200),
+                    height=node_data.get("height", 120)
+                )
+                node.dates_text.setPlainText(node_data.get("dates", ""))
+                self.op_nodes.append(node)
+            elif node_type == "CondNode":
+                node = CondNode(x=node_data["x"], y=node_data["y"], width=node_data["width"], height=node_data["height"], text=node_data["main_text"])
+                self.cond_nodes.append(node)
+            elif node_type == "ProbNode":
+                node = ProbNode(node_data["x"], node_data["y"])
+                self.prob_nodes.append(node)
+            else:
+                continue
+
+            # Common properties
+            if hasattr(node, "id_text"):
+                node.id_text.setPlainText(node_data.get("id", ""))
+            if hasattr(node, "name_text"):
+                node.name_text.setPlainText(node_data.get("main_text", ""))
+            elif hasattr(node, "text"):
+                node.text.setPlainText(node_data.get("main_text", ""))
+
             node.setZValue(1)
-            node.dates_text.setPlainText(node_data.get("dates", ""))
-            node.id_text.setPlainText(node_data.get("operation_id", ""))
-            node.name_text.setPlainText(node_data.get("operation_name", ""))
             node.update_text_positions()
             self.scene.addItem(node)
-            self.op_nodes.append(node)
-            node_map[node_data["operation_id"]] = node
 
-        # Create arrows with bend points
+            # Use id as key for node map for arrows
+            node_key = node_data.get("id", node_data.get("main_text", f"{id(node)}"))
+            node_map[node_key] = node
+
+        # Recreate arrows
         for node_data in data:
-            source_node = node_map.get(node_data["operation_id"])
+            source_key = node_data.get("id", node_data.get("main_text"))
+            source_node = node_map.get(source_key)
             if not source_node:
                 continue
+
             for arrow_data in node_data.get("outgoing", []):
-                dest_node = node_map.get(arrow_data["destination_id"])
+                dest_node = node_map.get(arrow_data.get("destination_id"))
                 if dest_node:
                     arrow = source_node.add_arrow_to(dest_node)
-                    arrow.text_item.setPlainText(arrow_data.get("branching_condition", ""))
+                    if arrow_data.get("branching_condition", "") != "":
+                        arrow.text_item.setVisible(True)
+                    if arrow.text_item:
+                        arrow.text_item.setPlainText(arrow_data.get("branching_condition", ""))
+                        self.scene.addItem(arrow.text_item)
                     self.scene.addItem(arrow)
-                    self.scene.addItem(arrow.text_item)
-                    # recreate bend points
+
                     for bp_coords in arrow_data.get("bend_points", []):
                         arrow.add_bend_point(QPointF(bp_coords[0], bp_coords[1]))
     # ------------------------------------------------------------------------------------------------
@@ -405,6 +456,11 @@ class FlowchartWindow(QMainWindow):
     def need_help(self):
         dlg = HelpDialog(self)
         dlg.exec_()
+    # ------------------------------------------------------------------------------------------------
+
+    # ------------------------------------------------------------------------------------------------
+    def export_to_almass(self):
+        return
     # ------------------------------------------------------------------------------------------------
 
 

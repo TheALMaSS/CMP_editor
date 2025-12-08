@@ -15,6 +15,8 @@ class OpNode(QGraphicsRectItem, Node):
 
         # RECT SHAPE WITH ROUNDED CORNERS
         self.radius = radius
+        self.width = width
+        self.height = height
 
         # KEEPING TRACK OF STATE
         self.resizing = False
@@ -24,7 +26,7 @@ class OpNode(QGraphicsRectItem, Node):
         self.setPen(QPen(Qt.black, 2))
 
         # TEXT FIELDS
-        self.id_text = QGraphicsTextItem("Id", self)
+        self.id_text = QGraphicsTextItem("ID", self)
         self.name_text = QGraphicsTextItem("Name", self)
         self.dates_text = QGraphicsTextItem("dd/MM - dd/MM", self)
 
@@ -59,6 +61,9 @@ class OpNode(QGraphicsRectItem, Node):
         x = (rect.width() - bounds.width()) / 2
         y = 70
         self.dates_text.setPos(x, y)
+
+        self.width = rect.width()
+        self.height = rect.height()
 
     # -----------------------------------------------------------------------------------
     # CALLBACK FUNCTION FOR WHEN THE PARENT CHANGES - ALL ARROWS CONNECTED FOLLOW IT
