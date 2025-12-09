@@ -258,7 +258,7 @@ class FlowchartWindow(QMainWindow):
             # Regex: two digits / two digits, space-dash-space, two digits / two digits
             if not re.fullmatch(r'\d{2}/\d{2} - \d{2}/\d{2}', dates_str) and op_node.name_text.toPlainText() != "START" and op_node.name_text.toPlainText() != "END":
                 warnings.append(
-                    "⚠ <b>WARNING:</b> Node '" + str(op_node.id_text.toPlainText()) + "' has an invalid date format. Must be 'xx/xx - xx/xx'."
+                    "⚠ <b>WARNING:</b> Node '" + str(op_node.id_text.toPlainText()) + "' has an invalid date format. Must be 'dd/MM - dd/MM'."
                 )
                 break
 
