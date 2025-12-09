@@ -2,7 +2,118 @@
 from PyQt5.QtCore import QPointF
 from PyQt5.QtCore import QRectF
 import math
+import sys, os, re, json
+from jinja2 import Environment, FileSystemLoader
 
+# ------------------------------------------------------------------------------------------------
+# HELPER FUNCTIONS FOR EXPORT AND SAVING
+# ------------------------------------------------------------------------------------------------
+def generate_json(all_nodes, filename):
+    data = []
+    for node in all_nodes:
+        node_data = {
+            "type": node.__class__.__name__,
+            "x": node.scenePos().x(),
+            "y": node.scenePos().y(),
+            "width": getattr(node, "width", 120),
+            "height": getattr(node, "height", 60),
+            "id": node.id_text.toPlainText(),
+            "name": node.name_text.toPlainText(),
+            "dates": getattr(node, "dates_text", "dd/MM - dd/MM").toPlainText() if hasattr(node, "dates_text") else "+0d - +0d",
+            "outgoing": []
+        }
+
+        if node.__class__.__name__ == "OpNode":
+            node_data.update({
+                "cpp_func": node.cpp_func
+            })
+
+        for arrow in node.outgoing_arrows:
+            if arrow.end_node:
+                if hasattr(arrow.end_node, "id_text"):
+                    destination_id = arrow.end_node.id_text.toPlainText()
+                else:
+                    destination_id = "no_id"
+
+            branching_condition = arrow.text_item.toPlainText() if arrow.text_item else ""
+
+            arrow_data = {
+                "destination_type": arrow.end_node.__class__.__name__ if arrow.end_node else "",
+                "destination_id": destination_id,
+                "branching_condition": branching_condition,
+                "bend_points": [[bp.pos().x(), bp.pos().y()] for bp in arrow.bend_points]
+            }
+
+            node_data["outgoing"].append(arrow_data)
+
+        data.append(node_data)
+
+    with open(filename, "w") as f:
+        json.dump(data, f, indent=4)
+
+    return data
+
+def to_all_caps(name):
+    s1 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', name)
+    return s1.upper()
+
+def to_lower_underscore(name):
+    s1 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', name)
+    return s1.lower()
+
+def generate_header_file(crop_name, data):
+
+    crop_name_all_caps = to_all_caps(crop_name)
+    crop_name_lowercase = to_lower_underscore(crop_name)
+
+    nodes = [node for node in data if node.get("type") == "OpNode"]
+
+    env = Environment(loader=FileSystemLoader('.'))
+    template = env.get_template('templates/header_file.jinja')
+
+    output = template.render(
+        crop_name=crop_name,
+        crop_name_all_caps=crop_name_all_caps,
+        crop_name_lowercase=crop_name_lowercase,
+        nodes=nodes
+    )
+
+    with open(f"{crop_name}.h", "w") as f:
+        f.write(output)
+
+def generate_cpp_file(crop_name, data):
+    #
+    # OpNode structure:
+    # STEP 1: try to do operation. If fail, re-schedule for tomorrow, then break
+    # STEP 2: schedule the only 1 next node (max 1, min 1)
+    #
+    # CondNode structure:
+    # STEP 1: empty
+    # STEP 2: schedule the only 2 next nodes (max 2, min 2) but gate them with the condition
+    #
+    # ProbNode structure:
+    # STEP 1: empty
+    # STEP 2: schedule all the possible nodes iteratively (no upper limit, min 1) but gate them with the probability
+    #
+    # TOTAL TEMPLATES NEEDED:
+    # CASE START
+    # CASE END
+    # CASE OPNODE
+    # CASE CONDNODE
+    # CASE PROBNODE
+
+    return
+
+# ------------------------------------------------------------------------------------------------
+def resource_path(relative_path):
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+# ------------------------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------------------------
+# HELPER FUNCTIONS FOR GRAPHICS
+# ------------------------------------------------------------------------------------------------
 def shape_line_intersection(node, p1: QPointF, p2: QPointF) -> QPointF:
     rect = node.sceneBoundingRect()
     

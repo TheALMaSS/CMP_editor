@@ -19,7 +19,10 @@ class Node(QGraphicsItem):
         self.name_text = QGraphicsTextItem(self)
         self.name_doc = QTextDocument()
         self.name_doc.setDefaultTextOption(QTextOption(Qt.AlignCenter))
-        self.name_doc.setHtml(name)
+        font = QFont()
+        font.setPointSize(9)
+        self.name_doc.setDefaultFont(font)
+        self.name_doc.setPlainText(name)
         self.name_text.setDocument(self.name_doc)
 
         # Id text (centered, bold, size 12)

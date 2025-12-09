@@ -1,0 +1,27 @@
+#ifndef {{ crop_name_all_caps }}_H
+#define {{ crop_name_all_caps }}_H
+
+#include <vector>
+#include <algorithm>
+
+#define {{ crop_name_all_caps }}_BASE 66300
+
+enum {{ crop_name }}ToDo {
+{% for node in nodes %}
+    {{ crop_name_lowercase }}_{{ node.id }}{% if not loop.last %},{% endif %}
+{% endfor %}
+};
+
+class {{ crop_name }} : public Crop {
+public:
+    bool Do(Farm* a_farm, LE* a_field, FarmEvent* a_ev);
+
+    {{ crop_name }}(TTypesOfVegetation a_tov, TTypesOfCrops a_toc, Landscape* a_L)
+        : Crop(a_tov, a_toc, a_L)
+    {
+        m_first_date = g_date->DayInYear(26, 8);
+        SetUpFarmCategoryInformation();
+    }
+};
+
+#endif

@@ -116,5 +116,5 @@ class ChooseConditionDialog(QDialog):
         if len(self.selected) != 3:
             return  # safety check
         # Compose string like "ITEM1->ITEM2 is ITEM3?"
-        self.composed_condition = f"{self.selected[0]}->{self.selected[1]}<br>is {self.selected[2]}?"
+        self.composed_condition = f"{self.selected[0]}->{self.selected[1]}\nis {self.selected[2]}?"
         super().accept()

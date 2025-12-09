@@ -2,6 +2,10 @@ from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtWidgets import QGraphicsTextItem
 from node import Node
 from PyQt5.QtGui import QTextDocument, QTextOption, QFont, QColor
+import json
+from helper_funcs import resource_path
+
+OPERATIONS_FILE = resource_path("operations.json")
 
 class OpNode(Node):
     def __init__(self, name):
@@ -22,7 +26,16 @@ class OpNode(Node):
         self.padding_vertical = 60
         self.padding_horizontal = 100
 
+        self.cpp_func = self.get_cpp_func(name)
+
         self.adjust_size()
+
+    def get_cpp_func(self, name):
+        with open(OPERATIONS_FILE, "r") as f:
+            data = json.load(f)
+            cpp_func = next(item["cpp_func"] for item in data if item.get("name") == name)
+
+            return cpp_func
 
     def update_positions(self):
         super().update_positions()

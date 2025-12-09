@@ -1,4 +1,5 @@
-import sys, json, re, os
+import sys, json, re
+from jinja2 import Environment, FileSystemLoader
 from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QColor, QBrush
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox
@@ -12,12 +13,12 @@ from cond_node import CondNode
 from choose_condition_dialog import ChooseConditionDialog
 from validate_dialog import ValidateDialog
 from help_dialog import HelpDialog
+from export_dialog import ExportDialog
+from helper_funcs import resource_path, generate_header_file, generate_json, generate_cpp_file
 from css_styles import button_style, validate_button_style, left_panel_style, delete_button_style, arrow_button_style, delete_mode_label_style, arrow_mode_label_style
 
-def resource_path(relative_path):
-    if hasattr(sys, "_MEIPASS"):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.join(os.path.abspath("."), relative_path)
+# Question: it looks to me like LookUpManagementCategory and the farm management categories in general are unused?????
+# Question: also how is this number #define DK_WOSR_BASE 66300 computed????
 
 OPERATIONS_FILE = resource_path("operations.json")
 CONDITIONS_FILE = resource_path("conditions.json")
@@ -181,7 +182,6 @@ class FlowchartWindow(QMainWindow):
         warnings = []
 
         op_names = [op_node.name_text.toPlainText() for op_node in self.op_nodes]
-        print(op_names)
         ids = [node.id_text.toPlainText() for node in (self.op_nodes + self.prob_nodes + self.cond_nodes)]
 
         # CHECK FOR START NODE
@@ -244,21 +244,18 @@ class FlowchartWindow(QMainWindow):
                 warnings.append(
                     "⚠ <b>WARNING:</b> Node '" + str(op_node.id_text.toPlainText()) + "' must have exactly 1 outgoing arrow."
                 )
-                break
-
-            texts = [arrow.flow_text.toPlainText().strip().upper() for arrow in outgoing]
-            if "YES" not in texts or "NO" not in texts:
-                warnings.append(
-                    "⚠ <b>WARNING:</b> Node '" + str(cond_node.id_text.toPlainText()) + "' must have one arrow labeled 'YES' and one labeled 'NO'."
-                )
 
         # Check operation nodes' dates format
+        pattern1 = r'\d{2}/\d{2} - \d{2}/\d{2}'
+        pattern2 = r'\+\d+d - \d{2}/\d{2}'
+
         for op_node in self.op_nodes:
             dates_str = op_node.dates_text.toPlainText().strip()
-            # Regex: two digits / two digits, space-dash-space, two digits / two digits
-            if not re.fullmatch(r'\d{2}/\d{2} - \d{2}/\d{2}', dates_str) and op_node.name_text.toPlainText() != "START" and op_node.name_text.toPlainText() != "END":
+            if (not re.fullmatch(pattern1, dates_str)
+                and not re.fullmatch(pattern2, dates_str)
+                and op_node.name_text.toPlainText() not in ("START", "END")):
                 warnings.append(
-                    "⚠ <b>WARNING:</b> Node '" + str(op_node.id_text.toPlainText()) + "' has an invalid date format. Must be 'dd/MM - dd/MM'."
+                    "⚠ <b>WARNING:</b> Node '" + str(op_node.id_text.toPlainText()) + "' has an invalid date format. Must be 'dd/MM - dd/MM' or '+XXd - dd/MM'."
                 )
                 break
 
@@ -281,7 +278,7 @@ class FlowchartWindow(QMainWindow):
             return
         operation = dlg.selected
 
-        node = OpNode('<span style="font-size:9pt;">' + str(operation["name"]) + '</span>')
+        node = OpNode(str(operation["name"]))
         node.setZValue(1)
 
         self.scene.addItem(node)
@@ -290,7 +287,7 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def add_probability_node(self):
-        node = ProbNode('<span style="font-size:9pt; font-weight:bold;">Probability<br>Node</span>')
+        node = ProbNode("Probability\nNode")
         node.setZValue(1)
 
         self.scene.addItem(node)
@@ -304,7 +301,7 @@ class FlowchartWindow(QMainWindow):
             return
         condition = dlg.composed_condition
 
-        node = CondNode('<span style="font-size:9pt; font-weight:bold;">' + str(condition) + '</span>')
+        node = CondNode(str(condition))
         node.setZValue(1)
 
         self.scene.addItem(node)
@@ -333,10 +330,9 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def save_CMP(self):
-        data = []
-
         all_nodes = self.op_nodes + self.cond_nodes + self.prob_nodes
         ids = [node.id_text.toPlainText() for node in all_nodes]
+
         # Check no repetitions in ids
         if len(ids) != len(set(ids)):
             dlg = QDialog(self, Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
@@ -357,47 +353,8 @@ class FlowchartWindow(QMainWindow):
             dlg.setLayout(layout)
             dlg.exec_()
 
-        for node in all_nodes:
-            node_data = {
-                "type": node.__class__.__name__,
-                "x": node.scenePos().x(),
-                "y": node.scenePos().y(),
-                "width": getattr(node, "width", 120),
-                "height": getattr(node, "height", 60),
-                "id": node.id_text.toPlainText(),
-                "name": node.name_text.toPlainText(),
-                "outgoing": []
-            }
-
-            if isinstance(node, OpNode):
-                node_data.update({
-                    "dates": node.dates_text.toPlainText()
-                })
-
-            for arrow in node.outgoing_arrows:
-                if arrow.end_node:
-                    if hasattr(arrow.end_node, "id_text"):
-                        destination_id = arrow.end_node.id_text.toPlainText()
-                    else:
-                        destination_id = "no_id"
-
-                branching_condition = arrow.text_item.toPlainText() if arrow.text_item else ""
-
-                arrow_data = {
-                    "destination_type": arrow.end_node.__class__.__name__ if arrow.end_node else "",
-                    "destination_id": destination_id,
-                    "branching_condition": branching_condition,
-                    "bend_points": [[bp.pos().x(), bp.pos().y()] for bp in arrow.bend_points]
-                }
-
-                node_data["outgoing"].append(arrow_data)
-
-            data.append(node_data)
-
         filename, _ = QFileDialog.getSaveFileName(self, "Save JSON", "", "JSON Files (*.json)")
-        if filename:
-            with open(filename, "w") as f:
-                json.dump(data, f, indent=4)
+        generate_json(all_nodes, filename)
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -435,13 +392,13 @@ class FlowchartWindow(QMainWindow):
         for node_data in data:
             node_type = node_data.get("type", "OpNode")
             if node_type == "OpNode":
-                node = OpNode('<span style="font-size:9pt;">' + str(node_data["name"]) + '</span>')
+                node = OpNode(str(node_data["name"]))
                 self.op_nodes.append(node)
             elif node_type == "ProbNode":
-                node = ProbNode('<span style="font-size:9pt; font-weight:bold;">Probability<br>Node</span>')
+                node = ProbNode("Probability\nNode")
                 self.prob_nodes.append(node)
             elif node_type == "CondNode":
-                node = CondNode('<span style="font-size:9pt; font-weight:bold;">' + str(node_data["name"]) + '</span>')
+                node = CondNode(str(node_data["name"]))
                 self.cond_nodes.append(node)
 
             node.setPos(node_data["x"], node_data["y"])
@@ -489,9 +446,17 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def export_to_almass(self):
-        return
-    # ------------------------------------------------------------------------------------------------
+        dlg = ExportDialog(self)
+        if dlg.exec_():
+            crop_name = dlg.crop_name
+        else:
+            return
+        
+        all_nodes = self.op_nodes + self.cond_nodes + self.prob_nodes
+        json_data = generate_json(all_nodes, f"{crop_name}.json")
 
+        generate_header_file(crop_name, json_data)
+        generate_cpp_file(crop_name, json_data)
 
 # MAIN
 if __name__ == "__main__":
