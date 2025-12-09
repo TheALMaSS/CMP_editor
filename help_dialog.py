@@ -19,9 +19,10 @@ class HelpDialog(QDialog):
 CMP Editor lets you design your Crop Management Plan, using a decision tree structure. From here, you can export your CMP as a C++ class compatible with ALMaSS.<br><br>
 
 <b>The Nodes</b><br>
-• Operation Nodes: a standard Farm Operation, with an univocal ID of your choosing, and a date range indicating the time of year in which the operation can be performed. You must select the farm operation from the list available inside ALMaSS.<br>
+All nodes must have a univocal ID of your choosing.
+• Operation Nodes: a standard Farm Operation, with a date range indicating the time of year in which the operation can be performed. You must select the farm operation from the ones available inside ALMaSS.<br>
 • Probability Nodes: for probability-based branching.<br>
-• Conditional Nodes: for condition-based branching.<br><br>
+• Conditional Nodes: for condition-based branching. You must select the branching conditions from the field and farm properties inside ALMaSS.<br><br>
 
 <b>Connecting Nodes</b><br>
 • Click "Add Arrow" to enter arrow mode.<br>

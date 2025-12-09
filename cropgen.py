@@ -237,6 +237,21 @@ class FlowchartWindow(QMainWindow):
                     "⚠ <b>WARNING:</b> Node '" + str(cond_node.id_text.toPlainText()) + "' must have one arrow labeled 'YES' and one labeled 'NO'."
                 )
 
+        # Check that operation nodes have exactly 1 outgoing arrow if not end
+        for op_node in self.op_nodes:
+            outgoing = op_node.outgoing_arrows
+            if len(outgoing) != 1 and op_node.id_text.toPlainText() != "END":
+                warnings.append(
+                    "⚠ <b>WARNING:</b> Node '" + str(op_node.id_text.toPlainText()) + "' must have exactly 1 outgoing arrow."
+                )
+                break
+
+            texts = [arrow.flow_text.toPlainText().strip().upper() for arrow in outgoing]
+            if "YES" not in texts or "NO" not in texts:
+                warnings.append(
+                    "⚠ <b>WARNING:</b> Node '" + str(cond_node.id_text.toPlainText()) + "' must have one arrow labeled 'YES' and one labeled 'NO'."
+                )
+
         # Check operation nodes' dates format
         for op_node in self.op_nodes:
             dates_str = op_node.dates_text.toPlainText().strip()
