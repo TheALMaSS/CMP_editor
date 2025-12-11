@@ -15,6 +15,8 @@ class Node(QGraphicsItem):
         self.outgoing_arrows = []
         self.incoming_arrows = []
 
+        self.name = name
+
         # Name text (centered)
         self.name_text = QGraphicsTextItem(self)
         self.name_doc = QTextDocument()

@@ -30,12 +30,12 @@ class ValidateDialog(QDialog):
     def update_text(self, warnings):
         if isinstance(warnings, list):
             if not warnings:
-                text_to_show = '<span style="color: #006400; font-weight: bold; font-size: 14pt;">No problems found! :)</span>'
+                text_to_show = '<span style="color: #006400; font-weight: bold; font-size: 10pt;">No problems found! :)<br>You can safely export to ALMaSS.</span>'
             else:
                 text_to_show = '<span style="color: #B22222; font-size: 10pt;">' + "<br>".join(warnings) + '</span>'
         else:
             if not warnings:
-                text_to_show = '<span style="color: #006400; font-weight: bold; font-size: 10pt;">No problems found! :)</span>'
+                text_to_show = '<span style="color: #006400; font-weight: bold; font-size: 10pt;">No problems found! :)<br>You can safely export to ALMaSS.</span>'
             else:
                 text_to_show = f'<span style="color: #B22222; font-size: 10pt;">{warnings}</span>'
 

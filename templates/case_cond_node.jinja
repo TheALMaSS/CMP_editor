@@ -1,0 +1,10 @@
+    
+    case {{ crop_name_lowercase }}_{{ id }}:
+        if ({{ cpp_cond }}) {
+            SimpleEvent({{ yes_node_sched_date }}, {{ crop_name_lowercase }}_{{ yes_node_id }}, false);
+            break;
+        }
+        else {
+            SimpleEvent({{ no_node_sched_date }}, {{ crop_name_lowercase }}_{{ no_node_id }}, false);
+            break;            
+        }

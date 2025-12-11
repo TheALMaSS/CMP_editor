@@ -1,14 +1,3 @@
-    case {{ crop_name }}_{{ operation_id }}:
-
-        {{ step1_block }}
-
+case {{ crop_name_lowercase }}_end:
         done = true;
         break;
-
-    default:
-        g_msg->Warn(WARN_BUG, "{{ cpp_name }}::Do(): "
-            "Unknown event type! ", "");
-        exit(1);
-    }
-
-    return done;

@@ -1,8 +1,40 @@
 {
-    "FARM": {
-        "TYPE": ["Cattle", "Pig", "Plant", "Organic Cattle", "Organic Pig", "Organic Plant"]
-    },
-    "FIELD": {
-        "SOIL": ["Water", "Sand (unspecified)", "Loamy sand", "Sandy loam", "Sandy clay loam", "Silt loam", "Silty clay loam", "Clay loam", "Loam", "Silt", "Sandy clay", "Silty clay", "Clay", "Heavy clay", "Organic & peat"]
+  "FARM": {
+    "var": "m_farm",
+    "sublayers": {
+      "TYPE": {
+        "func": "GetFarmType()",
+        "Cattle": "0",
+        "Pig": "1",
+        "Plant": "2",
+        "Organic Cattle": "3",
+        "Organic Pig": "4",
+        "Organic Plant": "5"
+      }
     }
+  },
+
+  "FIELD": {
+    "var": "m_field",
+    "sublayers": {
+      "SOIL": {
+        "func": "GetSoilType()",
+        "Water": "0",
+        "Sand (unspecified)": "1",
+        "Loamy sand": "2",
+        "Sandy loam": "3",
+        "Sandy clay loam": "4",
+        "Silt loam": "5",
+        "Silty clay loam": "6",
+        "Clay loam": "7",
+        "Loam": "8",
+        "Silt": "9",
+        "Sandy clay": "10",
+        "Silty clay": "11",
+        "Clay": "12",
+        "Heavy clay": "13",
+        "Organic & peat": "14"
+      }
+    }
+  }
 }

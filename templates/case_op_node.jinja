@@ -1,0 +1,12 @@
+    
+    case {{ crop_name_lowercase }}_{{ id }}:
+        daysLeft = {{ latest_date }};
+        if (daysLeft >= 0) {
+            if (!m_farm->{{ cpp_func }}(m_field, 0.0, daysLeft)) {
+                    SimpleEvent(g_date->Date() + 1, {{ crop_name_lowercase }}_{{ id }}, true);
+                    break;
+            }
+        }
+
+        SimpleEvent({{ next_date }}, {{ crop_name_lowercase }}_{{ next_id }}, false);
+        break;

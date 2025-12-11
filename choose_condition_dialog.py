@@ -27,6 +27,7 @@ class ChooseConditionDialog(QDialog):
         self.selected = []  # final selected path
         self.conditions = conditions  # store the passed-in conditions
         self.composed_condition = None  # final string like "ITEM1->ITEM2 is ITEM3?"
+        self.coded_condition = None # final string like "m_farm->gettype() == 5"
 
         layout = QHBoxLayout(self)
         self.list1 = QListWidget()
@@ -82,8 +83,8 @@ class ChooseConditionDialog(QDialog):
         if current is None:
             return
         self.selected.append(current.text())
-        second_options = self.conditions.get(current.text(), {})
-        self.list2.addItems(sorted(second_options.keys()))
+        second_options = self.conditions[current.text()]["sublayers"].keys()
+        self.list2.addItems(sorted(second_options))
 
     def on_list2_changed(self, current, previous):
         self.list3.clear()
@@ -96,7 +97,7 @@ class ChooseConditionDialog(QDialog):
         else:
             self.selected.append(current.text())
         first_key = self.selected[0]
-        third_options = self.conditions.get(first_key, {}).get(current.text(), [])
+        third_options = self.conditions[str(first_key)]["sublayers"][current.text()].keys()
         self.list3.addItems(sorted(third_options))
         self.ok_btn.setEnabled(False)
 
@@ -117,4 +118,9 @@ class ChooseConditionDialog(QDialog):
             return  # safety check
         # Compose string like "ITEM1->ITEM2 is ITEM3?"
         self.composed_condition = f"{self.selected[0]}->{self.selected[1]}\nis {self.selected[2]}?"
+        self.coded_condition = (
+            f"{self.conditions[self.selected[0]]['var']}->"
+            f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]].get('func', self.selected[1])} == "
+            f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]][self.selected[2]]}"
+        )
         super().accept()

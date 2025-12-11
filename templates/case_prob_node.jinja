@@ -1,0 +1,26 @@
+    
+    case {{ crop_name_lowercase }}_{{ id }}:
+        float myRand = g_rand_uni_fnc();
+
+        {% set ns = namespace(cum_prob=0) %}
+        {% for i in range(next_ids|length) %}
+            {% set next = next_ids[i] %}
+            {% set earliest = earliest_dates[i] %}
+            {% set prob = probabilities[i]|float %}
+            {% if i == 0 %}
+        if (myRand < {{ prob }}) {
+            SimpleEvent({{ earliest }}, {{ crop_name_lowercase }}_{{ next }}, false);
+        }
+        {% elif i == (next_ids|length - 1) %}
+        else {
+            SimpleEvent({{ earliest }}, {{ crop_name_lowercase }}_{{ next }}, false);
+        }
+        {% else %}
+        else if (myRand >= {{ ns.cum_prob }} && myRand < {{ ns.cum_prob + prob }}) {
+            SimpleEvent({{ earliest }}, {{ crop_name_lowercase }}_{{ next }}, false);
+        }
+        {% endif %}
+        {% set ns.cum_prob = ns.cum_prob + prob %}
+        {% endfor %}
+
+        break;

@@ -1,22 +1,5 @@
-#include "../../Landscape/ls.h"
-#include "../../Landscape/cropprogs/{{ cpp_name }}.h"
-#include "math.h"
-#include <set>
-
-bool {{ cpp_name }}::Do(Farm* a_farm, LE* a_field, FarmEvent* a_ev) {
-    m_farm = a_farm;
-    m_field = a_field;
-    m_ev = a_ev;
-    bool done = false;
-    int daysLeft = 0;
-
-    std::set<int> history;
-
-    switch (m_ev->m_todo) {
-        float myRand = g_rand_uni_fnc();
-
-    case {{ crop_name }}_start:
+case {{ crop_name_lowercase }}_start:
         a_field->ClearManagementActionSum();
 
-        {{ step2_block }}
+        SimpleEvent({{ next_date }}, {{ crop_name_lowercase }}_{{ next_id }}, false);
         break;

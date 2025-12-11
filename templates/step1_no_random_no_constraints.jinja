@@ -1,8 +1,0 @@
-daysLeft = {{ latest_date }} - g_date->DayInYear();
-if (daysLeft >= 0) {
-    if (!m_farm->{{ function_name }}(m_field, 0.0, daysLeft)) {
-            SimpleEvent(g_date->Date() + 1, {{ crop_name }}_{{ operation_id }}, true);
-            break;
-        }
-        history.insert({{ crop_name }}_{{ operation_id }});
-    }

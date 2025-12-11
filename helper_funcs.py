@@ -19,13 +19,18 @@ def generate_json(all_nodes, filename):
             "height": getattr(node, "height", 60),
             "id": node.id_text.toPlainText(),
             "name": node.name_text.toPlainText(),
-            "dates": getattr(node, "dates_text", "dd/MM - dd/MM").toPlainText() if hasattr(node, "dates_text") else "+0d - +0d",
+            "dates": getattr(node, "dates_text", "+0d - +0d").toPlainText() if hasattr(node, "dates_text") else "+0d - +0d",
             "outgoing": []
         }
 
         if node.__class__.__name__ == "OpNode":
             node_data.update({
                 "cpp_func": node.cpp_func
+            })
+
+        if node.__class__.__name__ == "CondNode":
+            node_data.update({
+                "cpp_cond": node.cpp_cond
             })
 
         for arrow in node.outgoing_arrows:
@@ -52,7 +57,9 @@ def generate_json(all_nodes, filename):
         json.dump(data, f, indent=4)
 
     return data
+# ------------------------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------------------------
 def to_all_caps(name):
     s1 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', name)
     return s1.upper()
@@ -60,28 +67,204 @@ def to_all_caps(name):
 def to_lower_underscore(name):
     s1 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', name)
     return s1.lower()
+# ------------------------------------------------------------------------------------------------
 
+def get_earliest_date(dates: str) -> str:
+    start_date = dates.split(" - ")[0].strip()
+
+    relative_match = re.fullmatch(r"\+(\d{1,2})d", start_date)
+    absolute_match = re.fullmatch(r"(\d{2})/(\d{2})", start_date)
+
+    if relative_match:
+        offset = int(relative_match.group(1))
+        return f"g_date->Date() + {offset}"
+    elif absolute_match:
+        day, month = absolute_match.groups()
+        return f"std::max(g_date->Date() + 1, g_date->OldDays() + g_date->DayInYear({str(int(day))}, {str(int(month))}))"
+    else:
+        return "g_date->Date() + 1"
+
+
+def get_days_left(dates: str) -> str:
+    end_date = dates.split(" - ")[-1].strip()
+
+    absolute_match = re.fullmatch(r"(\d{2})/(\d{2})", end_date)
+    if absolute_match:
+        day, month = absolute_match.groups()
+        return f"g_date->DayInYear({str(int(day))}, {str(int(month))}) - g_date->DayInYear()"
+    else:
+        # fallback to relative date if format is unknown
+        relative_match = re.fullmatch(r"\+(\d{1,2})d", end_date)
+        if relative_match:
+            offset = int(relative_match.group(1))
+            return f"g_date->Date() + {offset}"
+        return "g_date->Date()"
+
+def get_starting_date(start_node):
+    #g_date->DayInYear(26, 8)
+    absolute_match = re.fullmatch(r"(\d{2})/(\d{2})", start_node.get("dates"))
+    if absolute_match:
+        day, month = absolute_match.groups()
+        return f"g_date->DayInYear({str(int(day))}, {str(int(month))})"
+
+
+# ------------------------------------------------------------------------------------------------
 def generate_header_file(crop_name, data):
 
     crop_name_all_caps = to_all_caps(crop_name)
     crop_name_lowercase = to_lower_underscore(crop_name)
-
     nodes = [node for node in data if node.get("type") == "OpNode"]
+    start_node = next(n for n in data if n["id"] == "START")
+    starting_date = get_starting_date(start_node)
 
-    env = Environment(loader=FileSystemLoader('.'))
-    template = env.get_template('templates/header_file.jinja')
+    env = Environment(
+        loader=FileSystemLoader(resource_path("templates"))
+    )
+
+    template = env.get_template('header_file.jinja')
 
     output = template.render(
         crop_name=crop_name,
         crop_name_all_caps=crop_name_all_caps,
         crop_name_lowercase=crop_name_lowercase,
+        starting_date = starting_date,
         nodes=nodes
     )
 
     with open(f"{crop_name}.h", "w") as f:
         f.write(output)
+# ------------------------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------------------------
 def generate_cpp_file(crop_name, data):
+    env = Environment(
+        loader=FileSystemLoader(resource_path("templates")),
+        trim_blocks=True,
+        lstrip_blocks=True
+    )
+
+    tmpl_main = env.get_template("cpp_file.jinja")
+
+    # Classify nodes
+    start_node = next(n for n in data if n["id"] == "START")
+    end_node   = next(n for n in data if n["id"] == "END")
+    middle_nodes = [n for n in data if n["id"] not in ("START", "END")]
+
+    # Vars for every node
+    crop_name_lowercase = to_lower_underscore(crop_name)
+
+    # Render START
+    t_start = env.get_template("case_start.jinja")
+    next_id = start_node["outgoing"][0]["destination_id"]
+    next_node = next((n for n in data if n["id"] == next_id), None)
+    next_date = get_earliest_date(next_node["dates"])
+
+    start_block = t_start.render(
+                crop_name = crop_name,
+                crop_name_lowercase = crop_name_lowercase,
+                next_date = next_date,
+                next_id = next_id
+            )
+
+    # Render END
+    t_end = env.get_template("case_end.jinja")
+    end_block = t_end.render(
+                crop_name_lowercase = crop_name_lowercase
+            )
+
+    # Render middle nodes
+    rendered_middle = []
+    for node in middle_nodes:
+
+        # ---------------------------------------------------------
+        if node["type"] == "OpNode":
+            t = env.get_template("case_op_node.jinja")
+            next_id = node["outgoing"][0]["destination_id"]
+            next_node = next((n for n in data if n["id"] == next_id), None)
+            next_date = get_earliest_date(next_node["dates"])
+            scheduling_date = get_days_left(node["dates"])
+            cpp_func = node["cpp_func"]
+            latest_date = get_days_left(node["dates"])
+
+            block = t.render(
+                crop_name = crop_name,
+                crop_name_lowercase = crop_name_lowercase,
+                scheduling_date = scheduling_date,
+                cpp_func = cpp_func,
+                id = node["id"],
+                next_date = next_date,
+                next_id = next_id,
+                latest_date = latest_date
+            )
+
+        # ---------------------------------------------------------
+        elif node["type"] == "CondNode":
+            yes_node_id = next(
+                (arrow["destination_id"] for arrow in node["outgoing"] if arrow.get("branching_condition") == "YES"),
+                None
+            )
+            no_node_id = next(
+                (arrow["destination_id"] for arrow in node["outgoing"] if arrow.get("branching_condition") == "NO"),
+                None
+            )
+            yes_node = next((n for n in data if n["id"] == yes_node_id), None)
+            no_node = next((n for n in data if n["id"] == no_node_id), None)
+
+            yes_node_sched_date = get_earliest_date(yes_node["dates"])
+            no_node_sched_date = get_earliest_date(no_node["dates"])
+
+            block = t.render(
+                crop_name = crop_name,
+                crop_name_lowercase = crop_name_lowercase,
+                id = node["id"],
+                cpp_cond = node["cpp_cond"],
+                yes_node_id = yes_node_id,
+                yes_node_sched_date = yes_node_sched_date,
+                no_node_id = no_node_id,
+                no_node_sched_date = no_node_sched_date
+            )
+
+        # ---------------------------------------------------------
+        elif node["type"] == "ProbNode":
+            t = env.get_template("case_prob_node.jinja")
+
+            next_ids = [o["destination_id"] for o in node["outgoing"]]
+            probabilities = [float(o["branching_condition"].strip('%')) / 100.0 for o in node["outgoing"]]
+            earliest_dates = []
+            for dest_id in next_ids:
+                dest_node = next(n for n in data if n["id"] == dest_id)
+                earliest_dates.append(get_earliest_date(dest_node["dates"]))
+
+            block = t.render(
+                crop_name_lowercase=crop_name.lower(),
+                id=node["id"],
+                next_ids=next_ids,
+                earliest_dates=earliest_dates,
+                probabilities=probabilities
+            )
+        # ---------------------------------------------------------
+        else:
+            continue
+
+        rendered_middle.append(block)
+
+    middle_block = "\n".join(rendered_middle)
+
+    cpp_code = tmpl_main.render(
+        crop_name=crop_name,
+        start_block=start_block,
+        middle_block=middle_block,
+        end_block=end_block
+    )
+
+    with open(crop_name + ".cpp", "w") as f:
+        f.write(cpp_code)
+
+    # If the type of the node is "OpNode" and the node id is not "START" or "END" -> choose case_op_node.jinja
+    # If the type is "OpNode" and the node id is "START" -> choose case_start.jinja
+    # If the type is "OpNode" and the node id is "END" -> choose case_end.jinja
+    # If the type of the node is "CondNode" -> choose case_cond_node.jinja
+    # If the type of the node is "ProbNode" -> choose case_prob_node.jinja
     #
     # OpNode structure:
     # STEP 1: try to do operation. If fail, re-schedule for tomorrow, then break
@@ -94,15 +277,7 @@ def generate_cpp_file(crop_name, data):
     # ProbNode structure:
     # STEP 1: empty
     # STEP 2: schedule all the possible nodes iteratively (no upper limit, min 1) but gate them with the probability
-    #
-    # TOTAL TEMPLATES NEEDED:
-    # CASE START
-    # CASE END
-    # CASE OPNODE
-    # CASE CONDNODE
-    # CASE PROBNODE
-
-    return
+# ------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------------------
 def resource_path(relative_path):
@@ -158,3 +333,4 @@ def shape_line_intersection(node, p1: QPointF, p2: QPointF) -> QPointF:
             return QPointF(x, y)
 
     return p2
+# ------------------------------------------------------------------------------------------------

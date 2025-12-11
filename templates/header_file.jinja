@@ -19,7 +19,7 @@ public:
     {{ crop_name }}(TTypesOfVegetation a_tov, TTypesOfCrops a_toc, Landscape* a_L)
         : Crop(a_tov, a_toc, a_L)
     {
-        m_first_date = g_date->DayInYear(26, 8);
+        m_first_date = {{ starting_date }};
         SetUpFarmCategoryInformation();
     }
 };

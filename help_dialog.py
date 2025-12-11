@@ -15,11 +15,12 @@ class HelpDialog(QDialog):
         layout.addWidget(text_box)
 
         help_text = """
+<span style="font-size:10pt;">
 <b>CMP Editor - Quick Guide</b><br>
 CMP Editor lets you design your Crop Management Plan, using a decision tree structure. From here, you can export your CMP as a C++ class compatible with ALMaSS.<br><br>
 
 <b>The Nodes</b><br>
-All nodes must have a univocal ID of your choosing.
+All nodes must have a univocal ID of your choosing.<br>
 • Operation Nodes: a standard Farm Operation, with a date range indicating the time of year in which the operation can be performed. You must select the farm operation from the ones available inside ALMaSS.<br>
 • Probability Nodes: for probability-based branching.<br>
 • Conditional Nodes: for condition-based branching. You must select the branching conditions from the field and farm properties inside ALMaSS.<br><br>
@@ -38,15 +39,17 @@ All nodes must have a univocal ID of your choosing.
 
 <b>Saving/Loading</b><br>
 • "Save CMP" saves your CMP to a JSON file, which you can reopen later with "Load CMP".<br>
-• "Export to ALMaSS" will build an ALMaSS compatible C++ class, which you can then plug into the software.<br><br>
+• "Export to ALMaSS" will build an ALMaSS compatible C++ class + header file, which you can then plug into the software.<br>Remember to validate your CMP before exporting!<br><br>
 
 <b>User Controls</b><br>
 • Drag nodes to reposition them.<br>
 • Left-click on arrows to create bending points. Right-click on a bending point to delete it.<br>
-• Zoom in/out by pressing the mouse wheel.<br><br>
+• Zoom in/out by pressing SHIFT and scrolling with the mouse.<br>
+• Navigate around the canvas by pressing the mouse wheel.<br><br>
 
 <b>Issues?</b><br>
 If you have issues with the software, contact: elena.fini@agro.au.dk
+</span>
 
 """
 

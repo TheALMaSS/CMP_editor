@@ -1,3 +1,25 @@
+#*******************************************************************************************************
+#Copyright (c) 2025, Elena Fini, Aarhus University
+#All rights reserved.
+
+#Redistribution and use in source and binary forms, with or without modification, are permitted provided
+#that the following conditions are met:
+
+#Redistributions of source code must retain the above copyright notice, this list of conditions and the
+#following disclaimer.
+#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+#the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+#IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+#FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+#BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+#BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+#BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+#LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+#SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#********************************************************************************************************
+
 import sys, json, re
 from jinja2 import Environment, FileSystemLoader
 from PyQt5.QtCore import Qt, QPointF
@@ -22,6 +44,7 @@ from css_styles import button_style, validate_button_style, left_panel_style, de
 
 OPERATIONS_FILE = resource_path("operations.json")
 CONDITIONS_FILE = resource_path("conditions.json")
+SW_VERSION = "1.0"
 
 def load_operations():
     with open(OPERATIONS_FILE, "r", encoding="utf-8") as f:
@@ -35,7 +58,7 @@ class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("CMP Editor")
+        self.setWindowTitle("CMP Editor v" + str(SW_VERSION))
         self.setGeometry(100, 100, 1100, 600)
 
         self.op_nodes = []
@@ -231,7 +254,7 @@ class FlowchartWindow(QMainWindow):
                 )
                 break
 
-            texts = [arrow.flow_text.toPlainText().strip().upper() for arrow in outgoing]
+            texts = [arrow.text_item.toPlainText().strip().upper() for arrow in outgoing]
             if "YES" not in texts or "NO" not in texts:
                 warnings.append(
                     "⚠ <b>WARNING:</b> Node '" + str(cond_node.id_text.toPlainText()) + "' must have one arrow labeled 'YES' and one labeled 'NO'."
@@ -240,7 +263,7 @@ class FlowchartWindow(QMainWindow):
         # Check that operation nodes have exactly 1 outgoing arrow if not end
         for op_node in self.op_nodes:
             outgoing = op_node.outgoing_arrows
-            if len(outgoing) != 1 and op_node.id_text.toPlainText() != "END":
+            if len(outgoing) != 1 and op_node.name_text.toPlainText() != "END":
                 warnings.append(
                     "⚠ <b>WARNING:</b> Node '" + str(op_node.id_text.toPlainText()) + "' must have exactly 1 outgoing arrow."
                 )
@@ -248,6 +271,7 @@ class FlowchartWindow(QMainWindow):
         # Check operation nodes' dates format
         pattern1 = r'\d{2}/\d{2} - \d{2}/\d{2}'
         pattern2 = r'\+\d+d - \d{2}/\d{2}'
+        pattern3 = r'(\d{2})/(\d{2})'
 
         for op_node in self.op_nodes:
             dates_str = op_node.dates_text.toPlainText().strip()
@@ -257,7 +281,10 @@ class FlowchartWindow(QMainWindow):
                 warnings.append(
                     "⚠ <b>WARNING:</b> Node '" + str(op_node.id_text.toPlainText()) + "' has an invalid date format. Must be 'dd/MM - dd/MM' or '+XXd - dd/MM'."
                 )
-                break
+            elif op_node.name_text.toPlainText() == "START" and not re.fullmatch(pattern3, op_node.dates_text.toPlainText().strip()):
+                warnings.append(
+                    "⚠ <b>WARNING:</b> the Start Node has an invalid date format. Must be 'dd/MM' to indicate the crop cultivation start, day-of-year."
+                )
 
         # Join the warnings
         warnings_string = "<br>".join(warnings)
@@ -300,8 +327,9 @@ class FlowchartWindow(QMainWindow):
         if dlg.exec_() != QDialog.Accepted:
             return
         condition = dlg.composed_condition
+        cpp_cond = dlg.coded_condition
 
-        node = CondNode(str(condition))
+        node = CondNode(str(condition), cpp_cond)
         node.setZValue(1)
 
         self.scene.addItem(node)
@@ -354,7 +382,8 @@ class FlowchartWindow(QMainWindow):
             dlg.exec_()
 
         filename, _ = QFileDialog.getSaveFileName(self, "Save JSON", "", "JSON Files (*.json)")
-        generate_json(all_nodes, filename)
+        if filename != "":
+            generate_json(all_nodes, filename)
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -398,7 +427,7 @@ class FlowchartWindow(QMainWindow):
                 node = ProbNode("Probability\nNode")
                 self.prob_nodes.append(node)
             elif node_type == "CondNode":
-                node = CondNode(str(node_data["name"]))
+                node = CondNode(str(node_data["name"]), str(node_data["cpp_cond"]))
                 self.cond_nodes.append(node)
 
             node.setPos(node_data["x"], node_data["y"])

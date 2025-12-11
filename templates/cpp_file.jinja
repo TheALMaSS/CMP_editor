@@ -1,0 +1,27 @@
+#include "../../Landscape/ls.h"
+#include "../../Landscape/cropprogs/{{ crop_name }}.h"
+#include "math.h"
+#include <set>
+
+bool {{ crop_name }}::Do(Farm* a_farm, LE* a_field, FarmEvent* a_ev) {
+    m_farm = a_farm;
+    m_field = a_field;
+    m_ev = a_ev;
+    bool done = false;
+    int daysLeft = 0;
+
+    switch (m_ev->m_todo) {
+
+    {{ start_block }}
+
+    {{ middle_block }}
+
+    {{ end_block }}
+
+    default:
+        g_msg->Warn(WARN_BUG, "{{ crop_name }}::Do(): Unknown event type! ", "");
+        exit(1);
+    }
+
+    return done;
+}

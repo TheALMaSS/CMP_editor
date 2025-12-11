@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, QPointF
 from node import Node
 
 class CondNode(Node):
-    def __init__(self, name):
+    def __init__(self, name, cpp_cond):
         super().__init__(name)
         self.vertical_offset_name = 0
         self.vertical_offset_id = 5
@@ -20,6 +20,8 @@ class CondNode(Node):
             QPointF(self.width/2, self.height),
             QPointF(0, self.height/2)
         ])
+
+        self.cpp_cond = cpp_cond
 
     def paint(self, painter, option, widget):
         painter.setBrush(QColor("#A9CFF9"))
