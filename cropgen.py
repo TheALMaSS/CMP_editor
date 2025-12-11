@@ -283,7 +283,7 @@ class FlowchartWindow(QMainWindow):
                 )
             elif op_node.name_text.toPlainText() == "START" and not re.fullmatch(pattern3, op_node.dates_text.toPlainText().strip()):
                 warnings.append(
-                    "⚠ <b>WARNING:</b> the Start Node has an invalid date format. Must be 'dd/MM' to indicate the crop cultivation start, day-of-year."
+                    "⚠ <b>WARNING:</b> the Start Node has an invalid date format. Must be 'dd/MM' to indicate the crop cultivation start."
                 )
 
         # Join the warnings
