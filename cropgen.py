@@ -61,6 +61,7 @@ class FlowchartWindow(QMainWindow):
         self.setWindowTitle("CMP Editor v" + str(SW_VERSION))
         self.setGeometry(100, 100, 1100, 600)
 
+        # TODO : move nodes lists into the scene
         self.op_nodes = []
         self.prob_nodes = []
         self.cond_nodes = []
@@ -222,6 +223,7 @@ class FlowchartWindow(QMainWindow):
         node = OpNode(str(operation["name"]))
         node.setZValue(1)
 
+        #TODO : move all those adding/removing nodes parts to functions inside the scene.
         self.scene.addItem(node)
         self.op_nodes.append(node)
     # ------------------------------------------------------------------------------------------------
