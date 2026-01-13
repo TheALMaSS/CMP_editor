@@ -18,6 +18,7 @@ class FlowchartView(QGraphicsView):
         self.resizing_node = None
         self.selected_node = None
         self.arrow_done = False
+        self.setDragMode(QGraphicsView.RubberBandDrag)
         self.clipboard = []
 
     def mousePressEvent(self, event):

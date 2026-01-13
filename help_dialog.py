@@ -45,7 +45,8 @@ All nodes must have a univocal ID of your choosing.<br>
 • Drag nodes to reposition them.<br>
 • Left-click on arrows to create bending points. Right-click on a bending point to delete it.<br>
 • Zoom in/out by pressing SHIFT and scrolling with the mouse.<br>
-• Navigate around the canvas by pressing the mouse wheel.<br><br>
+• Navigate around the canvas by pressing the mouse wheel.<br>
+• Use CTRL+C and CTRL+V to copy-paste selected nodes.<br><br>
 
 <b>Issues?</b><br>
 If you have issues with the software, contact: elena.fini@agro.au.dk
