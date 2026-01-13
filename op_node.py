@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtWidgets import QGraphicsTextItem
+from PyQt5.QtWidgets import QGraphicsTextItem, QGraphicsItem
 from node import Node
-from PyQt5.QtGui import QTextDocument, QTextOption, QFont, QColor
+from PyQt5.QtGui import QTextDocument, QTextOption, QFont, QColor, QPen
 import json
 from helper_funcs import resource_path
 
@@ -76,4 +76,17 @@ class OpNode(Node):
 
     def paint(self, painter, option, widget):
         painter.setBrush(QColor("#ECECEC"))
+        painter.setPen(Qt.NoPen)
+        painter.drawRoundedRect(QRectF(0, 0, self.width, self.height), 10, 10)
+
+        if self.isSelected():
+            pen_color = QColor("#007BFF")
+            pen_width = 3
+        else:
+            pen_color = QColor("#000000")
+            pen_width = 1
+
+        pen = QPen(pen_color, pen_width)
+        painter.setPen(pen)
+        painter.setBrush(Qt.NoBrush)
         painter.drawRoundedRect(QRectF(0, 0, self.width, self.height), 10, 10)

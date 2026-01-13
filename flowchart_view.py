@@ -244,9 +244,10 @@ class FlowchartView(QGraphicsView):
             self.window().update_mode_indicator()
             self.selected_node = None
             self.arrow_done = False
+            for item in self.scene().selectedItems():
+                item.setSelected(False)
 
         self.scene().update()
-
         super().mouseReleaseEvent(event)
     # ----------------------------------------------------------------------------------------------
 

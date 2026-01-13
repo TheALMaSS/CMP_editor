@@ -25,4 +25,17 @@ class CondNode(Node):
 
     def paint(self, painter, option, widget):
         painter.setBrush(QColor("#A9CFF9"))
+        painter.setPen(Qt.NoPen)
+        painter.drawPolygon(self.polygon_shape)
+
+        if self.isSelected():
+            pen_color = QColor("#007BFF")
+            pen_width = 3
+        else:
+            pen_color = QColor("#000000")
+            pen_width = 1
+
+        pen = QPen(pen_color, pen_width)
+        painter.setPen(pen)
+        painter.setBrush(Qt.NoBrush)
         painter.drawPolygon(self.polygon_shape)

@@ -20,4 +20,17 @@ class ProbNode(Node):
 
     def paint(self, painter, option, widget):
         painter.setBrush(QColor("#D2A9F9"))
+        painter.setPen(Qt.NoPen)
+        painter.drawEllipse(QRectF(0, 0, self.width, self.height))
+
+        if self.isSelected():
+            pen_color = QColor("#007BFF")
+            pen_width = 3
+        else:
+            pen_color = QColor("#000000")
+            pen_width = 1
+
+        pen = QPen(pen_color, pen_width)
+        painter.setPen(pen)
+        painter.setBrush(Qt.NoBrush)
         painter.drawEllipse(QRectF(0, 0, self.width, self.height))

@@ -257,6 +257,10 @@ class FlowchartWindow(QMainWindow):
         else:
             self.add_arrow_btn.setChecked(False)
             self.update_mode_indicator()
+
+        for item in self.scene.selectedItems():
+            item.setSelected(False)
+
         self.update_mode_indicator()
     # ------------------------------------------------------------------------------------------------
 
@@ -267,6 +271,10 @@ class FlowchartWindow(QMainWindow):
         else:
             self.delete_btn.setChecked(False)
             self.update_mode_indicator()
+
+        for item in self.scene.selectedItems():
+            item.setSelected(False)
+
         self.update_mode_indicator()
     # ------------------------------------------------------------------------------------------------
 

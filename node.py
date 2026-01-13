@@ -13,6 +13,7 @@ class Node(QGraphicsItem):
         self.min_height = 100
         self.setFlag(self.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
+        self.setFlag(QGraphicsItem.ItemIsSelectable, True)
 
         self.outgoing_arrows = []
         self.incoming_arrows = []
@@ -81,10 +82,6 @@ class Node(QGraphicsItem):
 
     def boundingRect(self):
         return QRectF(0, 0, self.width, self.height)
-
-    def paint(self, painter: QPainter, option, widget):
-        painter.setBrush(Qt.white)
-        painter.drawRect(0, 0, self.width, self.height)
 
     def add_arrow_to(self, target_node):
         for arrow in self.outgoing_arrows:
