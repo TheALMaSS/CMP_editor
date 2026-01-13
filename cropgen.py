@@ -39,9 +39,6 @@ from export_dialog import ExportDialog
 from helper_funcs import resource_path, generate_header_file, generate_json, generate_cpp_file, validate_graph
 from css_styles import button_style, validate_button_style, left_panel_style, delete_button_style, arrow_button_style, delete_mode_label_style, arrow_mode_label_style
 
-# Question: it looks to me like LookUpManagementCategory and the farm management categories in general are unused?????
-# Question: also how is this number #define DK_WOSR_BASE 66300 computed????
-
 OPERATIONS_FILE = resource_path("operations.json")
 CONDITIONS_FILE = resource_path("conditions.json")
 SW_VERSION = "1.0"
