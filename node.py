@@ -9,6 +9,8 @@ class Node(QGraphicsItem):
 
         self.width = 200
         self.height = 100
+        self.min_width = 200
+        self.min_height = 100
         self.setFlag(self.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
 
@@ -58,12 +60,12 @@ class Node(QGraphicsItem):
 
         padding_vertical = getattr(self, 'padding_vertical', 40)
         padding_horizontal = getattr(self, 'padding_horizontal', 60)
-        self.width = max(140, name_width + padding_horizontal, id_width + padding_horizontal)
-        self.height = max(100, name_height + id_height + padding_vertical)
+        self.width = max(self.min_width, name_width + padding_horizontal, id_width + padding_horizontal)
+        self.height = max(self.min_height, name_height + id_height + padding_vertical)
 
         # Set text document width to match node width for proper centering
         self.name_doc.setTextWidth(self.width)
-        self.id_doc.setTextWidth(self.width)
+        self.id_doc.setTextWidth(self.width * 0.8)
 
         self.update_positions()
 
@@ -72,9 +74,10 @@ class Node(QGraphicsItem):
         vertical_offset_id = getattr(self, 'vertical_offset_id', -10)
         name_height = self.name_text.boundingRect().height()
         id_height = self.id_text.boundingRect().height()
+        id_width = self.id_text.boundingRect().width()
 
         self.name_text.setPos(0, (self.height - name_height) / 2 - vertical_offset_name)
-        self.id_text.setPos(0, (self.height - name_height) / 2 - id_height - vertical_offset_id)
+        self.id_text.setPos((self.width - id_width) / 2, (self.height - name_height) / 2 - id_height - vertical_offset_id)
 
     def boundingRect(self):
         return QRectF(0, 0, self.width, self.height)

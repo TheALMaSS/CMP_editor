@@ -61,12 +61,18 @@ class OpNode(Node):
 
     def update_positions(self):
         super().update_positions()
+
+        if self.name == "END":
+            return
+
         vertical_offset = 5
-        margin_horizontal = 0
-        
-        if self.name != "END":
-            self.dates_doc.setTextWidth(self.width - margin_horizontal)
-            self.dates_text.setPos(margin_horizontal/2, self.height - self.dates_text.boundingRect().height() - vertical_offset)
+        dates_width = self.width * 0.8
+        self.dates_doc.setTextWidth(dates_width)
+
+        self.dates_text.setPos(
+            (self.width - dates_width) / 2,
+            self.height - self.dates_text.boundingRect().height() - vertical_offset
+        )
 
     def paint(self, painter, option, widget):
         painter.setBrush(QColor("#ECECEC"))
