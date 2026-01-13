@@ -4,6 +4,7 @@ from PyQt5.QtGui import QPainter
 from node import Node
 from prob_node import ProbNode
 from cond_node import CondNode
+from op_node import OpNode
 from arrow import BendPoint, Arrow
 
 # Displays a portion of the SCENE and handles user interaction
@@ -17,6 +18,7 @@ class FlowchartView(QGraphicsView):
         self.resizing_node = None
         self.selected_node = None
         self.arrow_done = False
+        self.clipboard = []
 
     def mousePressEvent(self, event):
         # IF LEFT CLICK
@@ -271,3 +273,61 @@ class FlowchartView(QGraphicsView):
         else:
             # Default behavior (scroll)
             super().wheelEvent(event)
+
+    # ----------------------------------------------------------------------------------------------
+    # KEYBOARD
+    # ----------------------------------------------------------------------------------------------
+    def keyPressEvent(self, event):
+        modifiers = QApplication.keyboardModifiers()
+
+        # Ctrl+C ---------------------------------------------
+        if event.key() == Qt.Key_C and modifiers == Qt.ControlModifier:
+            selected_items = self.scene().selectedItems()
+            if selected_items:
+                for item in selected_items:
+                    if isinstance(item, Node):
+                        self.clipboard.append({
+                            'type': type(item),
+                            'name': getattr(item, 'name', None),
+                            'width': item.width,
+                            'height': item.height,
+                            'dates': getattr(item, 'dates_doc', None),
+                            'cpp_cond': getattr(item, 'cpp_cond', None),
+                            'pos': item.pos()
+                        })
+
+        # Ctrl+V ---------------------------------------------
+        elif event.key() == Qt.Key_V and modifiers == Qt.ControlModifier:
+            if self.clipboard:
+                for item in self.clipboard:
+                    # Only if cond node with condition
+                    if item['cpp_cond'] is not None:
+                        new_node = item['type'](item['name'], item['cpp_cond'])
+                    else:
+                        new_node = item['type'](item['name'])
+
+                    # Basic stuff
+                    new_node.width = item['width']
+                    new_node.height = item['height']
+                    new_node.setPos(item['pos'] + QPoint(20, 20))
+
+                    # Only if op node with dates
+                    if hasattr(new_node, 'dates_doc') and item['dates'] is not None:
+                        new_node.dates_doc.setHtml(item['dates'].toHtml())
+
+                    # Add to scene
+                    self.scene().addItem(new_node)
+
+                    # Add to list
+                    if hasattr(self.my_window, 'op_nodes') and isinstance(new_node, OpNode):
+                        self.my_window.op_nodes.append(new_node)
+                    elif hasattr(self.my_window, 'prob_nodes') and isinstance(new_node, ProbNode):
+                        self.my_window.prob_nodes.append(new_node)
+                    elif hasattr(self.my_window, 'cond_nodes') and isinstance(new_node, CondNode):
+                        self.my_window.cond_nodes.append(new_node)
+
+                # Empty clipboard
+                self.clipboard = []
+
+        else:
+            super().keyPressEvent(event)

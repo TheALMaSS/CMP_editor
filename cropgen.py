@@ -355,7 +355,7 @@ class FlowchartWindow(QMainWindow):
                 self.cond_nodes.append(node)
 
             node.setPos(node_data["x"], node_data["y"])
-            node.adjust_size()  # recompute dimensions
+            node.adjust_size()
 
             node.id_text.setPlainText(node_data.get("id", "ID"))
             if hasattr(node, "dates_text") and "dates" in node_data:
