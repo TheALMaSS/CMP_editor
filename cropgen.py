@@ -36,7 +36,7 @@ from choose_condition_dialog import ChooseConditionDialog
 from validate_dialog import ValidateDialog
 from help_dialog import HelpDialog
 from export_dialog import ExportDialog
-from helper_funcs import resource_path, generate_header_file, generate_json, generate_cpp_file
+from helper_funcs import resource_path, generate_header_file, generate_json, generate_cpp_file, validate_graph
 from css_styles import button_style, validate_button_style, left_panel_style, delete_button_style, arrow_button_style, delete_mode_label_style, arrow_mode_label_style
 
 # Question: it looks to me like LookUpManagementCategory and the farm management categories in general are unused?????
@@ -202,99 +202,13 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def validate(self, return_warnings=False):
-        warnings = []
+        warnings = validate_graph(self.op_nodes, self.prob_nodes, self.cond_nodes)
 
-        op_names = [op_node.name_text.toPlainText() for op_node in self.op_nodes]
-        ids = [node.id_text.toPlainText() for node in (self.op_nodes + self.prob_nodes + self.cond_nodes)]
-
-        # CHECK FOR START NODE
-        if "START" not in op_names:
-            warnings.append("⚠ <b>WARNING:</b> no operation named 'START' exists.")
-
-        # CHECK FOR END NODE
-        if "END" not in op_names:
-            warnings.append("⚠ <b>WARNING:</b> no operation named 'END' exists.")
-
-        # Check no repetitions in ids
-        if len(ids) != len(set(ids)):
-            warnings.append("⚠ <b>WARNING:</b> two or more Nodes share the same ID.")
-
-        # Check that all prob nodes have arrows with a total outgoing flow of 100%
-        for prob_node in self.prob_nodes:
-            total_flow = 0.0
-            for arrow in prob_node.outgoing_arrows:
-                flow_str = arrow.text_item.toPlainText().strip()
-
-                # Validate format: must be "X%" or "XX%"
-                if not re.fullmatch(r'\d{1,2}%', flow_str):
-                    warnings.append(
-                        "⚠ <b>WARNING:</b> one of your arrows has an invalid probability format. Must be a percentage in the format XX%."
-                    )
-
-                # Sum numeric values
-                flow_value = 0.0
-                try:
-                    flow_value = float(flow_str.replace('%',''))
-                except ValueError:
-                    pass  # already reported format issue
-                total_flow += flow_value
-
-            # Check total outgoing flow
-            if abs(total_flow - 100.0) > 0.01:
-                warnings.append(
-                    "⚠ <b>WARNING:</b> Node '" + str(prob_node.id_text.toPlainText()) + "' has an outgoing probability flow different than 100%."
-                )
-
-        # Check conditional nodes
-        for cond_node in self.cond_nodes:
-            outgoing = cond_node.outgoing_arrows
-            if len(outgoing) != 2:
-                warnings.append(
-                    "⚠ <b>WARNING:</b> Node '" + str(prob_node.id_text.toPlainText()) + "' does not have exactly 2 outgoing arrows."
-                )
-                break
-
-            texts = [arrow.text_item.toPlainText().strip().upper() for arrow in outgoing]
-            if "YES" not in texts or "NO" not in texts:
-                warnings.append(
-                    "⚠ <b>WARNING:</b> Node '" + str(cond_node.id_text.toPlainText()) + "' must have one arrow labeled 'YES' and one labeled 'NO'."
-                )
-
-        # Check that operation nodes have exactly 1 outgoing arrow if not end
-        for op_node in self.op_nodes:
-            outgoing = op_node.outgoing_arrows
-            if len(outgoing) != 1 and op_node.name_text.toPlainText() != "END":
-                warnings.append(
-                    "⚠ <b>WARNING:</b> Node '" + str(op_node.id_text.toPlainText()) + "' must have exactly 1 outgoing arrow."
-                )
-
-        # Check operation nodes' dates format
-        pattern1 = r'\d{2}/\d{2} - \d{2}/\d{2}'
-        pattern2 = r'\+\d+d - \d{2}/\d{2}'
-        pattern3 = r'(\d{2})/(\d{2})'
-
-        for op_node in self.op_nodes:
-            dates_str = op_node.dates_text.toPlainText().strip()
-            if (not re.fullmatch(pattern1, dates_str)
-                and not re.fullmatch(pattern2, dates_str)
-                and op_node.name_text.toPlainText() not in ("START", "END")):
-                warnings.append(
-                    "⚠ <b>WARNING:</b> Node '" + str(op_node.id_text.toPlainText()) + "' has an invalid date format. Must be 'dd/MM - dd/MM' or '+XXd - dd/MM'."
-                )
-            elif op_node.name_text.toPlainText() == "START" and not re.fullmatch(pattern3, op_node.dates_text.toPlainText().strip()):
-                warnings.append(
-                    "⚠ <b>WARNING:</b> the Start Node has an invalid date format. Must be 'dd/MM' to indicate the crop cultivation start."
-                )
-
-        # Join the warnings
-        warnings_string = "<br>".join(warnings)
-
-        # TODO: Add previous logic to helper funcs
         if return_warnings:
             return warnings
 
+        warnings_string = "<br>".join(warnings)
         dlg = ValidateDialog(warnings_string, self)
-        #dlg.exec_() # blocks interactions with main window
         dlg.show()
     # ------------------------------------------------------------------------------------------------
 

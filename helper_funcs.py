@@ -287,6 +287,81 @@ def resource_path(relative_path):
 # ------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------------------
+# HELPER FUNC FOR VALIDATION LOGIC
+# ------------------------------------------------------------------------------------------------
+def validate_graph(op_nodes, prob_nodes, cond_nodes):
+    warnings = []
+
+    op_names = [op_node.name_text.toPlainText() for op_node in op_nodes]
+    ids = [node.id_text.toPlainText() for node in (op_nodes + prob_nodes + cond_nodes)]
+
+    if "START" not in op_names:
+        warnings.append("⚠ <b>WARNING:</b> no operation named 'START' exists.")
+
+    if "END" not in op_names:
+        warnings.append("⚠ <b>WARNING:</b> no operation named 'END' exists.")
+
+    if len(ids) != len(set(ids)):
+        warnings.append("⚠ <b>WARNING:</b> two or more Nodes share the same ID.")
+
+    for prob_node in prob_nodes:
+        total_flow = 0.0
+        for arrow in prob_node.outgoing_arrows:
+            flow_str = arrow.text_item.toPlainText().strip()
+            if not re.fullmatch(r'\d{1,2}%', flow_str):
+                warnings.append(
+                    "⚠ <b>WARNING:</b> one of your arrows has an invalid probability format. Must be a percentage in the format XX%."
+                )
+            try:
+                total_flow += float(flow_str.replace('%', ''))
+            except ValueError:
+                pass
+        if abs(total_flow - 100.0) > 0.01:
+            warnings.append(
+                "⚠ <b>WARNING:</b> Node '" + prob_node.id_text.toPlainText() + "' has an outgoing probability flow different than 100%."
+            )
+
+    for cond_node in cond_nodes:
+        outgoing = cond_node.outgoing_arrows
+        if len(outgoing) != 2:
+            warnings.append(
+                "⚠ <b>WARNING:</b> Node '" + cond_node.id_text.toPlainText() + "' does not have exactly 2 outgoing arrows."
+            )
+            break
+        texts = [arrow.text_item.toPlainText().strip().upper() for arrow in outgoing]
+        if "YES" not in texts or "NO" not in texts:
+            warnings.append(
+                "⚠ <b>WARNING:</b> Node '" + cond_node.id_text.toPlainText() + "' must have one arrow labeled 'YES' and one labeled 'NO'."
+            )
+
+    for op_node in op_nodes:
+        outgoing = op_node.outgoing_arrows
+        if len(outgoing) != 1 and op_node.name_text.toPlainText() != "END":
+            warnings.append(
+                "⚠ <b>WARNING:</b> Node '" + op_node.id_text.toPlainText() + "' must have exactly 1 outgoing arrow."
+            )
+
+    pattern1 = r'\d{2}/\d{2} - \d{2}/\d{2}'
+    pattern2 = r'\+\d+d - \d{2}/\d{2}'
+    pattern3 = r'\d{2}/\d{2}'
+
+    for op_node in op_nodes:
+        name = op_node.name_text.toPlainText()
+        dates = op_node.dates_text.toPlainText().strip()
+        if name not in ("START", "END"):
+            if not re.fullmatch(pattern1, dates) and not re.fullmatch(pattern2, dates):
+                warnings.append(
+                    "⚠ <b>WARNING:</b> Node '" + op_node.id_text.toPlainText() + "' has an invalid date format. Must be 'dd/MM - dd/MM' or '+XXd - dd/MM'."
+                )
+        elif name == "START" and not re.fullmatch(pattern3, dates):
+            warnings.append(
+                "⚠ <b>WARNING:</b> the Start Node has an invalid date format. Must be 'dd/MM' to indicate the crop cultivation start."
+            )
+
+    return warnings
+# ------------------------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------------------------
 # HELPER FUNCTIONS FOR GRAPHICS
 # ------------------------------------------------------------------------------------------------
 def shape_line_intersection(node, p1: QPointF, p2: QPointF) -> QPointF:
