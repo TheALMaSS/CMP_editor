@@ -23,8 +23,8 @@
 import sys, json, re
 from jinja2 import Environment, FileSystemLoader
 from PyQt5.QtCore import Qt, QPointF
-from PyQt5.QtGui import QColor, QBrush
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox
+from PyQt5.QtGui import QColor, QBrush, QFont
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox, QLineEdit
 from flowchart_view import FlowchartView
 from flowchart_scene import FlowchartScene
 from prob_node import ProbNode
@@ -36,6 +36,7 @@ from choose_condition_dialog import ChooseConditionDialog
 from validate_dialog import ValidateDialog
 from help_dialog import HelpDialog
 from export_dialog import ExportDialog
+from datetime import datetime
 from helper_funcs import resource_path, generate_header_file, generate_json, generate_cpp_file, validate_graph
 from css_styles import button_style, validate_button_style, left_panel_style, delete_button_style, arrow_button_style, delete_mode_label_style, arrow_mode_label_style
 
@@ -56,7 +57,7 @@ class FlowchartWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("CMP Editor v" + str(SW_VERSION))
-        self.setGeometry(100, 100, 1100, 600)
+        self.setGeometry(100, 100, 1200, 700)
 
         # TODO : move nodes lists into the scene
         self.op_nodes = []
@@ -86,6 +87,14 @@ class FlowchartWindow(QMainWindow):
         left_layout.setSpacing(10)
 
         # -------------------------------------------------------------------
+        # Edit box for user name
+        self.authorname_edit = QLineEdit(self)
+        self.authorname_edit.setPlaceholderText("Author's name")
+        self.authorname_edit.setFont(QFont("Arial", 11))
+        left_layout.addWidget(self.authorname_edit)
+
+        left_layout.addSpacing(20)
+
         # BUTTONS
         self.add_node_btn = QPushButton("Add Operation Node")
         self.add_node_btn.setStyleSheet(button_style)
@@ -200,7 +209,7 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def validate(self, return_warnings=False):
-        warnings = validate_graph(self.op_nodes, self.prob_nodes, self.cond_nodes)
+        warnings = validate_graph(self.op_nodes, self.prob_nodes, self.cond_nodes, self.authorname_edit.text())
 
         if return_warnings:
             return warnings
@@ -302,9 +311,17 @@ class FlowchartWindow(QMainWindow):
             dlg.setLayout(layout)
             dlg.exec_()
 
+        if self.authorname_edit.text() != "":
+            author_name = self.authorname_edit.text()
+        else:
+            author_name = "not defined"
+
+        current_date = datetime.now()
+        date_str = current_date.strftime("%d/%m/%Y")
+
         filename, _ = QFileDialog.getSaveFileName(self, "Save JSON", "", "JSON Files (*.json)")
         if filename != "":
-            generate_json(all_nodes, filename)
+            generate_json(all_nodes, author_name, date_str, filename)
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -403,7 +420,15 @@ class FlowchartWindow(QMainWindow):
             return
         
         all_nodes = self.op_nodes + self.cond_nodes + self.prob_nodes
-        json_data = generate_json(all_nodes, f"{crop_name}.json")
+        if self.authorname_edit.text() != "":
+            author_name = self.authorname_edit.text()
+        else:
+            author_name = "not defined"
+
+        current_date = datetime.now()
+        date_str = current_date.strftime("%d/%m/%Y")
+
+        json_data = generate_json(all_nodes, author_name, date_str, f"{crop_name}.json")
 
         generate_header_file(crop_name, json_data)
         generate_cpp_file(crop_name, json_data)

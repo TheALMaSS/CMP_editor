@@ -8,8 +8,15 @@ from jinja2 import Environment, FileSystemLoader
 # ------------------------------------------------------------------------------------------------
 # HELPER FUNCTIONS FOR EXPORT AND SAVING
 # ------------------------------------------------------------------------------------------------
-def generate_json(all_nodes, filename):
+def generate_json(all_nodes, author, date, filename):
     data = []
+    
+    metadata = {
+        "author": author,
+        "last_modified": date
+    }
+    data.append(metadata)
+
     for node in all_nodes:
         node_data = {
             "type": node.__class__.__name__,
@@ -289,11 +296,14 @@ def resource_path(relative_path):
 # ------------------------------------------------------------------------------------------------
 # HELPER FUNC FOR VALIDATION LOGIC
 # ------------------------------------------------------------------------------------------------
-def validate_graph(op_nodes, prob_nodes, cond_nodes):
+def validate_graph(op_nodes, prob_nodes, cond_nodes, author):
     warnings = []
 
     op_names = [op_node.name_text.toPlainText() for op_node in op_nodes]
     ids = [node.id_text.toPlainText() for node in (op_nodes + prob_nodes + cond_nodes)]
+
+    if author == "":
+        warnings.append("⚠ <b>WARNING:</b> no author's name defined.")
 
     if "START" not in op_names:
         warnings.append("⚠ <b>WARNING:</b> no operation named 'START' exists.")
