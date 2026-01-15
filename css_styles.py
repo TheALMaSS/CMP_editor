@@ -1,3 +1,18 @@
+label_text_style = """
+            QLineEdit, QLabel {
+                border: 0px solid #888;
+                padding: 4px 0px;
+            }
+        """
+
+value_text_style = """
+            QLineEdit, QLabel {
+                border: 1px solid;
+                border-radius: 5px;
+                padding: 4px 0px;
+            }
+        """
+
 button_style = """
     QPushButton {
         background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,

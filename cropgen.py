@@ -24,7 +24,7 @@ import sys, json, re
 from jinja2 import Environment, FileSystemLoader
 from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QColor, QBrush, QFont
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox, QLineEdit
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox, QLineEdit, QHBoxLayout
 from flowchart_view import FlowchartView
 from flowchart_scene import FlowchartScene
 from prob_node import ProbNode
@@ -38,7 +38,7 @@ from help_dialog import HelpDialog
 from export_dialog import ExportDialog
 from datetime import datetime
 from helper_funcs import resource_path, generate_header_file, generate_json, generate_cpp_file, validate_graph
-from css_styles import button_style, validate_button_style, left_panel_style, delete_button_style, arrow_button_style, delete_mode_label_style, arrow_mode_label_style
+from css_styles import label_text_style, value_text_style, button_style, validate_button_style, left_panel_style, delete_button_style, arrow_button_style, delete_mode_label_style, arrow_mode_label_style
 
 OPERATIONS_FILE = resource_path("operations.json")
 CONDITIONS_FILE = resource_path("conditions.json")
@@ -69,7 +69,9 @@ class FlowchartWindow(QMainWindow):
         self._operations = load_operations()
         self._conditions = load_conditions()
         self.author = ""
-        self.last_modified = ""
+        curr_date = datetime.now()
+        curr_date_str = curr_date.strftime("%d/%m/%Y")
+        self.last_modified = curr_date_str
 
         # -------------------------------------------------------------------
         # SCENE AND VIEW
@@ -89,14 +91,44 @@ class FlowchartWindow(QMainWindow):
         left_layout.setSpacing(10)
 
         # -------------------------------------------------------------------
-        # Edit box for user name
-        self.author_edit = QLineEdit(self)
-        self.author_edit.setPlaceholderText("Author's name")
-        self.author_edit.setFont(QFont("Arial", 11))
-        self.author_edit.textEdited.connect(self.on_author_changed)
-        left_layout.addWidget(self.author_edit)
+        # Horizontal layout number 1
+        author_layout = QHBoxLayout()
 
-        left_layout.addSpacing(20)
+        self.author_label = QLabel("<b>Author:</b>")
+        self.author_label.setFont(QFont("Arial", 10))
+        self.author_label.setStyleSheet(label_text_style)
+        author_layout.addWidget(self.author_label)
+
+        self.author_edit = QLineEdit()
+        self.author_edit.setFont(QFont("Arial", 10))
+        self.author_edit.textEdited.connect(self.on_author_changed)
+        self.author_edit.setStyleSheet(value_text_style)
+        author_layout.addWidget(self.author_edit)
+
+        left_layout.addLayout(author_layout)
+
+        # Horizontal layout number 2
+        date_layout = QHBoxLayout()
+
+        self.last_modified_label = QLabel(self)
+        self.last_modified_label.setFont(QFont("Arial", 10))
+        self.last_modified_label.setText("<b>Last modified:</b>")
+        self.last_modified_label.setStyleSheet(label_text_style)
+        date_layout.addWidget(self.last_modified_label)
+
+        self.last_modified_text = QLabel(self)
+        self.last_modified_text.setFont(QFont("Arial", 10))
+        self.last_modified_text.setStyleSheet(value_text_style)
+        self.last_modified_text.setText(self.last_modified)
+        date_layout.addWidget(self.last_modified_text)
+
+        left_layout.addLayout(date_layout)
+
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Plain)
+        line.setStyleSheet("color: #525252;")
+        left_layout.addWidget(line)
 
         # BUTTONS
         self.add_node_btn = QPushButton("Add Operation Node")
@@ -359,6 +391,7 @@ class FlowchartWindow(QMainWindow):
         self.author = metadata.get("author", "")
         self.author_edit.setText(self.author)
         self.last_modified = metadata.get("last_modified", "")
+        self.last_modified_text.setText(self.last_modified)
 
         node_map = {}
         for node_data in data[1:]:
