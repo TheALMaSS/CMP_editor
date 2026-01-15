@@ -366,17 +366,9 @@ class FlowchartWindow(QMainWindow):
             dlg.setLayout(layout)
             dlg.exec_()
 
-        if self.author != "":
-            author_name = self.author
-        else:
-            author_name = "not defined"
-
-        curr_date = datetime.now()
-        curr_date_str = curr_date.strftime("%d/%m/%Y")
-
         filename, _ = QFileDialog.getSaveFileName(self, "Save JSON", "", "JSON Files (*.json)")
         if filename != "":
-            generate_json(all_nodes, author_name, curr_date_str, filename)
+            generate_json(all_nodes, self.crop_name, self.author, self.last_modified, filename)
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -414,6 +406,8 @@ class FlowchartWindow(QMainWindow):
         self.author_edit.setText(self.author)
         self.last_modified = metadata.get("last_modified", "")
         self.last_modified_text.setText(self.last_modified)
+        self.crop_name = metadata.get("crop_name", "")
+        self.crop_edit.setText(self.crop_name)
 
         node_map = {}
         for node_data in data[1:]:

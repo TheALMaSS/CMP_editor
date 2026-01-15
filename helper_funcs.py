@@ -8,10 +8,11 @@ from jinja2 import Environment, FileSystemLoader
 # ------------------------------------------------------------------------------------------------
 # HELPER FUNCTIONS FOR EXPORT AND SAVING
 # ------------------------------------------------------------------------------------------------
-def generate_json(all_nodes, author, date, filename):
+def generate_json(all_nodes, crop_name, author, date, filename):
     data = []
     
     metadata = {
+        "crop_name": crop_name,
         "author": author,
         "last_modified": date
     }
