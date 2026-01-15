@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QGraphicsView, QApplication, QMenu, QGraphicsTextItem
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtWidgets import QGraphicsView, QApplication, QMenu, QGraphicsTextItem, QPushButton
+from PyQt5.QtCore import Qt, QPoint, QPointF
 from PyQt5.QtGui import QPainter
 from node import Node
 from prob_node import ProbNode
@@ -21,6 +21,23 @@ class FlowchartView(QGraphicsView):
         self.setDragMode(QGraphicsView.RubberBandDrag)
         self.clipboard = []
 
+        # BUTTONS AND THINGS INSIDE THE VIEW
+        self.button = QPushButton("Scroll back to content", self)
+        self.button.clicked.connect(self.scroll_to_center_of_mass)
+        self.button.resize(220, 40)
+
+    def scroll_to_center_of_mass(self):
+        items = self.scene().items()
+        if not items:
+            return
+        center = QPointF(0, 0)
+        for item in items:
+            center += item.sceneBoundingRect().center()
+        center /= len(items)
+        self.centerOn(center)
+
+    # --------------------------------------------------------------------
+    # USER INTERACTION FUNCTIONS
     def mousePressEvent(self, event):
         # IF LEFT CLICK
         if event.button() == Qt.LeftButton:
