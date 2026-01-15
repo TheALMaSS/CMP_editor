@@ -184,9 +184,6 @@ class FlowchartWindow(QMainWindow):
         self.mode_indicator.move(20, 20)
         self.mode_indicator.setObjectName("modeLabel")
         self.mode_indicator.hide()
-
-        # TODO: fix this issue when unfocusing on a text box
-        #self.setFocusPolicy(Qt.StrongFocus)
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
