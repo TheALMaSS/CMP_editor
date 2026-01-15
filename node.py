@@ -3,6 +3,13 @@ from PyQt5.QtGui import QPainter, QTextDocument, QTextOption, QFont, QFontMetric
 from PyQt5.QtCore import QRectF, Qt
 from arrow import Arrow
 
+class GenericTextItem(QGraphicsTextItem):
+    def focusOutEvent(self, event):
+        cursor = self.textCursor()
+        cursor.clearSelection()
+        self.setTextCursor(cursor)
+        super().focusOutEvent(event)
+
 class Node(QGraphicsItem):
     def __init__(self, name):
         super().__init__()
@@ -21,7 +28,7 @@ class Node(QGraphicsItem):
         self.name = name
 
         # Name text (centered)
-        self.name_text = QGraphicsTextItem(self)
+        self.name_text = GenericTextItem(self)
         self.name_doc = QTextDocument()
         self.name_doc.setDefaultTextOption(QTextOption(Qt.AlignCenter))
         font = QFont()
@@ -31,7 +38,7 @@ class Node(QGraphicsItem):
         self.name_text.setDocument(self.name_doc)
 
         # Id text (centered, bold, size 12)
-        self.id_text = QGraphicsTextItem(self)
+        self.id_text = GenericTextItem(self)
         self.id_doc = QTextDocument()
         self.id_doc.setDefaultTextOption(QTextOption(Qt.AlignCenter))
         font = QFont()

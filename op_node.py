@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtWidgets import QGraphicsTextItem, QGraphicsItem
 from node import Node
+from node import GenericTextItem
 from PyQt5.QtGui import QTextDocument, QTextOption, QFont, QColor, QPen
 import json
 from helper_funcs import resource_path
@@ -11,7 +12,7 @@ class OpNode(Node):
     def __init__(self, name):
         super().__init__(name)
 
-        self.dates_text = QGraphicsTextItem(self)
+        self.dates_text = GenericTextItem(self)
         
         # Only nodes that are not start and end have a dates field
         if name != "END":
@@ -42,7 +43,7 @@ class OpNode(Node):
                 self.vertical_offset_id = -30
             self.name_text.setVisible(False)
             self.id_text.setPlainText(name)
-            self.id_text.setTextInteractionFlags(Qt.NoTextInteraction)
+            #self.id_text.setTextInteractionFlags(Qt.NoTextInteraction)
 
             self.vertical_offset_name = 0
             self.padding_vertical = 0
