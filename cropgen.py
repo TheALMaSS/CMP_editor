@@ -24,7 +24,7 @@ import sys, json, re
 from jinja2 import Environment, FileSystemLoader
 from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QColor, QBrush, QFont
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox, QLineEdit, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox, QLineEdit, QHBoxLayout, QMessageBox
 from flowchart_view import FlowchartView
 from flowchart_scene import FlowchartScene
 from prob_node import ProbNode
@@ -68,6 +68,7 @@ class FlowchartWindow(QMainWindow):
         self.arrow_mode = False
         self._operations = load_operations()
         self._conditions = load_conditions()
+        self.crop_name = ""
         self.author = ""
         curr_date = datetime.now()
         curr_date_str = curr_date.strftime("%d/%m/%Y")
@@ -91,7 +92,23 @@ class FlowchartWindow(QMainWindow):
         left_layout.setSpacing(10)
 
         # -------------------------------------------------------------------
-        # Horizontal layout number 1
+        # Horizontal layout number 1 (metadata)
+        crop_layout = QHBoxLayout()
+
+        self.crop_label = QLabel("<b>Crop name:</b>")
+        self.crop_label.setFont(QFont("Arial", 10))
+        self.crop_label.setStyleSheet(label_text_style)
+        crop_layout.addWidget(self.crop_label)
+
+        self.crop_edit = QLineEdit()
+        self.crop_edit.setFont(QFont("Arial", 10))
+        self.crop_edit.textEdited.connect(self.on_crop_changed)
+        self.crop_edit.setStyleSheet(value_text_style)
+        crop_layout.addWidget(self.crop_edit)
+
+        left_layout.addLayout(crop_layout)
+
+        # Horizontal layout number 2 (metadata)
         author_layout = QHBoxLayout()
 
         self.author_label = QLabel("<b>Author:</b>")
@@ -107,7 +124,7 @@ class FlowchartWindow(QMainWindow):
 
         left_layout.addLayout(author_layout)
 
-        # Horizontal layout number 2
+        # Horizontal layout number 3 (metadata)
         date_layout = QHBoxLayout()
 
         self.last_modified_label = QLabel(self)
@@ -123,6 +140,7 @@ class FlowchartWindow(QMainWindow):
         date_layout.addWidget(self.last_modified_text)
 
         left_layout.addLayout(date_layout)
+        # --------------------------------------
 
         line = QFrame()
         line.setFrameShape(QFrame.HLine)
@@ -220,6 +238,9 @@ class FlowchartWindow(QMainWindow):
         self.mode_indicator.setObjectName("modeLabel")
         self.mode_indicator.hide()
     # ------------------------------------------------------------------------------------------------
+    def on_crop_changed(self, text):
+        self.crop_name = text
+
     def on_author_changed(self, text):
         self.author = text
     # ------------------------------------------------------------------------------------------------
@@ -451,25 +472,30 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def export_to_almass(self):
-        dlg = ExportDialog(self)
-        if dlg.exec_():
-            crop_name = dlg.crop_name
-        else:
-            return
+        #dlg = ExportDialog(self, self.crop_name)
+
+        #if not dlg.exec_():
+        #    return
         
         all_nodes = self.op_nodes + self.cond_nodes + self.prob_nodes
-        if self.authorname_edit.text() != "":
-            author_name = self.authorname_edit.text()
+        if self.author_edit.text() != "":
+            author_name = self.author_edit.text()
         else:
             author_name = "not defined"
 
         current_date = datetime.now()
         date_str = current_date.strftime("%d/%m/%Y")
 
-        json_data = generate_json(all_nodes, author_name, date_str, f"{crop_name}.json")
+        json_data = generate_json(all_nodes, author_name, date_str, f"{self.crop_name}.json")
 
-        generate_header_file(crop_name, json_data)
-        generate_cpp_file(crop_name, json_data)
+        generate_header_file(self.crop_name, json_data)
+        generate_cpp_file(self.crop_name, json_data)
+
+        msg = QMessageBox(self)
+        msg.setWindowTitle("Export")
+        msg.setText("Export successful!")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()
 
 # MAIN
 if __name__ == "__main__":

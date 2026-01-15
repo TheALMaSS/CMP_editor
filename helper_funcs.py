@@ -120,8 +120,8 @@ def generate_header_file(crop_name, data):
 
     crop_name_all_caps = to_all_caps(crop_name)
     crop_name_lowercase = to_lower_underscore(crop_name)
-    nodes = [node for node in data if node.get("type") == "OpNode"]
-    start_node = next(n for n in data if n["id"] == "START")
+    nodes = [node for node in data[1:] if node.get("type") == "OpNode"]
+    start_node = next(n for n in data[1:] if n["id"] == "START")
     starting_date = get_starting_date(start_node)
 
     env = Environment(
@@ -153,9 +153,9 @@ def generate_cpp_file(crop_name, data):
     tmpl_main = env.get_template("cpp_file.jinja")
 
     # Classify nodes
-    start_node = next(n for n in data if n["id"] == "START")
-    end_node   = next(n for n in data if n["id"] == "END")
-    middle_nodes = [n for n in data if n["id"] not in ("START", "END")]
+    start_node = next(n for n in data[1:] if n["id"] == "START")
+    end_node   = next(n for n in data[1:] if n["id"] == "END")
+    middle_nodes = [n for n in data[1:] if n["id"] not in ("START", "END")]
 
     # Vars for every node
     crop_name_lowercase = to_lower_underscore(crop_name)
@@ -163,7 +163,7 @@ def generate_cpp_file(crop_name, data):
     # Render START
     t_start = env.get_template("case_start.jinja")
     next_id = start_node["outgoing"][0]["destination_id"]
-    next_node = next((n for n in data if n["id"] == next_id), None)
+    next_node = next((n for n in data[1:] if n["id"] == next_id), None)
     next_date = get_earliest_date(next_node["dates"])
 
     start_block = t_start.render(
@@ -187,7 +187,7 @@ def generate_cpp_file(crop_name, data):
         if node["type"] == "OpNode":
             t = env.get_template("case_op_node.jinja")
             next_id = node["outgoing"][0]["destination_id"]
-            next_node = next((n for n in data if n["id"] == next_id), None)
+            next_node = next((n for n in data[1:] if n["id"] == next_id), None)
             next_date = get_earliest_date(next_node["dates"])
             scheduling_date = get_days_left(node["dates"])
             cpp_func = node["cpp_func"]
@@ -214,8 +214,8 @@ def generate_cpp_file(crop_name, data):
                 (arrow["destination_id"] for arrow in node["outgoing"] if arrow.get("branching_condition") == "NO"),
                 None
             )
-            yes_node = next((n for n in data if n["id"] == yes_node_id), None)
-            no_node = next((n for n in data if n["id"] == no_node_id), None)
+            yes_node = next((n for n in data[1:] if n["id"] == yes_node_id), None)
+            no_node = next((n for n in data[1:] if n["id"] == no_node_id), None)
 
             yes_node_sched_date = get_earliest_date(yes_node["dates"])
             no_node_sched_date = get_earliest_date(no_node["dates"])
@@ -239,7 +239,7 @@ def generate_cpp_file(crop_name, data):
             probabilities = [float(o["branching_condition"].strip('%')) / 100.0 for o in node["outgoing"]]
             earliest_dates = []
             for dest_id in next_ids:
-                dest_node = next(n for n in data if n["id"] == dest_id)
+                dest_node = next(n for n in data[1:] if n["id"] == dest_id)
                 earliest_dates.append(get_earliest_date(dest_node["dates"]))
 
             block = t.render(
@@ -296,11 +296,14 @@ def resource_path(relative_path):
 # ------------------------------------------------------------------------------------------------
 # HELPER FUNC FOR VALIDATION LOGIC
 # ------------------------------------------------------------------------------------------------
-def validate_graph(op_nodes, prob_nodes, cond_nodes, author):
+def validate_graph(op_nodes, prob_nodes, cond_nodes, crop_name, author):
     warnings = []
 
     op_names = [op_node.name_text.toPlainText() for op_node in op_nodes]
     ids = [node.id_text.toPlainText() for node in (op_nodes + prob_nodes + cond_nodes)]
+
+    if crop_name == "":
+        warnings.append("⚠ <b>WARNING:</b> no crop's name defined.")
 
     if author == "":
         warnings.append("⚠ <b>WARNING:</b> no author's name defined.")
