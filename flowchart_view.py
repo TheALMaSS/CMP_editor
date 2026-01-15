@@ -197,12 +197,8 @@ class FlowchartView(QGraphicsView):
         elif event.button() == Qt.RightButton:
             item = self.itemAt(event.pos())
 
-            # TODO: check why does it crash when i right click on the text??? Probably best to subclass QGraphicsTextItem and make my own text and override right click
-            if isinstance(item, QGraphicsTextItem):
-                return
-
             # IF NODE -> SHOW OPTIONS
-            elif isinstance(item, Node):
+            if isinstance(item, Node):
                 menu = QMenu()
 
                 menu.exec_(event.globalPos())

@@ -10,6 +10,9 @@ class GenericTextItem(QGraphicsTextItem):
         self.setTextCursor(cursor)
         super().focusOutEvent(event)
 
+    def contextMenuEvent(self, event):
+        pass 
+
 class Node(QGraphicsItem):
     def __init__(self, name):
         super().__init__()
