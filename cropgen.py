@@ -68,6 +68,8 @@ class FlowchartWindow(QMainWindow):
         self.arrow_mode = False
         self._operations = load_operations()
         self._conditions = load_conditions()
+        self.author = ""
+        self.last_modified = ""
 
         # -------------------------------------------------------------------
         # SCENE AND VIEW
@@ -88,10 +90,11 @@ class FlowchartWindow(QMainWindow):
 
         # -------------------------------------------------------------------
         # Edit box for user name
-        self.authorname_edit = QLineEdit(self)
-        self.authorname_edit.setPlaceholderText("Author's name")
-        self.authorname_edit.setFont(QFont("Arial", 11))
-        left_layout.addWidget(self.authorname_edit)
+        self.author_edit = QLineEdit(self)
+        self.author_edit.setPlaceholderText("Author's name")
+        self.author_edit.setFont(QFont("Arial", 11))
+        self.author_edit.textEdited.connect(self.on_author_changed)
+        left_layout.addWidget(self.author_edit)
 
         left_layout.addSpacing(20)
 
@@ -185,7 +188,8 @@ class FlowchartWindow(QMainWindow):
         self.mode_indicator.setObjectName("modeLabel")
         self.mode_indicator.hide()
     # ------------------------------------------------------------------------------------------------
-
+    def on_author_changed(self, text):
+        self.author = text
     # ------------------------------------------------------------------------------------------------
     def update_mode_indicator(self):
         txt = ""
@@ -206,7 +210,7 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def validate(self, return_warnings=False):
-        warnings = validate_graph(self.op_nodes, self.prob_nodes, self.cond_nodes, self.authorname_edit.text())
+        warnings = validate_graph(self.op_nodes, self.prob_nodes, self.cond_nodes, self.author)
 
         if return_warnings:
             return warnings
@@ -308,17 +312,17 @@ class FlowchartWindow(QMainWindow):
             dlg.setLayout(layout)
             dlg.exec_()
 
-        if self.authorname_edit.text() != "":
-            author_name = self.authorname_edit.text()
+        if self.author != "":
+            author_name = self.author
         else:
             author_name = "not defined"
 
-        current_date = datetime.now()
-        date_str = current_date.strftime("%d/%m/%Y")
+        curr_date = datetime.now()
+        curr_date_str = curr_date.strftime("%d/%m/%Y")
 
         filename, _ = QFileDialog.getSaveFileName(self, "Save JSON", "", "JSON Files (*.json)")
         if filename != "":
-            generate_json(all_nodes, author_name, date_str, filename)
+            generate_json(all_nodes, author_name, curr_date_str, filename)
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -351,9 +355,13 @@ class FlowchartWindow(QMainWindow):
         with open(filename, "r") as f:
             data = json.load(f)
 
-        node_map = {}
+        metadata = data[0]
+        self.author = metadata.get("author", "")
+        self.author_edit.setText(self.author)
+        self.last_modified = metadata.get("last_modified", "")
 
-        for node_data in data:
+        node_map = {}
+        for node_data in data[1:]:
             node_type = node_data.get("type", "OpNode")
             if node_type == "OpNode":
                 node = OpNode(str(node_data["name"]))
