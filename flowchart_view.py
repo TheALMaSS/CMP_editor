@@ -7,7 +7,7 @@ from cond_node import CondNode
 from op_node import OpNode
 from arrow import BendPoint, Arrow
 
-# Displays a portion of the SCENE and handles user interaction
+# Displays a portion of the SCENE inside the WINDOW and handles user interaction
 class FlowchartView(QGraphicsView):
     def __init__(self, scene, window):
         super().__init__(scene)
