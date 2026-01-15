@@ -282,6 +282,7 @@ class FlowchartWindow(QMainWindow):
         operation = dlg.selected
 
         node = OpNode(str(operation["name"]))
+        node.setPos(self.view.mapToScene(self.view.viewport().rect().center()))
         node.setZValue(1)
 
         #TODO : move all those adding/removing nodes parts to functions inside the scene.
@@ -292,6 +293,7 @@ class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
     def add_probability_node(self):
         node = ProbNode("Probability\nNode")
+        node.setPos(self.view.mapToScene(self.view.viewport().rect().center()))
         node.setZValue(1)
 
         self.scene.addItem(node)
@@ -307,6 +309,7 @@ class FlowchartWindow(QMainWindow):
         cpp_cond = dlg.coded_condition
 
         node = CondNode(str(condition), cpp_cond)
+        node.setPos(self.view.mapToScene(self.view.viewport().rect().center()))
         node.setZValue(1)
 
         self.scene.addItem(node)
