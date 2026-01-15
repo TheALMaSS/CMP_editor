@@ -1,19 +1,4 @@
 {
-  "FARM": {
-    "var": "m_farm",
-    "sublayers": {
-      "TYPE": {
-        "func": "GetFarmType()",
-        "Cattle": "0",
-        "Pig": "1",
-        "Plant": "2",
-        "Organic Cattle": "3",
-        "Organic Pig": "4",
-        "Organic Plant": "5"
-      }
-    }
-  },
-
   "FIELD": {
     "var": "m_field",
     "sublayers": {
