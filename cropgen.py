@@ -103,6 +103,7 @@ class FlowchartWindow(QMainWindow):
         self.crop_edit = QLineEdit()
         self.crop_edit.setFont(QFont("Arial", 10))
         self.crop_edit.textEdited.connect(self.on_crop_changed)
+        self.crop_edit.setPlaceholderText("ex. DK_winterrape")
         self.crop_edit.setStyleSheet(value_text_style)
         crop_layout.addWidget(self.crop_edit)
 
