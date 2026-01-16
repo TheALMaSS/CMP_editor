@@ -484,14 +484,18 @@ class FlowchartWindow(QMainWindow):
         current_date = datetime.now()
         date_str = current_date.strftime("%d/%m/%Y")
 
-        json_data = generate_json(all_nodes, self.crop_name, author_name, date_str, f"{self.crop_name}.json")
+        msg_text = "Successfully exported: " + f"{self.crop_name}.h and " + f"{self.crop_name}.cpp"
 
-        generate_header_file(self.crop_name, json_data)
-        generate_cpp_file(self.crop_name, json_data)
+        try:
+            json_data = generate_json(all_nodes, self.crop_name, author_name, date_str, f"{self.crop_name}.json")
+            generate_header_file(self.crop_name, json_data)
+            generate_cpp_file(self.crop_name, json_data)
+        except Exception:
+            msg_text = "Error: export was not successful. Check your CMP."
 
         msg = QMessageBox(self)
         msg.setWindowTitle("Export")
-        msg.setText("Successfully exported: " + f"{self.crop_name}.h and " + f"{self.crop_name}.cpp")
+        msg.setText(msg_text)
         msg.setStandardButtons(QMessageBox.Ok)
         msg.exec_()
 
