@@ -42,7 +42,7 @@ from css_styles import label_text_style, value_text_style, button_style, validat
 
 OPERATIONS_FILE = resource_path("operations.json")
 CONDITIONS_FILE = resource_path("conditions.json")
-SW_VERSION = "1.0"
+SW_VERSION = "2.0"
 
 def load_operations():
     with open(OPERATIONS_FILE, "r", encoding="utf-8") as f:
