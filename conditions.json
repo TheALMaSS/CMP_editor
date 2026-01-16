@@ -1,4 +1,25 @@
 {
+  "FARM": {
+    "var": "m_farm",
+    "sublayers": {
+      "FARMING INTENSITY": {
+        "func": "GetIntensity()",
+        "Normal": "0",
+        "Intensive": "1",
+        "Very intensive": "2"
+      },
+      "SIZE": {
+        "func": "GetFarmSizeBin()",
+        "0 - 4.9 ha": "0",
+        "5 - 9.9 ha": "1",
+        "10 - 19.9 ha": "2",
+        "20 - 29.9 ha": "3",
+        "30 - 49.9 ha": "4",
+        "50 - 99.9 ha": "5",
+        ">= 100 ha": "6"
+      }
+    }
+  },
   "FIELD": {
     "var": "m_field",
     "sublayers": {
