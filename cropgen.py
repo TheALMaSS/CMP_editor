@@ -57,7 +57,7 @@ class FlowchartWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("CMP Editor v" + str(SW_VERSION))
-        self.setGeometry(100, 100, 1200, 700)
+        self.setGeometry(100, 100, 1250, 750)
 
         # TODO : move nodes lists into the scene
         self.op_nodes = []
@@ -264,7 +264,7 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def validate(self, return_warnings=False):
-        warnings = validate_graph(self.op_nodes, self.prob_nodes, self.cond_nodes, self.author)
+        warnings = validate_graph(self.op_nodes, self.prob_nodes, self.cond_nodes, self.crop_name, self.author)
 
         if return_warnings:
             return warnings
@@ -484,14 +484,14 @@ class FlowchartWindow(QMainWindow):
         current_date = datetime.now()
         date_str = current_date.strftime("%d/%m/%Y")
 
-        json_data = generate_json(all_nodes, author_name, date_str, f"{self.crop_name}.json")
+        json_data = generate_json(all_nodes, self.crop_name, author_name, date_str, f"{self.crop_name}.json")
 
         generate_header_file(self.crop_name, json_data)
         generate_cpp_file(self.crop_name, json_data)
 
         msg = QMessageBox(self)
         msg.setWindowTitle("Export")
-        msg.setText("Export successful!")
+        msg.setText("Successfully exported: " + f"{self.crop_name}.h and " + f"{self.crop_name}.cpp")
         msg.setStandardButtons(QMessageBox.Ok)
         msg.exec_()
 
