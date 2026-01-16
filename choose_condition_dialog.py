@@ -97,7 +97,7 @@ class ChooseConditionDialog(QDialog):
         else:
             self.selected.append(current.text())
         first_key = self.selected[0]
-        third_options = self.conditions[str(first_key)]["sublayers"][current.text()].keys()
+        third_options = list(self.conditions[str(first_key)]["sublayers"][current.text()].keys())[1:]
         self.list3.addItems(sorted(third_options))
         self.ok_btn.setEnabled(False)
 
