@@ -235,7 +235,7 @@ class FlowchartWindow(QMainWindow):
 
         # MODE INDICATOR LABEL
         self.mode_indicator = QLabel(self.view)
-        self.mode_indicator.move(20, 20)
+        self.mode_indicator.move(10, 50)
         self.mode_indicator.setObjectName("modeLabel")
         self.mode_indicator.hide()
     # ------------------------------------------------------------------------------------------------

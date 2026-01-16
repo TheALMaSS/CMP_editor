@@ -22,10 +22,9 @@ class FlowchartView(QGraphicsView):
         self.clipboard = []
 
         # BUTTONS AND THINGS INSIDE THE VIEW
-        # TODO anchor this button to the portview and change location, otherwise it is hidden by mode label
         self.scroll_back_btn = QPushButton("Scroll back to content", self)
         self.scroll_back_btn.clicked.connect(self.scroll_to_center_of_mass)
-        self.scroll_back_btn.resize(220, 40)
+        self.scroll_back_btn.resize(230, 40)
 
     def scroll_to_center_of_mass(self):
         items = self.scene().items()
