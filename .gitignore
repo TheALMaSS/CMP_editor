@@ -2,3 +2,4 @@
 *.cpp
 *.h
 __pycache__/
+build/
