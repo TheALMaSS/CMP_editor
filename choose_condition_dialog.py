@@ -22,7 +22,7 @@ class ChooseConditionDialog(QDialog):
     def __init__(self, conditions, parent=None):
         super().__init__(parent, Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
         self.setWindowTitle("Select Condition For Branching")
-        self.resize(600, 300)
+        self.resize(700, 300)
 
         self.selected = []  # final selected path
         self.conditions = conditions  # store the passed-in conditions
@@ -98,7 +98,7 @@ class ChooseConditionDialog(QDialog):
             self.selected.append(current.text())
         first_key = self.selected[0]
         third_options = list(self.conditions[str(first_key)]["sublayers"][current.text()].keys())[1:]
-        self.list3.addItems(sorted(third_options))
+        self.list3.addItems(third_options)
         self.ok_btn.setEnabled(False)
 
     def on_list3_changed(self, current, previous):
