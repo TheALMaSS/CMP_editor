@@ -1,6 +1,6 @@
 [
   {
-    "name": "Ammonium Sulphate",
+    "name": "Ammonium Sulphate (Fertilizer)",
     "description": "Apply ammonium sulphate fertilizer.",
     "cpp_func": "AmmoniumSulphate"
   },
@@ -130,6 +130,11 @@
     "cpp_func": "HeavyCultivatorAggregate"
   },
   {
+    "name": "Herbicide",
+    "description": "Apply herbicide to the field.",
+    "cpp_func": "HerbicideTreat"
+  },
+  {
     "name": "Hilling Up",
     "description": "Hill soil around plants to support growth.",
     "cpp_func": "HillingUp"
@@ -190,7 +195,7 @@
     "cpp_func": "RowCultivation"
   },
   {
-    "name": "Slurry",
+    "name": "Slurry (Fertilizer)",
     "description": "Spread slurry.",
     "cpp_func": "Slurry"
   },
