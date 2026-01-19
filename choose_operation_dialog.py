@@ -129,3 +129,10 @@ class ChooseOperationDialog(QDialog):
             return
         self.selected = self.filtered_operations[row]
         super().accept()
+
+    def keyPressEvent(self, event):
+        if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+            if self.search_field.hasFocus():
+                self.perform_search()
+                return
+        super().keyPressEvent(event)
