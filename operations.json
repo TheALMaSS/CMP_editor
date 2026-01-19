@@ -1,7 +1,7 @@
 [
   {
-    "name": "Ammonium Sulphate (Fertilizer)",
-    "description": "Apply ammonium sulphate fertilizer.",
+    "name": "Ammonium Sulphate",
+    "description": "Apply ammonium sulphate as a fertilizer.",
     "cpp_func": "AmmoniumSulphate"
   },
   {
@@ -195,8 +195,8 @@
     "cpp_func": "RowCultivation"
   },
   {
-    "name": "Slurry (Fertilizer)",
-    "description": "Spread slurry.",
+    "name": "Slurry",
+    "description": "Spread slurry as a fertilizer.",
     "cpp_func": "Slurry"
   },
   {
