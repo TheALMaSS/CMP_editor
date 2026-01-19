@@ -82,12 +82,16 @@ class ChooseOperationDialog(QDialog):
         if self.list_widget.count():
             self.list_widget.setCurrentRow(0)
 
+    # searches both in name and description
     def perform_search(self):
         text = self.search_field.text().lower()
         if not text:
             self.filtered_operations = self.operations
         else:
-            self.filtered_operations = [op for op in self.operations if text in op["name"].lower()]
+            self.filtered_operations = [
+                op for op in self.operations
+                if text in op["name"].lower() or text in op.get("description", "").lower()
+            ]
         self.update_list(self.filtered_operations)
         if self.list_widget.count():
             self.list_widget.setCurrentRow(0)
