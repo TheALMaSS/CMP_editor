@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsEllipseItem, QGraphicsTextItem, QGraphicsItem
 from PyQt5.QtCore import Qt, QPointF, QRectF
-from PyQt5.QtGui import QPen, QPainterPath, QPolygonF, QFont
+from PyQt5.QtGui import QPen, QPainterPath, QPolygonF, QFont, QPainterPathStroker
 import math
 from helper_funcs import shape_line_intersection  # your existing helper
 
@@ -41,6 +41,11 @@ class Arrow(QGraphicsPathItem):
         self.end_node.incoming_arrows.append(self)
 
         self.update_path()
+
+    def shape(self):
+        stroker = QPainterPathStroker()
+        stroker.setWidth(6)
+        return stroker.createStroke(self.path())
 
     def set_text(self, text):
         self.text_item.setPlainText(text)

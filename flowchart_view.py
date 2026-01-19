@@ -170,17 +170,7 @@ class FlowchartView(QGraphicsView):
                 # ----------------------------------------------------------------------------------------------
                 if isinstance(item, BendPoint):
                     super().mousePressEvent(event)
-
-                # ----------------------------------------------------------------------------------------------
-                # CLICKING ON A NODE: EITHER MOVING OR RESIZING
-                # ----------------------------------------------------------------------------------------------
-                #if isinstance(item, Node):
-                #    pos_in_node = item.mapFromScene(self.mapToScene(event.pos()))
-                #    rect = item.boundingRect()
-                #    if rect.right() - Node.CORNER_SIZE < pos_in_node.x() < rect.right() and \
-                #    rect.bottom() - Node.CORNER_SIZE < pos_in_node.y() < rect.bottom():
-                #        self.resizing_node = item
-                #        return
+                    return
 
         # ----------------------------------------------------------------------------------------------
         # PANNING MODE - MIDDLE BUTTON
