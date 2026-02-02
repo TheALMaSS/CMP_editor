@@ -198,16 +198,16 @@ class FlowchartWindow(QMainWindow):
         self.load_btn.setStyleSheet(button_style)
         self.load_btn.clicked.connect(self.load_CMP)
         left_layout.addWidget(self.load_btn)
-    
-        self.export_btn = QPushButton("Export to ALMaSS")
-        self.export_btn.setStyleSheet(button_style)
-        self.export_btn.clicked.connect(self.export_to_almass)
-        left_layout.addWidget(self.export_btn)
 
         self.validate_btn = QPushButton("VALIDATE CMP")
         self.validate_btn.setStyleSheet(validate_button_style)
         self.validate_btn.clicked.connect(self.validate)
         left_layout.addWidget(self.validate_btn)
+
+        self.export_btn = QPushButton("Export to ALMaSS")
+        self.export_btn.setStyleSheet(button_style)
+        self.export_btn.clicked.connect(self.export_to_almass)
+        left_layout.addWidget(self.export_btn)
 
         line3 = QFrame()
         line3.setFrameShape(QFrame.HLine)
@@ -404,16 +404,18 @@ class FlowchartWindow(QMainWindow):
         with open(filename, "r") as f:
             data = json.load(f)
 
-        metadata = data[0]
-        self.author = metadata.get("author", "")
+        # Extract metadata
+        self.author = data.get("author", "")
         self.author_edit.setText(self.author)
-        self.last_modified = metadata.get("last_modified", "")
+        self.last_modified = data.get("last_modified", "")
         self.last_modified_text.setText(self.last_modified)
-        self.crop_name = metadata.get("crop_name", "")
+        self.crop_name = data.get("crop_name", "")
         self.crop_edit.setText(self.crop_name)
 
         node_map = {}
-        for node_data in data[1:]:
+
+        # Iterate over nodes array
+        for node_data in data.get("nodes", []):
             node_type = node_data.get("type", "OpNode")
             if node_type == "OpNode":
                 node = OpNode(str(node_data["name"]))
@@ -422,7 +424,7 @@ class FlowchartWindow(QMainWindow):
                 node = ProbNode("Probability\nNode")
                 self.prob_nodes.append(node)
             elif node_type == "CondNode":
-                node = CondNode(str(node_data["name"]), str(node_data["cpp_cond"]))
+                node = CondNode(str(node_data["name"]), str(node_data.get("cpp_cond", "")))
                 self.cond_nodes.append(node)
 
             node.setPos(node_data["x"], node_data["y"])
@@ -441,7 +443,7 @@ class FlowchartWindow(QMainWindow):
             node_map[node_key] = node
 
         # Recreate arrows
-        for node_data in data:
+        for node_data in data.get("nodes", []):
             source_key = node_data.get("id", node_data.get("name"))
             source_node = node_map.get(source_key)
             if not source_node:

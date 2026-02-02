@@ -9,14 +9,13 @@ from jinja2 import Environment, FileSystemLoader
 # HELPER FUNCTIONS FOR EXPORT AND SAVING
 # ------------------------------------------------------------------------------------------------
 def generate_json(all_nodes, crop_name, author, date, filename):
-    data = []
-    
-    metadata = {
+    # Metadata stays at the top level
+    data = {
         "crop_name": crop_name,
         "author": author,
-        "last_modified": date
+        "last_modified": date,
+        "nodes": []   # this will hold all node objects
     }
-    data.append(metadata)
 
     for node in all_nodes:
         node_data = {
@@ -32,21 +31,16 @@ def generate_json(all_nodes, crop_name, author, date, filename):
         }
 
         if node.__class__.__name__ == "OpNode":
-            node_data.update({
-                "cpp_func": node.cpp_func
-            })
+            node_data["cpp_func"] = node.cpp_func
 
         if node.__class__.__name__ == "CondNode":
-            node_data.update({
-                "cpp_cond": node.cpp_cond
-            })
+            node_data["cpp_cond"] = node.cpp_cond
 
         for arrow in node.outgoing_arrows:
             if arrow.end_node:
-                if hasattr(arrow.end_node, "id_text"):
-                    destination_id = arrow.end_node.id_text.toPlainText()
-                else:
-                    destination_id = "no_id"
+                destination_id = arrow.end_node.id_text.toPlainText() if hasattr(arrow.end_node, "id_text") else "no_id"
+            else:
+                destination_id = ""
 
             branching_condition = arrow.text_item.toPlainText() if arrow.text_item else ""
 
@@ -59,8 +53,10 @@ def generate_json(all_nodes, crop_name, author, date, filename):
 
             node_data["outgoing"].append(arrow_data)
 
-        data.append(node_data)
+        # append node_data to the "nodes" array
+        data["nodes"].append(node_data)
 
+    # write the JSON to file
     with open(filename, "w") as f:
         json.dump(data, f, indent=4)
 

@@ -114,7 +114,7 @@ validate_button_style = """
         padding: 8px 12px;
         font-weight: bold;
         font-size: 9pt;
-        margin: 0px 0px 10px 0px;
+        margin: 0px 0px 0px 0px;
     }
 
     QPushButton:hover {
