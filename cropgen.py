@@ -37,7 +37,7 @@ from validate_dialog import ValidateDialog
 from help_dialog import HelpDialog
 from export_dialog import ExportDialog
 from datetime import datetime
-from helper_funcs import resource_path, generate_header_file, generate_json, generate_cpp_file, validate_graph
+from helper_funcs import resource_path, generate_header_file, generate_almass_json, generate_json, generate_cpp_file, validate_graph
 from css_styles import label_text_style, value_text_style, button_style, validate_button_style, left_panel_style, delete_button_style, arrow_button_style, delete_mode_label_style, arrow_mode_label_style
 
 OPERATIONS_FILE = resource_path("operations.json")
@@ -306,9 +306,11 @@ class FlowchartWindow(QMainWindow):
         if dlg.exec_() != QDialog.Accepted:
             return
         condition = dlg.composed_condition
+        cond_type = dlg.cond_type
+        cond_value = dlg.cond_value
         cpp_cond = dlg.coded_condition
 
-        node = CondNode(str(condition), cpp_cond)
+        node = CondNode(str(condition), cpp_cond, cond_type, cond_value)
         node.setPos(self.view.mapToScene(self.view.viewport().rect().center()))
         node.setZValue(1)
 
@@ -424,7 +426,7 @@ class FlowchartWindow(QMainWindow):
                 node = ProbNode("Probability\nNode")
                 self.prob_nodes.append(node)
             elif node_type == "CondNode":
-                node = CondNode(str(node_data["name"]), str(node_data.get("cpp_cond", "")))
+                node = CondNode(str(node_data["name"]), str(node_data.get("cpp_cond", "")), str(node_data.get("cond_type", "")), str(node_data.get("cond_value", "")))
                 self.cond_nodes.append(node)
 
             node.setPos(node_data["x"], node_data["y"])
@@ -472,34 +474,33 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def export_to_almass(self):
-        #dlg = ExportDialog(self, self.crop_name)
-
-        #if not dlg.exec_():
-        #    return
-        
         all_nodes = self.op_nodes + self.cond_nodes + self.prob_nodes
-        if self.author_edit.text() != "":
-            author_name = self.author_edit.text()
-        else:
-            author_name = "not defined"
+        ids = [node.id_text.toPlainText() for node in all_nodes]
 
-        current_date = datetime.now()
-        date_str = current_date.strftime("%d/%m/%Y")
+        # Check no repetitions in ids
+        if len(ids) != len(set(ids)):
+            dlg = QDialog(self, Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
+            dlg.setWindowTitle("WARNING")
+            dlg.resize(400, 250)
 
-        msg_text = "Successfully exported: " + f"{self.crop_name}.h and " + f"{self.crop_name}.cpp"
+            text = QTextEdit()
+            text.setReadOnly(True)
+            text.setHtml('<span style="color: #B22222; font-weight: bold; font-size: 12pt;">Some of your nodes share the same ID. If you proceed with saving, your data will be corrupted.</span>')
 
-        try:
-            json_data = generate_json(all_nodes, self.crop_name, author_name, date_str, f"{self.crop_name}.json")
-            generate_header_file(self.crop_name, json_data)
-            generate_cpp_file(self.crop_name, json_data)
-        except Exception:
-            msg_text = "Error: export was not successful. Check your CMP."
+            layout = QVBoxLayout()
+            layout.addWidget(text)
 
-        msg = QMessageBox(self)
-        msg.setWindowTitle("Export")
-        msg.setText(msg_text)
-        msg.setStandardButtons(QMessageBox.Ok)
-        msg.exec_()
+            buttons = QDialogButtonBox(QDialogButtonBox.Ok)
+            buttons.accepted.connect(dlg.accept)
+            layout.addWidget(buttons)
+
+            dlg.setLayout(layout)
+            dlg.exec_()
+
+        filename, _ = QFileDialog.getSaveFileName(self, "Export to ALMaSS", "", "JSON Files (*.json)")
+        if filename != "":
+            generate_almass_json(all_nodes, self.crop_name, filename)
+    # ------------------------------------------------------------------------------------------------
 
 # MAIN
 if __name__ == "__main__":

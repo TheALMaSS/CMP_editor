@@ -35,6 +35,8 @@ def generate_json(all_nodes, crop_name, author, date, filename):
 
         if node.__class__.__name__ == "CondNode":
             node_data["cpp_cond"] = node.cpp_cond
+            node_data["cond_type"] = node.cond_type
+            node_data["cond_value"] = node.cond_value
 
         for arrow in node.outgoing_arrows:
             if arrow.end_node:
@@ -57,6 +59,68 @@ def generate_json(all_nodes, crop_name, author, date, filename):
         data["nodes"].append(node_data)
 
     # write the JSON to file
+    with open(filename, "w") as f:
+        json.dump(data, f, indent=4)
+
+    return data
+# ------------------------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------------------------
+def generate_almass_json(all_nodes, crop_name, filename):
+    data = {"crop_name": crop_name, "nodes": []}
+
+    nodes_data = []
+    for code, node in enumerate(all_nodes, start=1):
+        node_id = node.id_text.toPlainText()
+        if node_id == "START":
+            earliest = getattr(node, "dates_text", "+0d").toPlainText() if hasattr(node, "dates_text") else "+0d"
+            latest = ""
+        elif node_id == "END":
+            earliest = "+1d"
+            latest = ""
+        else:
+            dates_str = getattr(node, "dates_text", "+0d - +0d").toPlainText() if hasattr(node, "dates_text") else "+0d - +0d"
+            earliest, latest = [part.strip() for part in dates_str.split("-", 1)]
+
+        node_data = {
+            "type": node.__class__.__name__,
+            "code": code,
+            "id": node_id,
+            "name": node.name_text.toPlainText(),
+            "earliest": earliest,
+            "latest": latest,
+            "outgoing": []
+        }
+
+        if node.__class__.__name__ == "CondNode":
+            node_data["cond_type"] = node.cond_type
+            node_data["cond_value"] = node.cond_value
+
+        nodes_data.append((node, node_data))
+
+    for node, node_data in nodes_data:
+        if node.id_text.toPlainText() != "END":
+            for arrow in node.outgoing_arrows:
+                dest_id = arrow.end_node.id_text.toPlainText() if arrow.end_node and hasattr(arrow.end_node, "id_text") else ""
+                dest_code = None
+                dest_earliest = None
+                for n, nd in nodes_data:
+                    if n.id_text.toPlainText() == dest_id:
+                        dest_code = nd["code"]
+                        dest_earliest = nd["earliest"]
+                        break
+
+                arrow_data = {
+                    "destination_type": arrow.end_node.__class__.__name__ if arrow.end_node else "",
+                    "destination_id": dest_id,
+                    "destination_code": dest_code,
+                    "destination_earliest": dest_earliest,
+                    "branching_condition": arrow.text_item.toPlainText() if arrow.text_item else ""
+                }
+                node_data["outgoing"].append(arrow_data)
+
+        data["nodes"].append(node_data)
+
     with open(filename, "w") as f:
         json.dump(data, f, indent=4)
 

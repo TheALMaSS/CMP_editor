@@ -123,4 +123,12 @@ class ChooseConditionDialog(QDialog):
             f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]].get('func', self.selected[1])} == "
             f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]][self.selected[2]]}"
         )
+        if self.selected[1] == "SOIL":
+            self.cond_type = "field_soil"
+        if self.selected[1] == "SIZE":
+            self.cond_type = "farm_size"
+        if self.selected[1] == "FARMING INTENSITY":
+            self.cond_type = "farm_intensity"
+
+        self.cond_value = f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]][self.selected[2]]}"
         super().accept()
