@@ -67,10 +67,20 @@ def generate_json(all_nodes, crop_name, author, date, filename):
 
 # ------------------------------------------------------------------------------------------------
 def generate_almass_json(all_nodes, crop_name, filename):
-    data = {"crop_name": crop_name, "nodes": []}
+    start_node = None
+    others = []
+    for n in all_nodes:
+        if n.id_text.toPlainText() == "START":
+            start_node = n
+        else:
+            others.append(n)
+    ordered = [start_node] + others if start_node else all_nodes
 
+    data = {"crop_name": crop_name, "nodes": []}
     nodes_data = []
-    for code, node in enumerate(all_nodes, start=1):
+
+    code_counter = 1
+    for node in ordered:
         node_id = node.id_text.toPlainText()
         if node_id == "START":
             earliest = getattr(node, "dates_text", "+0d").toPlainText() if hasattr(node, "dates_text") else "+0d"
@@ -84,7 +94,7 @@ def generate_almass_json(all_nodes, crop_name, filename):
 
         node_data = {
             "type": node.__class__.__name__,
-            "code": code,
+            "code": code_counter,
             "id": node_id,
             "name": node.name_text.toPlainText(),
             "earliest": earliest,
@@ -97,6 +107,7 @@ def generate_almass_json(all_nodes, crop_name, filename):
             node_data["cond_value"] = node.cond_value
 
         nodes_data.append((node, node_data))
+        code_counter += 1
 
     for node, node_data in nodes_data:
         if node.id_text.toPlainText() != "END":
