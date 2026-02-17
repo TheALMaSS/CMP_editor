@@ -381,89 +381,94 @@ class FlowchartWindow(QMainWindow):
         filename, _ = QFileDialog.getOpenFileName(self, "Open JSON", "", "JSON Files (*.json)")
         if not filename:
             return
+        
+    
+        try:
+            # Clear existing nodes and arrows
+            for node_list in [self.op_nodes, self.cond_nodes, self.prob_nodes]:
+                for node in list(node_list):
+                    for arrow in list(node.outgoing_arrows):
+                        if arrow.text_item:
+                            self.scene.removeItem(arrow.text_item)
+                        for bp in arrow.bend_points:
+                            self.scene.removeItem(bp)
+                        self.scene.removeItem(arrow)
+                        node.outgoing_arrows.remove(arrow)
+                    for arrow in list(node.incoming_arrows):
+                        if arrow.text_item:
+                            self.scene.removeItem(arrow.text_item)
+                        for bp in arrow.bend_points:
+                            self.scene.removeItem(bp)
+                        self.scene.removeItem(arrow)
+                        node.incoming_arrows.remove(arrow)
+                for node in list(node_list):
+                    self.scene.removeItem(node)
+                node_list.clear()
 
-        # Clear existing nodes and arrows
-        for node_list in [self.op_nodes, self.cond_nodes, self.prob_nodes]:
-            for node in list(node_list):
-                for arrow in list(node.outgoing_arrows):
-                    if arrow.text_item:
-                        self.scene.removeItem(arrow.text_item)
-                    for bp in arrow.bend_points:
-                        self.scene.removeItem(bp)
-                    self.scene.removeItem(arrow)
-                    node.outgoing_arrows.remove(arrow)
-                for arrow in list(node.incoming_arrows):
-                    if arrow.text_item:
-                        self.scene.removeItem(arrow.text_item)
-                    for bp in arrow.bend_points:
-                        self.scene.removeItem(bp)
-                    self.scene.removeItem(arrow)
-                    node.incoming_arrows.remove(arrow)
-            for node in list(node_list):
-                self.scene.removeItem(node)
-            node_list.clear()
+            with open(filename, "r") as f:
+                data = json.load(f)
 
-        with open(filename, "r") as f:
-            data = json.load(f)
+            # Extract metadata
+            self.author = data.get("author", "")
+            self.author_edit.setText(self.author)
+            self.last_modified = data.get("last_modified", "")
+            self.last_modified_text.setText(self.last_modified)
+            self.crop_name = data.get("crop_name", "")
+            self.crop_edit.setText(self.crop_name)
 
-        # Extract metadata
-        self.author = data.get("author", "")
-        self.author_edit.setText(self.author)
-        self.last_modified = data.get("last_modified", "")
-        self.last_modified_text.setText(self.last_modified)
-        self.crop_name = data.get("crop_name", "")
-        self.crop_edit.setText(self.crop_name)
+            node_map = {}
 
-        node_map = {}
+            # Iterate over nodes array
+            for node_data in data.get("nodes", []):
+                node_type = node_data.get("type", "OpNode")
+                if node_type == "OpNode":
+                    node = OpNode(str(node_data["name"]))
+                    self.op_nodes.append(node)
+                elif node_type == "ProbNode":
+                    node = ProbNode("Probability\nNode")
+                    self.prob_nodes.append(node)
+                elif node_type == "CondNode":
+                    node = CondNode(str(node_data["name"]), str(node_data.get("cpp_cond", "")), str(node_data.get("cond_type", "")), str(node_data.get("cond_value", "")))
+                    self.cond_nodes.append(node)
 
-        # Iterate over nodes array
-        for node_data in data.get("nodes", []):
-            node_type = node_data.get("type", "OpNode")
-            if node_type == "OpNode":
-                node = OpNode(str(node_data["name"]))
-                self.op_nodes.append(node)
-            elif node_type == "ProbNode":
-                node = ProbNode("Probability\nNode")
-                self.prob_nodes.append(node)
-            elif node_type == "CondNode":
-                node = CondNode(str(node_data["name"]), str(node_data.get("cpp_cond", "")), str(node_data.get("cond_type", "")), str(node_data.get("cond_value", "")))
-                self.cond_nodes.append(node)
+                node.setPos(node_data["x"], node_data["y"])
+                node.adjust_size()
 
-            node.setPos(node_data["x"], node_data["y"])
-            node.adjust_size()
+                node.id_text.setPlainText(node_data.get("id", "ID"))
+                if hasattr(node, "dates_text") and "dates" in node_data:
+                    node.dates_text.setPlainText(node_data["dates"])
 
-            node.id_text.setPlainText(node_data.get("id", "ID"))
-            if hasattr(node, "dates_text") and "dates" in node_data:
-                node.dates_text.setPlainText(node_data["dates"])
+                node.setZValue(1)
+                node.update_positions()
+                self.scene.addItem(node)
 
-            node.setZValue(1)
-            node.update_positions()
-            self.scene.addItem(node)
+                # Use id as key for node map for arrows
+                node_key = node_data.get("id", node_data.get("name", f"{id(node)}"))
+                node_map[node_key] = node
 
-            # Use id as key for node map for arrows
-            node_key = node_data.get("id", node_data.get("name", f"{id(node)}"))
-            node_map[node_key] = node
+            # Recreate arrows
+            for node_data in data.get("nodes", []):
+                source_key = node_data.get("id", node_data.get("name"))
+                source_node = node_map.get(source_key)
+                if not source_node:
+                    continue
 
-        # Recreate arrows
-        for node_data in data.get("nodes", []):
-            source_key = node_data.get("id", node_data.get("name"))
-            source_node = node_map.get(source_key)
-            if not source_node:
-                continue
+                for arrow_data in node_data.get("outgoing", []):
+                    dest_node = node_map.get(arrow_data.get("destination_id"))
+                    if dest_node:
+                        arrow = source_node.add_arrow_to(dest_node)
+                        if arrow_data.get("branching_condition", "") != "":
+                            arrow.text_item.setVisible(True)
+                        if arrow.text_item:
+                            arrow.text_item.setPlainText(arrow_data.get("branching_condition", ""))
+                            self.scene.addItem(arrow.text_item)
+                        self.scene.addItem(arrow)
 
-            for arrow_data in node_data.get("outgoing", []):
-                dest_node = node_map.get(arrow_data.get("destination_id"))
-                if dest_node:
-                    arrow = source_node.add_arrow_to(dest_node)
-                    if arrow_data.get("branching_condition", "") != "":
-                        arrow.text_item.setVisible(True)
-                    if arrow.text_item:
-                        arrow.text_item.setPlainText(arrow_data.get("branching_condition", ""))
-                        self.scene.addItem(arrow.text_item)
-                    self.scene.addItem(arrow)
-
-                    for bp_coords in arrow_data.get("bend_points", []):
-                        arrow.add_bend_point(QPointF(bp_coords[0], bp_coords[1]))
+                        for bp_coords in arrow_data.get("bend_points", []):
+                            arrow.add_bend_point(QPointF(bp_coords[0], bp_coords[1]))
+        except Exception as e:
+            print("\nError while loading the CMP.\n")
+            return
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
