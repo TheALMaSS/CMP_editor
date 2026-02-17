@@ -418,14 +418,15 @@ def validate_graph(op_nodes, prob_nodes, cond_nodes, crop_name, author):
             warnings.append(
                 "⚠ <b>WARNING:</b> Node '" + cond_node.id_text.toPlainText() + "' must have one arrow labeled 'YES' and one labeled 'NO'."
             )
-
+# TODO: remember to implement a check or transformer that goes from IDs to a format without spaces that can be parsed in almass.
     for op_node in op_nodes:
         outgoing = op_node.outgoing_arrows
         if len(outgoing) != 1 and op_node.name_text.toPlainText() != "END":
             warnings.append(
                 "⚠ <b>WARNING:</b> Node '" + op_node.id_text.toPlainText() + "' must have exactly 1 outgoing arrow."
             )
-
+# TODO: add the option to add textual comments like floating text boxes.
+# TODO: add a conditional type of node that considers previous operations in history.
     pattern1 = r'\d{2}/\d{2} - \d{2}/\d{2}'
     pattern2 = r'\+\d+d - \d{2}/\d{2}'
     pattern3 = r'\d{2}/\d{2}'
