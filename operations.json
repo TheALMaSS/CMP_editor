@@ -1,5 +1,35 @@
 [
   {
+    "name": "Swathing",
+    "description": "Cut the crop and leave it lying to dry. In practice, a harvest but the dead biomass is left on the field and only picked up later.",
+    "cpp_func": "Swathing"
+  },
+  {
+    "name": "Growth Regulator",
+    "description": "Apply a growth regulator product.",
+    "cpp_func": "GrowthRegulator"
+  },
+  {
+    "name": "Fungicide",
+    "description": "Apply a fungicide product.",
+    "cpp_func": "Fungicide"
+  },
+  {
+    "name": "Molluscicide",
+    "description": "Apply a molluscicide product.",
+    "cpp_func": "Molluscicide"
+  },
+    {
+    "name": "Insecticide",
+    "description": "Apply an insecticide product.",
+    "cpp_func": "Insecticide"
+  },
+  {
+    "name": "Herbicide",
+    "description": "Apply a herbicide product.",
+    "cpp_func": "Herbicide"
+  },
+  {
     "name": "Ammonium Sulphate",
     "description": "Apply ammonium sulphate as a fertilizer.",
     "cpp_func": "AmmoniumSulphate"
@@ -90,11 +120,6 @@
     "cpp_func": "[no function associated]"
   },
   {
-    "name": "Fungicide",
-    "description": "Apply fungicide.",
-    "cpp_func": "FungicideTreat"
-  },
-  {
     "name": "Flower Cutting",
     "description": "Remove flowers to promote bulb development.",
     "cpp_func": "FlowerCutting"
@@ -130,19 +155,9 @@
     "cpp_func": "HeavyCultivatorAggregate"
   },
   {
-    "name": "Herbicide",
-    "description": "Apply herbicide to the field.",
-    "cpp_func": "HerbicideTreat"
-  },
-  {
     "name": "Hilling Up",
     "description": "Hill soil around plants to support growth.",
     "cpp_func": "HillingUp"
-  },
-  {
-    "name": "Insecticide",
-    "description": "Apply insecticide.",
-    "cpp_func": "InsecticideTreat"
   },
   {
     "name": "Manganese Sulphate",
@@ -153,11 +168,6 @@
     "name": "Manure",
     "description": "Spread solid manure.",
     "cpp_func": "Manure"
-  },
-  {
-    "name": "Molluscicide",
-    "description": "Apply molluscicide.",
-    "cpp_func": "Molluscicide"
   },
   {
     "name": "Organic Fungicide",
