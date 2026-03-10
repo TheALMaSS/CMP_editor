@@ -100,7 +100,7 @@ def generate_almass_json(all_nodes, crop_name, filename):
         node_data = {
             "type": node.__class__.__name__,
             "code": code_counter,
-            "id": node_id,
+            "id": crop_name + "_" + node_id,
             "name": node.name_text.toPlainText(),
             "earliest": earliest,
             "latest": latest,
