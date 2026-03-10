@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QDialog, QListWidget, QPushButton, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QDialog, QListWidget, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QSizePolicy
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QPushButton, QDialog, QListWidget, QTextEdit, QHBoxLayout, QVBoxLayout, QDialogButtonBox
 
 help_text_choose_condition = """
@@ -37,11 +38,35 @@ class ChooseConditionDialog(QDialog):
         layout.addWidget(self.list2)
         layout.addWidget(self.list3)
 
+        self.history_widget = QWidget()
+        self.history_widget.setFixedWidth(200)
+        history_layout = QVBoxLayout(self.history_widget)
+        history_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.history_instructions = QLabel(
+            "Enter the ID of the operation node for branching.\n"
+            "YES branch: operation completed.\n"
+            "NO branch: operation not completed."
+        )
+        self.history_instructions.setWordWrap(True)
+        self.text3 = QTextEdit()
+        self.text3.setReadOnly(False)
+        self.text3.setFixedHeight(50)
+
+        self.history_instructions.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        self.text3.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+
+        history_layout.addWidget(self.history_instructions)
+        history_layout.addWidget(self.text3)
+        self.layout().addWidget(self.history_widget)
+        self.history_widget.hide()
+
         self.list1.addItems(sorted(conditions.keys()))
 
         self.list1.currentItemChanged.connect(self.on_list1_changed)
         self.list2.currentItemChanged.connect(self.on_list2_changed)
         self.list3.currentItemChanged.connect(self.on_list3_changed)
+        self.text3.textChanged.connect(self.on_text3_changed)
 
         btn_layout = QVBoxLayout()
         self.ok_btn = QPushButton("OK")
@@ -87,18 +112,32 @@ class ChooseConditionDialog(QDialog):
         self.list2.addItems(sorted(second_options))
 
     def on_list2_changed(self, current, previous):
-        self.list3.clear()
+
         if current is None:
+            self.history_widget.hide()
+            self.list3.show()
+            self.list3.clear()
             self.selected = self.selected[:1]
             self.ok_btn.setEnabled(False)
             return
+
+        elif current.text() == "HISTORY":
+            # switch to editable QTextEdit
+            self.list3.hide()
+            self.history_widget.show()
+        else:
+            # normal third column behavior
+            self.history_widget.hide()
+            first_key = self.selected[0]
+            third_options = list(self.conditions[first_key]["sublayers"][current.text()].keys())[1:]
+            self.list3.show()
+            self.list3.clear()
+            self.list3.addItems(third_options)
+
         if len(self.selected) >= 2:
             self.selected[1] = current.text()
         else:
             self.selected.append(current.text())
-        first_key = self.selected[0]
-        third_options = list(self.conditions[str(first_key)]["sublayers"][current.text()].keys())[1:]
-        self.list3.addItems(third_options)
         self.ok_btn.setEnabled(False)
 
     def on_list3_changed(self, current, previous):
@@ -113,22 +152,38 @@ class ChooseConditionDialog(QDialog):
         # Enable OK only if all three selections are made
         self.ok_btn.setEnabled(len(self.selected) == 3)
 
+    def on_text3_changed(self):
+        self.ok_btn.setEnabled(True)
+
     def accept(self):
+        if (self.selected[1] == "HISTORY"):
+            text = self.text3.toPlainText()
+            if text:
+                if len(self.selected) < 3:
+                    self.selected.append(text)
         if len(self.selected) != 3:
             return  # safety check
-        # Compose string like "ITEM1->ITEM2 is ITEM3?"
-        self.composed_condition = f"{self.selected[0]}->{self.selected[1]}\nis {self.selected[2]}?"
-        self.coded_condition = (
-            f"{self.conditions[self.selected[0]]['var']}->"
-            f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]].get('func', self.selected[1])} == "
-            f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]][self.selected[2]]}"
-        )
+            
+        if self.selected[1] != "HISTORY":
+            # Compose string like "ITEM1->ITEM2 is ITEM3?"
+            self.composed_condition = f"{self.selected[0]}->{self.selected[1]}\nis {self.selected[2]}?"
+            self.coded_condition = (
+                f"{self.conditions[self.selected[0]]['var']}->"
+                f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]].get('func', self.selected[1])} == "
+                f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]][self.selected[2]]}"
+            )
+            self.cond_value = f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]][self.selected[2]]}"
+        else:
+            self.composed_condition = f"Has operation {self.selected[2]}\nbeen performed?"
+            self.coded_condition = "null"
+            self.cond_value = f"{self.selected[2]}"
         if self.selected[1] == "SOIL":
             self.cond_type = "field_soil"
-        if self.selected[1] == "SIZE":
+        elif self.selected[1] == "SIZE":
             self.cond_type = "farm_size"
-        if self.selected[1] == "FARMING INTENSITY":
+        elif self.selected[1] == "FARMING INTENSITY":
             self.cond_type = "farm_intensity"
+        elif self.selected[1] == "HISTORY":
+            self.cond_type = "field_history"
 
-        self.cond_value = f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]][self.selected[2]]}"
         super().accept()
