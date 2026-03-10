@@ -426,7 +426,7 @@ class FlowchartWindow(QMainWindow):
         self.op_nodes.clear()
         self.cond_nodes.clear()
         self.prob_nodes.clear()
-        self.comment_boxes = []  # initialize list for comment boxes
+        self.comment_boxes = []
 
         try:
             with open(filename, "r") as f:
@@ -498,6 +498,7 @@ class FlowchartWindow(QMainWindow):
                 comment = CommentBox(comment_data["x"], comment_data["y"])
                 comment.setRect(0, 0, comment_data.get("width", 120), comment_data.get("height", 60))
                 comment.text.setPlainText(comment_data.get("text", ""))
+                comment.setZValue(1) # comments are in front of everything
                 self.scene.addItem(comment)
                 self.comment_boxes.append(comment)
 
