@@ -2,16 +2,7 @@ from PyQt5.QtWidgets import QGraphicsItem, QGraphicsTextItem
 from PyQt5.QtGui import QPainter, QTextDocument, QTextOption, QFont, QFontMetricsF
 from PyQt5.QtCore import QRectF, Qt
 from arrow import Arrow
-
-class GenericTextItem(QGraphicsTextItem):
-    def focusOutEvent(self, event):
-        cursor = self.textCursor()
-        cursor.clearSelection()
-        self.setTextCursor(cursor)
-        super().focusOutEvent(event)
-
-    def contextMenuEvent(self, event):
-        pass 
+from generic_text_item import GenericTextItem
 
 class Node(QGraphicsItem):
     def __init__(self, name):

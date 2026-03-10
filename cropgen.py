@@ -37,6 +37,7 @@ from validate_dialog import ValidateDialog
 from help_dialog import HelpDialog
 from export_dialog import ExportDialog
 from datetime import datetime
+from comment_box import CommentBox
 from helper_funcs import resource_path, generate_header_file, generate_almass_json, generate_json, generate_cpp_file, validate_graph
 from css_styles import label_text_style, value_text_style, button_style, validate_button_style, left_panel_style, delete_button_style, arrow_button_style, delete_mode_label_style, arrow_mode_label_style
 
@@ -164,6 +165,11 @@ class FlowchartWindow(QMainWindow):
         self.add_cond_node_btn.setStyleSheet(button_style)
         self.add_cond_node_btn.clicked.connect(self.add_conditional_node)
         left_layout.addWidget(self.add_cond_node_btn)
+
+        self.add_comment_box_btn = QPushButton("Add Comment Box")
+        self.add_comment_box_btn.setStyleSheet(button_style)
+        self.add_comment_box_btn.clicked.connect(self.add_comment_box)
+        left_layout.addWidget(self.add_comment_box_btn)
 
         line = QFrame()
         line.setFrameShape(QFrame.HLine)
@@ -319,6 +325,23 @@ class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
+    def add_comment_box(self):
+        pos = self.view.mapToScene(self.view.viewport().rect().center())
+
+        comment = CommentBox(pos.x(), pos.y())
+        comment.setZValue(1)
+
+        self.scene.addItem(comment)
+
+        if not hasattr(self, "comment_boxes"):
+            self.comment_boxes = []
+
+        self.comment_boxes.append(comment)
+
+        comment.text.setFocus()
+    # ------------------------------------------------------------------------------------------------
+
+    # ------------------------------------------------------------------------------------------------
     def toggle_arrow_mode(self):
         if not self.delete_mode:
             self.arrow_mode = self.add_arrow_btn.isChecked()
@@ -382,29 +405,12 @@ class FlowchartWindow(QMainWindow):
         if not filename:
             return
         
-    
+        self.scene.clear()
+        self.op_nodes.clear()
+        self.cond_nodes.clear()
+        self.prob_nodes.clear()
+        
         try:
-            # Clear existing nodes and arrows
-            for node_list in [self.op_nodes, self.cond_nodes, self.prob_nodes]:
-                for node in list(node_list):
-                    for arrow in list(node.outgoing_arrows):
-                        if arrow.text_item:
-                            self.scene.removeItem(arrow.text_item)
-                        for bp in arrow.bend_points:
-                            self.scene.removeItem(bp)
-                        self.scene.removeItem(arrow)
-                        node.outgoing_arrows.remove(arrow)
-                    for arrow in list(node.incoming_arrows):
-                        if arrow.text_item:
-                            self.scene.removeItem(arrow.text_item)
-                        for bp in arrow.bend_points:
-                            self.scene.removeItem(bp)
-                        self.scene.removeItem(arrow)
-                        node.incoming_arrows.remove(arrow)
-                for node in list(node_list):
-                    self.scene.removeItem(node)
-                node_list.clear()
-
             with open(filename, "r") as f:
                 data = json.load(f)
 

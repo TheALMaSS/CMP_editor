@@ -6,6 +6,7 @@ from prob_node import ProbNode
 from cond_node import CondNode
 from op_node import OpNode
 from arrow import BendPoint, Arrow
+from comment_box import CommentBox
 
 # Displays a portion of the SCENE inside the WINDOW and handles user interaction
 class FlowchartView(QGraphicsView):
@@ -90,13 +91,17 @@ class FlowchartView(QGraphicsView):
                 if item is None:
                     return
 
-                # If clicking on text inside node -> delete entire node
                 parent = item.parentItem()
+                # If clicking on text inside node -> delete entire node
                 if isinstance(parent, Node):
                     item = parent
 
                 # If clicking on text associated to arrow -> delete arrow
-                if isinstance(parent, Arrow):
+                elif isinstance(parent, Arrow):
+                    item = parent
+
+                # If clicking on text associated to arrow -> delete arrow
+                elif isinstance(parent, CommentBox):
                     item = parent
 
                 # Delete an arrow
@@ -120,7 +125,7 @@ class FlowchartView(QGraphicsView):
                     return
 
                 # Delete a node
-                if isinstance(item, Node):
+                elif isinstance(item, Node):
                     for arrow in list(getattr(item, "outgoing_arrows", [])):
                         if arrow in getattr(arrow.end_node, "incoming_arrows", []):
                             arrow.end_node.incoming_arrows.remove(arrow)
@@ -150,6 +155,10 @@ class FlowchartView(QGraphicsView):
                     if item in self.my_window.cond_nodes:
                         self.my_window.cond_nodes.remove(item)
 
+                    self.scene().removeItem(item)
+                    return
+                
+                elif isinstance(item, CommentBox):
                     self.scene().removeItem(item)
                     return
 
