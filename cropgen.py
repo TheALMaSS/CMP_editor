@@ -372,6 +372,8 @@ class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
     def save_CMP(self):
         all_nodes = self.op_nodes + self.cond_nodes + self.prob_nodes
+        all_comments = getattr(self, "comment_boxes", [])
+
         ids = [node.id_text.toPlainText() for node in all_nodes]
 
         # Check no repetitions in ids
@@ -382,7 +384,9 @@ class FlowchartWindow(QMainWindow):
 
             text = QTextEdit()
             text.setReadOnly(True)
-            text.setHtml('<span style="color: #B22222; font-weight: bold; font-size: 12pt;">Some of your nodes share the same ID. If you proceed with saving, your data will be corrupted.</span>')
+            text.setHtml(
+                '<span style="color: #B22222; font-weight: bold; font-size: 12pt;">Some of your nodes share the same ID. If you proceed with saving, your data will be corrupted.</span>'
+            )
 
             layout = QVBoxLayout()
             layout.addWidget(text)
@@ -396,7 +400,20 @@ class FlowchartWindow(QMainWindow):
 
         filename, _ = QFileDialog.getSaveFileName(self, "Save JSON", "", "JSON Files (*.json)")
         if filename != "":
-            generate_json(all_nodes, self.crop_name, self.author, self.last_modified, filename)
+            # Prepare comments data
+            comments_data = []
+            for comment in all_comments:
+                comments_data.append({
+                    "type": "comment",
+                    "text": comment.text.toPlainText(),
+                    "x": comment.pos().x(),
+                    "y": comment.pos().y(),
+                    "width": comment.rect().width(),
+                    "height": comment.rect().height()
+                })
+
+            # Combine nodes + comments
+            generate_json(all_nodes, self.crop_name, self.author, self.last_modified, filename, comments=comments_data)
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -404,12 +421,13 @@ class FlowchartWindow(QMainWindow):
         filename, _ = QFileDialog.getOpenFileName(self, "Open JSON", "", "JSON Files (*.json)")
         if not filename:
             return
-        
+
         self.scene.clear()
         self.op_nodes.clear()
         self.cond_nodes.clear()
         self.prob_nodes.clear()
-        
+        self.comment_boxes = []  # initialize list for comment boxes
+
         try:
             with open(filename, "r") as f:
                 data = json.load(f)
@@ -434,7 +452,10 @@ class FlowchartWindow(QMainWindow):
                     node = ProbNode("Probability\nNode")
                     self.prob_nodes.append(node)
                 elif node_type == "CondNode":
-                    node = CondNode(str(node_data["name"]), str(node_data.get("cpp_cond", "")), str(node_data.get("cond_type", "")), str(node_data.get("cond_value", "")))
+                    node = CondNode(str(node_data["name"]),
+                                    str(node_data.get("cpp_cond", "")),
+                                    str(node_data.get("cond_type", "")),
+                                    str(node_data.get("cond_value", "")))
                     self.cond_nodes.append(node)
 
                 node.setPos(node_data["x"], node_data["y"])
@@ -448,7 +469,6 @@ class FlowchartWindow(QMainWindow):
                 node.update_positions()
                 self.scene.addItem(node)
 
-                # Use id as key for node map for arrows
                 node_key = node_data.get("id", node_data.get("name", f"{id(node)}"))
                 node_map[node_key] = node
 
@@ -472,8 +492,17 @@ class FlowchartWindow(QMainWindow):
 
                         for bp_coords in arrow_data.get("bend_points", []):
                             arrow.add_bend_point(QPointF(bp_coords[0], bp_coords[1]))
+
+            # Recreate comments
+            for comment_data in data.get("comments", []):
+                comment = CommentBox(comment_data["x"], comment_data["y"])
+                comment.setRect(0, 0, comment_data.get("width", 120), comment_data.get("height", 60))
+                comment.text.setPlainText(comment_data.get("text", ""))
+                self.scene.addItem(comment)
+                self.comment_boxes.append(comment)
+
         except Exception as e:
-            print("\nError while loading the CMP.\n")
+            print("\nError while loading the CMP.\n", e)
             return
     # ------------------------------------------------------------------------------------------------
 

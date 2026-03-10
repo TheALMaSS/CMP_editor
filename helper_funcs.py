@@ -7,15 +7,17 @@ from jinja2 import Environment, FileSystemLoader
 # ------------------------------------------------------------------------------------------------
 # HELPER FUNCTIONS FOR EXPORT AND SAVING
 # ------------------------------------------------------------------------------------------------
-def generate_json(all_nodes, crop_name, author, date, filename):
+def generate_json(all_nodes, crop_name, author, date, filename, comments=None):
     # Metadata stays at the top level
     data = {
         "crop_name": crop_name,
         "author": author,
         "last_modified": date,
-        "nodes": []   # this will hold all node objects
+        "nodes": [],      # this will hold all node objects
+        "comments": []    # this will hold all comment boxes
     }
 
+    # Save nodes
     for node in all_nodes:
         node_data = {
             "type": node.__class__.__name__,
@@ -23,8 +25,8 @@ def generate_json(all_nodes, crop_name, author, date, filename):
             "y": node.scenePos().y(),
             "width": getattr(node, "width", 120),
             "height": getattr(node, "height", 60),
-            "id": node.id_text.toPlainText(),
-            "name": node.name_text.toPlainText(),
+            "id": node.id_text.toPlainText() if hasattr(node, "id_text") else "",
+            "name": node.name_text.toPlainText() if hasattr(node, "name_text") else "",
             "dates": getattr(node, "dates_text", "+0d - +0d").toPlainText() if hasattr(node, "dates_text") else "+0d - +0d",
             "outgoing": []
         }
@@ -54,10 +56,14 @@ def generate_json(all_nodes, crop_name, author, date, filename):
 
             node_data["outgoing"].append(arrow_data)
 
-        # append node_data to the "nodes" array
         data["nodes"].append(node_data)
 
-    # write the JSON to file
+    # Save comments if provided
+    if comments:
+        for comment in comments:
+            data["comments"].append(comment)
+
+    # Write the JSON to file
     with open(filename, "w") as f:
         json.dump(data, f, indent=4)
 
