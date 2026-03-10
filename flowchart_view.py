@@ -7,6 +7,7 @@ from cond_node import CondNode
 from op_node import OpNode
 from arrow import BendPoint, Arrow
 from comment_box import CommentBox
+from generic_text_item import GenericTextItem
 
 # Displays a portion of the SCENE inside the WINDOW and handles user interaction
 class FlowchartView(QGraphicsView):
@@ -308,6 +309,12 @@ class FlowchartView(QGraphicsView):
                             'cpp_cond': getattr(item, 'cpp_cond', None),
                             'pos': item.pos()
                         })
+            # Handle GenericTextItem
+            focus_item = self.scene().focusItem()
+            if isinstance(focus_item, GenericTextItem):
+                cursor = focus_item.textCursor()
+                if cursor.hasSelection():
+                    QApplication.clipboard().setText(cursor.selectedText())
 
         # Ctrl+V ---------------------------------------------
         elif event.key() == Qt.Key_V and modifiers == Qt.ControlModifier:
@@ -341,6 +348,15 @@ class FlowchartView(QGraphicsView):
 
                 # Empty clipboard
                 self.clipboard = []
+            
+            # Handle pasting into a focused GenericTextItem
+            focus_item = self.scene().focusItem()
+            if isinstance(focus_item, GenericTextItem):
+                focus_item.setFocus(Qt.ShortcutFocusReason)  # ensure it actually has focus
+                cursor = focus_item.textCursor()
+                clipboard_text = QApplication.clipboard().text()
+                cursor.insertText(clipboard_text)
+                focus_item.setTextCursor(cursor)
 
         else:
             super().keyPressEvent(event)
