@@ -41,7 +41,7 @@ class CommentBox(QGraphicsRectItem):
         if self.isSelected():
             pen = QPen(QColor("#007BFF"), 3)
         else:
-            pen = QPen(Qt.black, 1)
+            pen = QPen(QColor("#96958C"), 1)
 
         painter.setPen(pen)
         painter.drawRect(self.rect())
