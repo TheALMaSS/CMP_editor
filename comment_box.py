@@ -34,3 +34,14 @@ class CommentBox(QGraphicsRectItem):
         h = rect.height() + self.padding
 
         self.setRect(0, 0, w, h)
+
+    def paint(self, painter, option, widget):
+        painter.setBrush(self.brush())
+
+        if self.isSelected():
+            pen = QPen(QColor("#007BFF"), 3)
+        else:
+            pen = QPen(Qt.black, 1)
+
+        painter.setPen(pen)
+        painter.drawRect(self.rect())
