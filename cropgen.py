@@ -428,11 +428,12 @@ class FlowchartWindow(QMainWindow):
         self.prob_nodes.clear()
         self.comment_boxes = []
 
+        import traceback
+
         try:
             with open(filename, "r") as f:
                 data = json.load(f)
 
-            # Extract metadata
             self.author = data.get("author", "")
             self.author_edit.setText(self.author)
             self.last_modified = data.get("last_modified", "")
@@ -442,37 +443,52 @@ class FlowchartWindow(QMainWindow):
 
             node_map = {}
 
-            # Iterate over nodes array
             for node_data in data.get("nodes", []):
-                node_type = node_data.get("type", "OpNode")
+                node_type = node_data.get("type")
+
                 if node_type == "OpNode":
-                    node = OpNode(str(node_data["name"]))
+                    node = OpNode(str(node_data.get("name", "")))
                     self.op_nodes.append(node)
+
                 elif node_type == "ProbNode":
                     node = ProbNode("Probability\nNode")
                     self.prob_nodes.append(node)
+
                 elif node_type == "CondNode":
-                    node = CondNode(str(node_data["name"]),
-                                    str(node_data.get("cpp_cond", "")),
-                                    str(node_data.get("cond_type", "")),
-                                    str(node_data.get("cond_value", "")))
+                    node = CondNode(
+                        str(node_data.get("name", "")),
+                        str(node_data.get("cpp_cond", "")),
+                        str(node_data.get("cond_type", "")),
+                        str(node_data.get("cond_value", ""))
+                    )
                     self.cond_nodes.append(node)
 
-                node.setPos(node_data["x"], node_data["y"])
-                node.adjust_size()
+                else:
+                    continue
 
-                node.id_text.setPlainText(node_data.get("id", "ID"))
-                if hasattr(node, "dates_text") and "dates" in node_data:
-                    node.dates_text.setPlainText(node_data["dates"])
+                x = node_data.get("x", 0)
+                y = node_data.get("y", 0)
+                node.setPos(x, y)
+
+                if hasattr(node, "adjust_size"):
+                    node.adjust_size()
+
+                node_id = node_data.get("id", "")
+                if hasattr(node, "id_text"):
+                    node.id_text.setPlainText(node_id)
+
+                if hasattr(node, "dates_text"):
+                    node.dates_text.setPlainText(node_data.get("dates", ""))
 
                 node.setZValue(1)
-                node.update_positions()
+                if hasattr(node, "update_positions"):
+                    node.update_positions()
+
                 self.scene.addItem(node)
 
-                node_key = node_data.get("id", node_data.get("name", f"{id(node)}"))
-                node_map[node_key] = node
+                key = node_id if node_id else node_data.get("name", str(id(node)))
+                node_map[key] = node
 
-            # Recreate arrows
             for node_data in data.get("nodes", []):
                 source_key = node_data.get("id", node_data.get("name"))
                 source_node = node_map.get(source_key)
@@ -480,31 +496,50 @@ class FlowchartWindow(QMainWindow):
                     continue
 
                 for arrow_data in node_data.get("outgoing", []):
-                    dest_node = node_map.get(arrow_data.get("destination_id"))
-                    if dest_node:
-                        arrow = source_node.add_arrow_to(dest_node)
-                        if arrow_data.get("branching_condition", "") != "":
+                    dest_id = arrow_data.get("destination_id")
+                    dest_node = node_map.get(dest_id)
+                    if not dest_node:
+                        continue
+
+                    arrow = source_node.add_arrow_to(dest_node)
+                    if not arrow:
+                        continue
+
+                    text = arrow_data.get("branching_condition", "")
+
+                    if hasattr(arrow, "text_item") and arrow.text_item:
+                        arrow.text_item.setPlainText(text)
+                        if text:
                             arrow.text_item.setVisible(True)
-                        if arrow.text_item:
-                            arrow.text_item.setPlainText(arrow_data.get("branching_condition", ""))
                             self.scene.addItem(arrow.text_item)
-                        self.scene.addItem(arrow)
 
-                        for bp_coords in arrow_data.get("bend_points", []):
-                            arrow.add_bend_point(QPointF(bp_coords[0], bp_coords[1]))
+                    self.scene.addItem(arrow)
 
-            # Recreate comments
+                    for bp in arrow_data.get("bend_points", []):
+                        if isinstance(bp, (list, tuple)) and len(bp) == 2:
+                            arrow.add_bend_point(QPointF(bp[0], bp[1]))
+
             for comment_data in data.get("comments", []):
-                comment = CommentBox(comment_data["x"], comment_data["y"])
-                comment.setRect(0, 0, comment_data.get("width", 120), comment_data.get("height", 60))
-                comment.text.setPlainText(comment_data.get("text", ""))
-                comment.setZValue(1) # comments are in front of everything
+                x = comment_data.get("x", 0)
+                y = comment_data.get("y", 0)
+
+                comment = CommentBox(x, y)
+
+                width = comment_data.get("width", 120)
+                height = comment_data.get("height", 60)
+
+                comment.setRect(0, 0, width, height)
+
+                if hasattr(comment, "text"):
+                    comment.text.setPlainText(comment_data.get("text", ""))
+
+                comment.setZValue(1)
+
                 self.scene.addItem(comment)
                 self.comment_boxes.append(comment)
 
-        except Exception as e:
-            print("\nError while loading the CMP.\n", e)
-            return
+        except Exception:
+            traceback.print_exc()
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------

@@ -49,16 +49,7 @@ class OpNode(Node):
             self.padding_vertical = 0
             self.padding_horizontal = 0
 
-        self.cpp_func = self.get_cpp_func(name)
-
         self.adjust_size()
-
-    def get_cpp_func(self, name):
-        with open(OPERATIONS_FILE, "r") as f:
-            data = json.load(f)
-            cpp_func = next(item["cpp_func"] for item in data if item.get("name") == name)
-
-            return cpp_func
 
     def update_positions(self):
         super().update_positions()

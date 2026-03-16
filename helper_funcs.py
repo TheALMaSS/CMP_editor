@@ -31,9 +31,6 @@ def generate_json(all_nodes, crop_name, author, date, filename, comments=None):
             "outgoing": []
         }
 
-        if node.__class__.__name__ == "OpNode":
-            node_data["cpp_func"] = node.cpp_func
-
         if node.__class__.__name__ == "CondNode":
             node_data["cpp_cond"] = node.cpp_cond
             node_data["cond_type"] = node.cond_type
@@ -109,7 +106,7 @@ def generate_almass_json(all_nodes, crop_name, filename):
 
         if node.__class__.__name__ == "CondNode":
             node_data["cond_type"] = node.cond_type
-            node_data["cond_value"] = node.cond_value
+            node_data["cond_value"] = crop_name + "_" + node.cond_value
 
         nodes_data.append((node, node_data))
         code_counter += 1
@@ -128,7 +125,7 @@ def generate_almass_json(all_nodes, crop_name, filename):
 
                 arrow_data = {
                     "destination_type": arrow.end_node.__class__.__name__ if arrow.end_node else "",
-                    "destination_id": dest_id,
+                    "destination_id": crop_name + "_" + dest_id,
                     "destination_code": dest_code,
                     "destination_earliest": dest_earliest,
                     "branching_condition": arrow.text_item.toPlainText() if arrow.text_item else ""
@@ -137,6 +134,7 @@ def generate_almass_json(all_nodes, crop_name, filename):
 
         data["nodes"].append(node_data)
 
+# TODO: add validation check for history conditions
     with open(filename, "w") as f:
         json.dump(data, f, indent=4)
 
@@ -267,14 +265,12 @@ def generate_cpp_file(crop_name, data):
             next_node = next((n for n in data[1:] if n["id"] == next_id), None)
             next_date = get_earliest_date(next_node["dates"])
             scheduling_date = get_days_left(node["dates"])
-            cpp_func = node["cpp_func"]
             latest_date = get_days_left(node["dates"])
 
             block = t.render(
                 crop_name = crop_name,
                 crop_name_lowercase = crop_name_lowercase,
                 scheduling_date = scheduling_date,
-                cpp_func = cpp_func,
                 id = node["id"],
                 next_date = next_date,
                 next_id = next_id,
