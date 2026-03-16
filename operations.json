@@ -55,7 +55,7 @@
     "cpp_func": "AutumnSow"
   },
   {
-    "name": "Autumn Sow with Fertilizer",
+    "name": "Autumn Sow With Fertilizer",
     "description": "Sow in autumn while applying starter fertilizer.",
     "cpp_func": "AutumnSowWithFerti"
   },
@@ -260,7 +260,7 @@
     "cpp_func": "SpringSow"
   },
   {
-    "name": "Spring Sow with Fertilizer",
+    "name": "Spring Sow With Fertilizer",
     "description": "Sow in spring while applying starter fertilizer.",
     "cpp_func": "SpringSowWithFerti"
   },
