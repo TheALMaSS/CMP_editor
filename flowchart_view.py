@@ -159,8 +159,11 @@ class FlowchartView(QGraphicsView):
                     self.scene().removeItem(item)
                     return
                 
+                # Delete a comment box
                 elif isinstance(item, CommentBox):
                     self.scene().removeItem(item)
+                    if item in self.my_window.comment_boxes:
+                        self.my_window.comment_boxes.remove(item)
                     return
 
             # ------------------ IF NO SPECIAL MODE IS SELECTED
