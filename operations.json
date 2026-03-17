@@ -1,4 +1,9 @@
 [
+    {
+    "name": "Do nothing",
+    "description": "No action performed on the farm.",
+    "cpp_func": ""
+  },
   {
     "name": "Swathing",
     "description": "Cut the crop and leave it lying to dry. In practice, a harvest but the dead biomass is left on the field and only picked up later.",
@@ -128,6 +133,11 @@
     "name": "Green Manure",
     "description": "Apply green manure material.",
     "cpp_func": "GreenManure"
+  },
+    {
+    "name": "Manual Weeding",
+    "description": "Remove weeds manually.",
+    "cpp_func": "ManualWeeding"
   },
   {
     "name": "Harvest",
