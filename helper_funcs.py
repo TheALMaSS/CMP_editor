@@ -27,7 +27,7 @@ def generate_json(all_nodes, crop_name, author, date, filename, comments=None):
             "height": getattr(node, "height", 60),
             "id": node.id_text.toPlainText() if hasattr(node, "id_text") else "",
             "name": node.name_text.toPlainText() if hasattr(node, "name_text") else "",
-            "dates": getattr(node, "dates_text", "+0d - +0d").toPlainText() if hasattr(node, "dates_text") else "+0d - +0d",
+            "dates": getattr(node, "dates_text", "+0d - +1d").toPlainText() if hasattr(node, "dates_text") else "+0d - +0d",
             "outgoing": []
         }
 
@@ -88,8 +88,8 @@ def generate_almass_json(all_nodes, crop_name, filename):
             earliest = getattr(node, "dates_text", "+0d").toPlainText() if hasattr(node, "dates_text") else "+0d"
             latest = ""
         elif node_id == "END":
-            earliest = "+1d"
-            latest = ""
+            earliest = "+0d"
+            latest = "+1d"
         else:
             dates_str = getattr(node, "dates_text", "+0d - +0d").toPlainText() if hasattr(node, "dates_text") else "+0d - +0d"
             earliest, latest = [part.strip() for part in dates_str.split("-", 1)]
@@ -121,6 +121,7 @@ def generate_almass_json(all_nodes, crop_name, filename):
                     if n.id_text.toPlainText() == dest_id:
                         dest_code = nd["code"]
                         dest_earliest = nd["earliest"]
+                        dest_latest = nd["latest"]
                         break
 
                 arrow_data = {
@@ -128,6 +129,7 @@ def generate_almass_json(all_nodes, crop_name, filename):
                     "destination_id": crop_name + "_" + dest_id,
                     "destination_code": dest_code,
                     "destination_earliest": dest_earliest,
+                    "destination_latest": dest_latest,
                     "branching_condition": arrow.text_item.toPlainText() if arrow.text_item else ""
                 }
                 node_data["outgoing"].append(arrow_data)
@@ -418,13 +420,6 @@ def validate_graph(op_nodes, prob_nodes, cond_nodes, crop_name, author):
         if "YES" not in texts or "NO" not in texts:
             warnings.append(
                 "⚠ <b>WARNING:</b> Node '" + cond_node.id_text.toPlainText() + "' must have one arrow labeled 'YES' and one labeled 'NO'."
-            )
-# TODO: remember to implement a check or transformer that goes from IDs to a format without spaces that can be parsed in almass.
-    for op_node in op_nodes:
-        outgoing = op_node.outgoing_arrows
-        if len(outgoing) != 1 and op_node.name_text.toPlainText() != "END":
-            warnings.append(
-                "⚠ <b>WARNING:</b> Node '" + op_node.id_text.toPlainText() + "' must have exactly 1 outgoing arrow."
             )
 # TODO: add the option to add textual comments like floating text boxes.
 # TODO: add a conditional type of node that considers previous operations in history.
