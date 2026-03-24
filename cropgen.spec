@@ -5,7 +5,7 @@ a = Analysis(
     ['cropgen.py'],
     pathex=[],
     binaries=[],
-    datas=[('.\\operations.json', '.'), ('.\\conditions.json', '.'), ('.\\templates', 'templates')],
+    datas=[('.\\operations.json', '.'), ('.\\conditions.json', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

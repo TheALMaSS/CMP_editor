@@ -4,4 +4,5 @@
 *.h
 __pycache__/
 build/
+dist/
 build/cropgen/
