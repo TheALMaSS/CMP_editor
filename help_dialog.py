@@ -27,7 +27,9 @@ All nodes must have a univocal ID of your choosing.<br>
 
 <b>Connecting Nodes</b><br>
 • Click "Add Arrow" to enter arrow mode.<br>
-• Click a first node, then a second one to create a sequential flow of operations.<br>
+• Click on a first node, then on a second one to create a flow of operations.<br>
+• Multischeduling (having multiple outgoing arrows for an operation node) is allowed.When the parent node is executed, it will schedule all of its children nodes.<br>
+• If the time window for the child node has already elapsed, and the operation is not flagged as "optional", it will instead be rescheduled for the same time window next year.<br>
 • For probability nodes, assign each outgoing arrow a probability. The total outgoing flow must of course be 100%.<br>
 • For conditional nodes, set the labels of its outgoing arrows to YES and NO.<br><br>
 

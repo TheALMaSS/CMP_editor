@@ -313,7 +313,10 @@ class FlowchartWindow(QMainWindow):
             return
         condition = dlg.composed_condition
         cond_type = dlg.cond_type
-        cond_value = dlg.cond_value
+        if cond_type == "field_history":
+            cond_value = self.crop_name + "_" + cond_value
+        else:
+            cond_value = dlg.cond_value
         cpp_cond = dlg.coded_condition
 
         node = CondNode(str(condition), cpp_cond, cond_type, cond_value)

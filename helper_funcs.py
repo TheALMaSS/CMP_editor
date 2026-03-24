@@ -106,7 +106,7 @@ def generate_almass_json(all_nodes, crop_name, filename):
 
         if node.__class__.__name__ == "CondNode":
             node_data["cond_type"] = node.cond_type
-            node_data["cond_value"] = crop_name + "_" + node.cond_value
+            node_data["cond_value"] = node.cond_value
 
         nodes_data.append((node, node_data))
         code_counter += 1
