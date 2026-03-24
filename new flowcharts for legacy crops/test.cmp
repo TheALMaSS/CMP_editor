@@ -1,0 +1,715 @@
+{
+    "crop_name": "DK_Cabbage",
+    "author": "Elena",
+    "last_modified": "10/03/2026",
+    "nodes": [
+        {
+            "type": "OpNode",
+            "x": -50.0,
+            "y": -3764.0,
+            "width": 200,
+            "height": 100,
+            "id": "START",
+            "name": "START",
+            "dates": "01/07",
+            "outgoing": [
+                {
+                    "destination_type": "CondNode",
+                    "destination_id": "cond_1",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -419.0,
+            "y": -3577.0,
+            "width": 224.0,
+            "height": 104.0,
+            "id": "1",
+            "name": "Autumn Harrow",
+            "dates": "01/09 - 30/10",
+            "outgoing": [
+                {
+                    "destination_type": "ProbNode",
+                    "destination_id": "prob_2",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -43.6425,
+            "y": -3425.275,
+            "width": 200,
+            "height": 104.0,
+            "id": "2",
+            "name": "Molluscicide",
+            "dates": "01/02 - 01/05",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "3",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -59.51250000000003,
+            "y": -3275.8324999999995,
+            "width": 222.0,
+            "height": 104.0,
+            "id": "3",
+            "name": "Shallow Harrow",
+            "dates": "01/03 - 01/06",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "4",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -54.05000000000007,
+            "y": -3131.45,
+            "width": 200,
+            "height": 104.0,
+            "id": "4",
+            "name": "Herbicide",
+            "dates": "+1d - 01/06",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "5",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -104.65000000000006,
+            "y": -2990.0000000000005,
+            "width": 299.0,
+            "height": 104.0,
+            "id": "5",
+            "name": "Spring Sow with Fertilizer",
+            "dates": "+1d - 01/06",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "7",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -56.35000000000002,
+            "y": -2853.149999999999,
+            "width": 200,
+            "height": 104.0,
+            "id": "7",
+            "name": "Water",
+            "dates": "+0d - 01/06",
+            "outgoing": [
+                {
+                    "destination_type": "ProbNode",
+                    "destination_id": "prob_8",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -58.64999999999998,
+            "y": -2566.8,
+            "width": 200,
+            "height": 104.0,
+            "id": "8",
+            "name": "Molluscicide",
+            "dates": "+1d - 01/06",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "9",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -59.80000000000004,
+            "y": -2426.500000000001,
+            "width": 200,
+            "height": 104.0,
+            "id": "9",
+            "name": "Herbicide",
+            "dates": "+0d - 01/06",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "10.1",
+                    "branching_condition": "",
+                    "bend_points": []
+                },
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "11",
+                    "branching_condition": "",
+                    "bend_points": []
+                },
+                {
+                    "destination_type": "CondNode",
+                    "destination_id": "cond_12",
+                    "branching_condition": "",
+                    "bend_points": []
+                },
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "insecticide1",
+                    "branching_condition": "",
+                    "bend_points": [
+                        [
+                            477.0159,
+                            -2339.0
+                        ]
+                    ]
+                },
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "fungicide1",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -59.80000000000001,
+            "y": -2290.8,
+            "width": 200,
+            "height": 104.0,
+            "id": "10.1",
+            "name": "Strigling",
+            "dates": "+7d - 01/07",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "10.2",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -63.94999999999996,
+            "y": -2151.2000000000007,
+            "width": 200,
+            "height": 104.0,
+            "id": "10.2",
+            "name": "Strigling",
+            "dates": "+8d - 31/05",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "10.3",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -63.49999999999997,
+            "y": -2012.750000000001,
+            "width": 200,
+            "height": 104.0,
+            "id": "10.3",
+            "name": "Strigling",
+            "dates": "+8d - 31/05",
+            "outgoing": []
+        },
+        {
+            "type": "OpNode",
+            "x": -305.34074374999994,
+            "y": -2117.7519874999994,
+            "width": 223.0,
+            "height": 104.0,
+            "id": "12",
+            "name": "Row Cultivation",
+            "dates": "01/05 - 01/07",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "weeding",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": 398.5798125,
+            "y": -2281.803974999999,
+            "width": 200,
+            "height": 104.0,
+            "id": "insecticide1",
+            "name": "Insecticide",
+            "dates": "01/06 - 22/08",
+            "outgoing": [
+                {
+                    "destination_type": "ProbNode",
+                    "destination_id": "prob_1_2b",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": 403.77981250000005,
+            "y": -2009.0039749999996,
+            "width": 200,
+            "height": 104.0,
+            "id": "insecticide1_2b",
+            "name": "Insecticide",
+            "dates": "+7d - 22/08",
+            "outgoing": [
+                {
+                    "destination_type": "ProbNode",
+                    "destination_id": "prob_1_2a",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": 657.9298125000001,
+            "y": -1759.703975,
+            "width": 200,
+            "height": 104.0,
+            "id": "insecticide1_2a",
+            "name": "Insecticide",
+            "dates": "+14d - 31/09",
+            "outgoing": []
+        },
+        {
+            "type": "OpNode",
+            "x": -813.991406249999,
+            "y": -1984.8093000000003,
+            "width": 200,
+            "height": 104.0,
+            "id": "19A",
+            "name": "Harvest",
+            "dates": "01/07 - 01/12",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "END",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -816.291406249999,
+            "y": -1845.6593000000003,
+            "width": 200,
+            "height": 100,
+            "id": "END",
+            "name": "END",
+            "dates": "",
+            "outgoing": []
+        },
+        {
+            "type": "OpNode",
+            "x": 170.7659,
+            "y": -2283.8519874999993,
+            "width": 200,
+            "height": 104.0,
+            "id": "11",
+            "name": "Herbicide",
+            "dates": "+1d - 01/07",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "11.2",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -522.8245312500001,
+            "y": -2123.0953999999992,
+            "width": 200,
+            "height": 104.0,
+            "id": "nothing1",
+            "name": "Do nothing",
+            "dates": "+0d - 01/07",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "weeding",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": 170.7659,
+            "y": -2140.8519874999993,
+            "width": 200,
+            "height": 104.0,
+            "id": "11.2",
+            "name": "Herbicide",
+            "dates": "+1d - 01/07",
+            "outgoing": []
+        },
+        {
+            "type": "OpNode",
+            "x": -467.0318,
+            "y": -1964.5019874999998,
+            "width": 230.0,
+            "height": 104.0,
+            "id": "weeding",
+            "name": "Manual Weeding",
+            "dates": "+0d - 01/07",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "ferti2",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -452.0318,
+            "y": -1822.5019875000003,
+            "width": 200,
+            "height": 104.0,
+            "id": "ferti2",
+            "name": "Manure",
+            "dates": "+1d - 01/07",
+            "outgoing": []
+        },
+        {
+            "type": "OpNode",
+            "x": 421.52981250000005,
+            "y": -1685.003975,
+            "width": 200,
+            "height": 104.0,
+            "id": "nothing2",
+            "name": "Do nothing",
+            "dates": "+0d - 31/09",
+            "outgoing": []
+        },
+        {
+            "type": "OpNode",
+            "x": -345.8668124999999,
+            "y": -2433.128887499999,
+            "width": 200,
+            "height": 104.0,
+            "id": "fungicide1",
+            "name": "Fungicide",
+            "dates": "01/06 - 01/09",
+            "outgoing": [
+                {
+                    "destination_type": "ProbNode",
+                    "destination_id": "prob_fungi2",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -852.2218124999998,
+            "y": -2365.518887499999,
+            "width": 200,
+            "height": 104.0,
+            "id": "fungicide1_2",
+            "name": "Fungicide",
+            "dates": "+14d - 01/09",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "fungicide1_3",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "OpNode",
+            "x": -816.3518124999997,
+            "y": -2144.498887499998,
+            "width": 200,
+            "height": 104.0,
+            "id": "fungicide1_3",
+            "name": "Fungicide",
+            "dates": "+14d - 01/09",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "19A",
+                    "branching_condition": "",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "CondNode",
+            "x": -351.0,
+            "y": -3790.0,
+            "width": 246.0,
+            "height": 154.0,
+            "id": "cond_1",
+            "name": "FIELD->SOIL\nis Clay?",
+            "dates": "+0d - +0d",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "1",
+                    "branching_condition": "YES",
+                    "bend_points": []
+                },
+                {
+                    "destination_type": "ProbNode",
+                    "destination_id": "prob_2",
+                    "branching_condition": "NO",
+                    "bend_points": []
+                }
+            ],
+            "cpp_cond": "m_field->GetSoilType() == 12",
+            "cond_type": "field_soil",
+            "cond_value": "12"
+        },
+        {
+            "type": "CondNode",
+            "x": -322.53776249999993,
+            "y": -2311.7529812499993,
+            "width": 246.0,
+            "height": 154.0,
+            "id": "cond_12",
+            "name": "FIELD->SOIL\nis Clay?",
+            "dates": "+0d - +0d",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "12",
+                    "branching_condition": "YES",
+                    "bend_points": []
+                },
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "nothing1",
+                    "branching_condition": "NO",
+                    "bend_points": []
+                }
+            ],
+            "cpp_cond": "m_field->GetSoilType() == 12",
+            "cond_type": "field_soil",
+            "cond_value": "12"
+        },
+        {
+            "type": "ProbNode",
+            "x": -45.839999999999975,
+            "y": -3574.9999999999995,
+            "width": 200,
+            "height": 100,
+            "id": "prob_2",
+            "name": "Probability\nNode",
+            "dates": "+0d - +0d",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "2",
+                    "branching_condition": "50%",
+                    "bend_points": []
+                },
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "3",
+                    "branching_condition": "50%",
+                    "bend_points": [
+                        [
+                            214.24499999999992,
+                            -3519.172499999999
+                        ],
+                        [
+                            223.50249999999997,
+                            -3236.1575
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ProbNode",
+            "x": -57.49999999999994,
+            "y": -2711.6999999999994,
+            "width": 200,
+            "height": 100,
+            "id": "prob_8",
+            "name": "Probability\nNode",
+            "dates": "+0d - +0d",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "8",
+                    "branching_condition": "50%",
+                    "bend_points": []
+                },
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "9",
+                    "branching_condition": "50%",
+                    "bend_points": [
+                        [
+                            196.64999999999995,
+                            -2653.0499999999997
+                        ],
+                        [
+                            195.49999999999991,
+                            -2383.9500000000007
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ProbNode",
+            "x": 401.02981250000005,
+            "y": -2142.853975,
+            "width": 200,
+            "height": 100,
+            "id": "prob_1_2b",
+            "name": "Probability\nNode",
+            "dates": "+0d - +0d",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "insecticide1_2b",
+                    "branching_condition": "33%",
+                    "bend_points": []
+                },
+                {
+                    "destination_type": "ProbNode",
+                    "destination_id": "prob_1_2a",
+                    "branching_condition": "67%",
+                    "bend_points": [
+                        [
+                            642.5457125,
+                            -2084.0039749999996
+                        ],
+                        [
+                            655.0397500000001,
+                            -1832.003975
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ProbNode",
+            "x": 401.17981250000014,
+            "y": -1871.2539749999996,
+            "width": 200,
+            "height": 100,
+            "id": "prob_1_2a",
+            "name": "Probability\nNode",
+            "dates": "+0d - +0d",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "insecticide1_2a",
+                    "branching_condition": "33%",
+                    "bend_points": []
+                },
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "nothing2",
+                    "branching_condition": "67%",
+                    "bend_points": []
+                }
+            ]
+        },
+        {
+            "type": "ProbNode",
+            "x": -596.4474999999998,
+            "y": -2408.2724999999987,
+            "width": 200,
+            "height": 100,
+            "id": "prob_fungi2",
+            "name": "Probability\nNode",
+            "dates": "+0d - +0d",
+            "outgoing": [
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "fungicide1_2",
+                    "branching_condition": "50%",
+                    "bend_points": []
+                },
+                {
+                    "destination_type": "OpNode",
+                    "destination_id": "fungicide1_3",
+                    "branching_condition": "50%",
+                    "bend_points": []
+                }
+            ]
+        }
+    ],
+    "comments": [
+        {
+            "type": "comment",
+            "text": "original date:\n\"Before spring soil treatments\"",
+            "x": 126.96000000000004,
+            "y": -3359.1499999999996,
+            "width": 263.0,
+            "height": 67.0
+        },
+        {
+            "type": "comment",
+            "text": "\"Start 2-4 weeks before planting\n(every 5-7 days)\"",
+            "x": 131.0999999999999,
+            "y": -3213.1,
+            "width": 278.0,
+            "height": 67.0
+        },
+        {
+            "type": "comment",
+            "text": "Before planting",
+            "x": 115.0,
+            "y": -3058.999999999999,
+            "width": 144.0,
+            "height": 45.0
+        },
+        {
+            "type": "comment",
+            "text": "this op counts as 5A, 5B\nand 6",
+            "x": 157.55,
+            "y": -2963.55,
+            "width": 216.0,
+            "height": 67.0
+        }
+    ]
+}
