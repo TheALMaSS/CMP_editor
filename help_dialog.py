@@ -17,13 +17,13 @@ class HelpDialog(QDialog):
         help_text = """
 <span style="font-size:10pt;">
 <b>CMP Editor - Quick Guide</b><br>
-CMP Editor lets you design your Crop Management Plan, using a decision tree structure. From here, you can export your CMP as a C++ class compatible with ALMaSS.<br><br>
+CMP Editor lets you design your Crop Management Plan, using a decision tree structure. From here, you can export your CMP as a JSON file compatible with ALMaSS.<br><br>
 
 <b>The Nodes</b><br>
 All nodes must have a univocal ID of your choosing.<br>
 • Operation Nodes: a standard Farm Operation, with a date range indicating the time of year in which the operation can be performed. You must select the farm operation from the ones available inside ALMaSS.<br>
 • Probability Nodes: for probability-based branching.<br>
-• Conditional Nodes: for condition-based branching. You must select the branching conditions from the field and farm properties inside ALMaSS.<br><br>
+• Conditional Nodes: for condition-based branching. Conditional branching can be based on properties of the field or of the farm, or on previous operation having been carried out on the field.<br><br>
 
 <b>Connecting Nodes</b><br>
 • Click "Add Arrow" to enter arrow mode.<br>
@@ -38,8 +38,8 @@ All nodes must have a univocal ID of your choosing.<br>
 • Press "VALIDATE CMP" to check for errors in the CMP.<br><br>
 
 <b>Saving/Loading</b><br>
-• "Save CMP" saves your CMP to a JSON file, which you can reopen later with "Load CMP".<br>
-• "Export to ALMaSS" will build an ALMaSS compatible C++ class + header file, which you can then plug into the software.<br>Remember to validate your CMP before exporting!<br><br>
+• "Save CMP" saves your CMP to a .cmp file, which you can reopen later with "Load CMP".<br>
+• "Export to ALMaSS" will generate a JSON file that can be parsed by ALMaSS into a Generic Crop class. <br>Remember to validate your CMP before exporting!<br><br>
 
 <b>User Controls</b><br>
 • Drag nodes to reposition them.<br>

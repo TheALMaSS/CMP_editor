@@ -398,7 +398,7 @@ class FlowchartWindow(QMainWindow):
             dlg.setLayout(layout)
             dlg.exec_()
 
-        filename, _ = QFileDialog.getSaveFileName(self, "Save JSON", "", "JSON Files (*.json)")
+        filename, _ = QFileDialog.getSaveFileName(self, "Save File", "", "CMP Files (*.cmp)")
         if filename != "":
             # Prepare comments data
             comments_data = []
@@ -418,7 +418,7 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def load_CMP(self):
-        filename, _ = QFileDialog.getOpenFileName(self, "Open JSON", "", "JSON Files (*.json)")
+        filename, _ = QFileDialog.getOpenFileName(self, "Open File", "", "CMP Files (*.cmp)")
         if not filename:
             return
 
