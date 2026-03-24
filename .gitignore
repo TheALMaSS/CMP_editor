@@ -1,4 +1,5 @@
 *.json
+*.cmp
 *.cpp
 *.h
 __pycache__/
