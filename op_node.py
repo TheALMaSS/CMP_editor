@@ -9,9 +9,10 @@ from helper_funcs import resource_path
 OPERATIONS_FILE = resource_path("operations.json")
 
 class OpNode(Node):
-    def __init__(self, name):
+    def __init__(self, name, mandatory=True):
         super().__init__(name)
 
+        self.mandatory = mandatory
         self.dates_text = GenericTextItem(self)
         
         # Only nodes that are not start and end have a dates field
@@ -44,6 +45,9 @@ class OpNode(Node):
             self.name_text.setVisible(False)
             self.id_text.setPlainText(name)
             #self.id_text.setTextInteractionFlags(Qt.NoTextInteraction)
+
+        if self.mandatory:
+            self.id_text.setPlainText("★ " + self.id_text.toPlainText())
 
             self.vertical_offset_name = 0
             self.padding_vertical = 0

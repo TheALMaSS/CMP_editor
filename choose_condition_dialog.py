@@ -166,7 +166,7 @@ class ChooseConditionDialog(QDialog):
             
         if self.selected[1] != "HISTORY":
             # Compose string like "ITEM1->ITEM2 is ITEM3?"
-            self.composed_condition = f"{self.selected[0]}->{self.selected[1]}\nis {self.selected[2]}?"
+            self.composed_condition = f"is {self.selected[0]}->{self.selected[1]}\n{self.selected[2]}?"
             self.coded_condition = (
                 f"{self.conditions[self.selected[0]]['var']}->"
                 f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]].get('func', self.selected[1])} == "

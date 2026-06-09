@@ -286,8 +286,9 @@ class FlowchartWindow(QMainWindow):
         if dlg.exec_() != QDialog.Accepted:
             return
         operation = dlg.selected
+        mandatory = dlg.mandatory
 
-        node = OpNode(str(operation["name"]))
+        node = OpNode(str(operation["name"]), mandatory)
         node.setPos(self.view.mapToScene(self.view.viewport().rect().center()))
         node.setZValue(1)
 
@@ -314,7 +315,7 @@ class FlowchartWindow(QMainWindow):
         condition = dlg.composed_condition
         cond_type = dlg.cond_type
         if cond_type == "field_history":
-            cond_value = self.crop_name + "_" + cond_value
+            cond_value = self.crop_name + "_" + dlg.cond_value
         else:
             cond_value = dlg.cond_value
         cpp_cond = dlg.coded_condition
@@ -450,7 +451,7 @@ class FlowchartWindow(QMainWindow):
                 node_type = node_data.get("type")
 
                 if node_type == "OpNode":
-                    node = OpNode(str(node_data.get("name", "")))
+                    node = OpNode(str(node_data.get("name", "")), bool(node_data.get("mandatory", True)))
                     self.op_nodes.append(node)
 
                 elif node_type == "ProbNode":
@@ -479,6 +480,9 @@ class FlowchartWindow(QMainWindow):
                 node_id = node_data.get("id", "")
                 if hasattr(node, "id_text"):
                     node.id_text.setPlainText(node_id)
+                    if hasattr(node, "mandatory"):
+                        if node.mandatory:
+                            node.id_text.setPlainText("★ " + node.id_text.toPlainText())
 
                 if hasattr(node, "dates_text"):
                     node.dates_text.setPlainText(node_data.get("dates", ""))

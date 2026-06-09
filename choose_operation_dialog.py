@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QDialog, QListWidget, QTextEdit, QLabel, QHBoxLayout, QVBoxLayout, QDialogButtonBox, QLineEdit
+from PyQt5.QtWidgets import QWidget, QPushButton, QDialog, QListWidget, QTextEdit, QLabel, QHBoxLayout, QVBoxLayout, QDialogButtonBox, QLineEdit, QCheckBox
 from PyQt5.QtCore import Qt
 
 help_text_choose_operation = "Select a crop operation on the left to see its description.\n\n" \
@@ -24,6 +24,7 @@ class ChooseOperationDialog(QDialog):
         self.operations = operations
         self.filtered_operations = operations
         self.selected = None
+        self.mandatory = True
 
         self.search_field = QLineEdit()
         self.search_field.setPlaceholderText("Search operations...")
@@ -73,9 +74,20 @@ class ChooseOperationDialog(QDialog):
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
 
+        self.mandatory_checkbox = QCheckBox("Mandatory")
+        self.mandatory_checkbox.setChecked(True)
+        self.mandatory_checkbox.toggled.connect(
+            lambda checked: setattr(self, "mandatory", checked)
+        )
+
+        bottom_layout = QHBoxLayout()
+        bottom_layout.addWidget(self.mandatory_checkbox)
+        bottom_layout.addStretch()
+        bottom_layout.addWidget(buttons)
+
         outer = QVBoxLayout()
         outer.addLayout(main_layout)
-        outer.addWidget(buttons)
+        outer.addLayout(bottom_layout)
         self.setLayout(outer)
 
         self.list_widget.currentRowChanged.connect(self.on_row_changed)
