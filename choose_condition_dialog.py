@@ -185,7 +185,7 @@ class ChooseConditionDialog(QDialog):
             self.cond_type = "farm_intensity"
         elif self.selected[1] == "HISTORY":
             self.cond_type = "field_history"
-        elif self.selected[1] == "SPRING CROP":
+        elif self.selected[1] == "PLANT IN SPRING":
             self.cond_type = "field_forcespring"
 
         super().accept()

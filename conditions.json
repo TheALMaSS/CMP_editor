@@ -43,7 +43,7 @@
       },
       "HISTORY": {
       },
-      "SPRING CROP": {
+      "PLANT IN SPRING": {
         "func": "GetForceSpring()",
         "False": "0",
         "True": "1"
