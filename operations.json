@@ -330,11 +330,6 @@
     "cpp_func": "WinterPlough"
   },
   {
-    "name": "Force Next Crop In Spring",
-    "description": "When a crop is part of a crop rotation, its delay may force the next crop in the rotation to start in Spring next year rather than the current Autumn. If you want this behaviour to apply to your crop, schedule this operation right before the END.",
-    "cpp_func": "EnableForceSpring"
-  },
-  {
     "name": "NPKS",
     "description": "Apply NPKS as fertilizer.",
     "cpp_func": "NPKS"
