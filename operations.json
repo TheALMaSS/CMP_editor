@@ -328,5 +328,80 @@
     "name": "Winter Plough",
     "description": "Plough the soil during winter.",
     "cpp_func": "WinterPlough"
+  },
+  {
+    "name": "NPKS",
+    "description": "Apply NPKS as fertilizer.",
+    "cpp_func": "NPKS"
+  },
+  {
+    "name": "NPK",
+    "description": "Apply NPK as fertilizer.",
+    "cpp_func": "NPK"
+  },
+  {
+    "name": "NC",
+    "description": "Apply NC as fertilizer.",
+    "cpp_func": "NC"
+  },
+  {
+    "name": "NK",
+    "description": "Apply NK as fertilizer.",
+    "cpp_func": "NK"
+  },
+  {
+    "name": "NS",
+    "description": "Apply NS as fertilizer.",
+    "cpp_func": "NS"
+  },
+  {
+    "name": "N",
+    "description": "Apply N as fertilizer.",
+    "cpp_func": "N"
+  },
+  {
+    "name": "PK",
+    "description": "Apply PK as fertilizer.",
+    "cpp_func": "PK"
+  },
+  {
+    "name": "P",
+    "description": "Apply P as fertilizer.",
+    "cpp_func": "P"
+  },
+  {
+    "name": "K",
+    "description": "Apply K as fertilizer.",
+    "cpp_func": "K"
+  },
+  {
+    "name": "SK",
+    "description": "Apply SK as fertilizer.",
+    "cpp_func": "SK"
+  },
+  {
+    "name": "Liquid NH3",
+    "description": "Apply liquid NH3 as fertilizer.",
+    "cpp_func": "LiquidNH3"
+  },
+  {
+    "name": "Sludge",
+    "description": "Apply sludge as fertilizer.",
+    "cpp_func": "Sludge"
+  },
+  {
+    "name": "RSM",
+    "description": "Apply RSM as fertilizer.",
+    "cpp_func": "RSM"
+  },
+  {
+    "name": "Calcium",
+    "description": "Apply calcium as fertilizer.",
+    "cpp_func": "Calcium"
+  },
+  {
+    "name": "Calcium",
+    "description": "Apply calcium as fertilizer.",
+    "cpp_func": "Calcium"
   }
 ]
