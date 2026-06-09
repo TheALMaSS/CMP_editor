@@ -42,6 +42,11 @@
         "Organic & peat": "14"
       },
       "HISTORY": {
+      },
+      "SPRING CROP": {
+        "func": "GetForceSpring()",
+        "False": "0",
+        "True": "1"
       }
     }
   }
