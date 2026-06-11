@@ -290,6 +290,11 @@
     "cpp_func": "StrawRemoval"
   },
   {
+    "name": "Hay Bailing",
+    "description": "Carry out hay bailing on a field.",
+    "cpp_func": "HayBailing"
+  },
+  {
     "name": "Strigling",
     "description": "Perform tine-weeding to control small weeds.",
     "cpp_func": "Strigling"
