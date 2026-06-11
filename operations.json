@@ -295,6 +295,11 @@
     "cpp_func": "HayBailing"
   },
   {
+    "name": "Fiber Covering",
+    "description": "Spread a breathable, protective fabric over crops.",
+    "cpp_func": "FiberCovering"
+  },
+  {
     "name": "Strigling",
     "description": "Perform tine-weeding to control small weeds.",
     "cpp_func": "Strigling"
