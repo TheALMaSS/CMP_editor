@@ -480,9 +480,6 @@ class FlowchartWindow(QMainWindow):
                 node_id = node_data.get("id", "")
                 if hasattr(node, "id_text"):
                     node.id_text.setPlainText(node_id)
-                    if hasattr(node, "mandatory"):
-                        if node.mandatory:
-                            node.id_text.setPlainText("★ " + node.id_text.toPlainText())
 
                 if hasattr(node, "dates_text"):
                     node.dates_text.setPlainText(node_data.get("dates", ""))
