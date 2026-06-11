@@ -305,6 +305,11 @@
     "cpp_func": "FiberRemoval"
   },
   {
+    "name": "Release Cattle",
+    "description": "Release cattle on the field. If the grass is tall enough, the cattle will graze.",
+    "cpp_func": "CattleOut"
+  },
+  {
     "name": "Strigling",
     "description": "Perform tine-weeding to control small weeds.",
     "cpp_func": "Strigling"
