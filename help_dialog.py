@@ -25,6 +25,10 @@ All nodes must have a univocal ID of your choosing.<br>
 • Probability Nodes: for probability-based branching.<br>
 • Conditional Nodes: for condition-based branching. Conditional branching can be based on properties of the field or of the farm, or on previous operation having been carried out on the field.<br><br>
 
+<b>Mandatory Operations</b><br>
+A mandatory operation will <b>always</b> be performed, even if its time window has elapsed. The farmer will "push through" and perform the operation anyway.<br>
+When creating a new operation node, check the "mandatory" flag to create a mandatory operation (it is checked by default). It will be marked by a golden star in the UI.<br><br>
+
 <b>Connecting Nodes</b><br>
 • Click "Add Arrow" to enter arrow mode.<br>
 • Click on a first node, then on a second one to create a flow of operations.<br>
