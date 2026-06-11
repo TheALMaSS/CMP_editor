@@ -1,31 +1,42 @@
 from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtWidgets import QGraphicsTextItem, QGraphicsItem
-from node import Node
-from node import GenericTextItem
+from PyQt5.QtWidgets import QGraphicsTextItem
 from PyQt5.QtGui import QTextDocument, QTextOption, QFont, QColor, QPen
-import json
+from node import Node, GenericTextItem
 from helper_funcs import resource_path
 
 OPERATIONS_FILE = resource_path("operations.json")
+
 
 class OpNode(Node):
     def __init__(self, name, mandatory=True):
         super().__init__(name)
 
         self.mandatory = mandatory
+
+        self.star_text = QGraphicsTextItem(self)
+        self.star_text.setPlainText("★")
+        self.star_text.setDefaultTextColor(QColor("#C97200"))
+        star_font = QFont()
+        star_font.setPointSize(12)
+        self.star_text.setFont(star_font)
+        self.star_text.setTextInteractionFlags(Qt.NoTextInteraction)
+        self.star_text.setVisible(self.mandatory)
+
         self.dates_text = GenericTextItem(self)
-        
-        # Only nodes that are not start and end have a dates field
+
         if name != "END":
             self.dates_doc = QTextDocument()
             self.dates_doc.setDefaultTextOption(QTextOption(Qt.AlignCenter))
+
             if name != "START":
                 self.dates_doc.setPlainText("dd/MM - dd/MM")
             else:
                 self.dates_doc.setPlainText("dd/MM")
+
             font = QFont()
             font.setPointSize(9)
             self.dates_doc.setDefaultFont(font)
+
             self.dates_text.setDocument(self.dates_doc)
             self.dates_text.setTextInteractionFlags(Qt.TextEditorInteraction)
 
@@ -34,29 +45,27 @@ class OpNode(Node):
             self.padding_vertical = 60
             self.padding_horizontal = 100
 
-        # Special appearance only for start and end nodes
-        # TODO: fix this END/START/NORMAL NODE switching thing
-        if name == "END" or name == "START":
+        if name in ("START", "END"):
             if name == "END":
                 self.dates_text.setVisible(False)
-                self.vertical_offset_id = -30
-            else:
-                self.vertical_offset_id = -30
+
+            self.vertical_offset_id = -30
             self.name_text.setVisible(False)
             self.id_text.setPlainText(name)
-            #self.id_text.setTextInteractionFlags(Qt.NoTextInteraction)
-
-        if self.mandatory:
-            self.id_text.setPlainText("★ " + self.id_text.toPlainText())
-
-            self.vertical_offset_name = 0
-            self.padding_vertical = 0
-            self.padding_horizontal = 0
 
         self.adjust_size()
 
     def update_positions(self):
         super().update_positions()
+
+        if self.mandatory:
+            star_rect = self.star_text.boundingRect()
+            id_rect = self.id_text.boundingRect()
+
+            self.star_text.setPos(
+                self.id_text.pos().x() - star_rect.width() + 10,
+                (self.id_text.pos().y() + (id_rect.height() - star_rect.height()) / 2) - 5
+            )
 
         if self.name == "END":
             return
