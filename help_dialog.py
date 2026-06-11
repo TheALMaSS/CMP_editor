@@ -27,7 +27,8 @@ All nodes must have a univocal ID of your choosing.<br>
 
 <b>Mandatory Operations</b><br>
 A mandatory operation will <b>always</b> be performed, even if its time window has elapsed. The farmer will "push through" and perform the operation anyway.<br>
-When creating a new operation node, check the "mandatory" flag to create a mandatory operation (it is checked by default). It will be marked by a golden star in the UI.<br><br>
+When creating a new operation node, check the "mandatory" flag to create a mandatory operation (it is checked by default). It will be marked by a golden star in the UI.<br>
+If an operation is not mandatory, it means that it may not be executed if the right circumstances do not present themselves -- but this will not prevent it from scheduling all subsequent operations connected by arrows.<br><br>
 
 <b>Connecting Nodes</b><br>
 • Click "Add Arrow" to enter arrow mode.<br>
