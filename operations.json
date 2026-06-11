@@ -300,6 +300,11 @@
     "cpp_func": "FiberCovering"
   },
   {
+    "name": "Fiber Removal",
+    "description": "Remove the precedently spread protective fabric over crops.",
+    "cpp_func": "FiberRemoval"
+  },
+  {
     "name": "Strigling",
     "description": "Perform tine-weeding to control small weeds.",
     "cpp_func": "Strigling"
