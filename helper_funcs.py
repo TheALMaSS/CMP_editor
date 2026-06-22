@@ -26,7 +26,6 @@ def generate_json(all_nodes, crop_name, author, date, filename, comments=None):
             "width": getattr(node, "width", 120),
             "height": getattr(node, "height", 60),
             "id": node.id_text.toPlainText() if hasattr(node, "id_text") else "",
-            "mandatory": node.mandatory if hasattr(node, "mandatory") else True,
             "name": node.name_text.toPlainText() if hasattr(node, "name_text") else "",
             "dates": getattr(node, "dates_text", "+0d - +1d").toPlainText() if hasattr(node, "dates_text") else "+0d - +0d",
             "outgoing": []
@@ -99,7 +98,6 @@ def generate_almass_json(all_nodes, crop_name, filename):
             "type": node.__class__.__name__,
             "code": code_counter,
             "id": crop_name + "_" + node_id,
-            "mandatory": node.mandatory if hasattr(node, "mandatory") else True,
             "name": node.name_text.toPlainText(),
             "earliest": earliest,
             "latest": latest,

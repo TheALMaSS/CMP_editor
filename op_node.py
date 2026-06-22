@@ -8,19 +8,8 @@ OPERATIONS_FILE = resource_path("operations.json")
 
 
 class OpNode(Node):
-    def __init__(self, name, mandatory=True):
+    def __init__(self, name):
         super().__init__(name)
-
-        self.mandatory = mandatory
-
-        self.star_text = QGraphicsTextItem(self)
-        self.star_text.setPlainText("★")
-        self.star_text.setDefaultTextColor(QColor("#C97200"))
-        star_font = QFont()
-        star_font.setPointSize(12)
-        self.star_text.setFont(star_font)
-        self.star_text.setTextInteractionFlags(Qt.NoTextInteraction)
-        self.star_text.setVisible(self.mandatory)
 
         self.dates_text = GenericTextItem(self)
 
@@ -57,15 +46,6 @@ class OpNode(Node):
 
     def update_positions(self):
         super().update_positions()
-
-        if self.mandatory:
-            star_rect = self.star_text.boundingRect()
-            id_rect = self.id_text.boundingRect()
-
-            self.star_text.setPos(
-                self.id_text.pos().x() - star_rect.width() + 10,
-                (self.id_text.pos().y() + (id_rect.height() - star_rect.height()) / 2) - 5
-            )
 
         if self.name == "END":
             return

@@ -286,9 +286,8 @@ class FlowchartWindow(QMainWindow):
         if dlg.exec_() != QDialog.Accepted:
             return
         operation = dlg.selected
-        mandatory = dlg.mandatory
 
-        node = OpNode(str(operation["name"]), mandatory)
+        node = OpNode(str(operation["name"]))
         node.setPos(self.view.mapToScene(self.view.viewport().rect().center()))
         node.setZValue(1)
 
@@ -451,7 +450,7 @@ class FlowchartWindow(QMainWindow):
                 node_type = node_data.get("type")
 
                 if node_type == "OpNode":
-                    node = OpNode(str(node_data.get("name", "")), bool(node_data.get("mandatory", True)))
+                    node = OpNode(str(node_data.get("name", "")))
                     self.op_nodes.append(node)
 
                 elif node_type == "ProbNode":
