@@ -121,10 +121,23 @@ class ChooseConditionDialog(QDialog):
             self.ok_btn.setEnabled(False)
             return
 
-        elif current.text() == "HISTORY":
-            # switch to editable QTextEdit
+        elif current.text() in ("HISTORY", "DATE"):
             self.list3.hide()
             self.history_widget.show()
+
+            if current.text() == "HISTORY":
+                self.history_instructions.setText(
+                    "Enter the ID of the operation node for branching.\n"
+                    "YES branch: operation completed.\n"
+                    "NO branch: operation not completed."
+                )
+            else:
+                self.history_instructions.setText(
+                    "Enter the day of the year (1-365) for branching.\n"
+                    "YES branch: today's day <= entered day.\n"
+                    "NO branch: today's day > entered day."
+                )
+
         else:
             # normal third column behavior
             self.history_widget.hide()
@@ -156,23 +169,26 @@ class ChooseConditionDialog(QDialog):
         self.ok_btn.setEnabled(True)
 
     def accept(self):
-        if (self.selected[1] == "HISTORY"):
+        if self.selected[1] in ("HISTORY", "DATE"):
             text = self.text3.toPlainText()
             if text:
                 if len(self.selected) < 3:
                     self.selected.append(text)
         if len(self.selected) != 3:
             return  # safety check
-            
-        if self.selected[1] != "HISTORY":
-            # Compose string like "ITEM1->ITEM2 is ITEM3?"
-            self.composed_condition = f"is {self.selected[0]}->{self.selected[1]}\n{self.selected[2]}?"
-            self.coded_condition = (
-                f"{self.conditions[self.selected[0]]['var']}->"
-                f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]].get('func', self.selected[1])} == "
-                f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]][self.selected[2]]}"
+        if self.selected[1] == "HISTORY":
+            self.composed_condition = (
+                f"Has operation {self.selected[2]}\nbeen performed?"
             )
-            self.cond_value = f"{self.conditions[self.selected[0]]['sublayers'][self.selected[1]][self.selected[2]]}"
+            self.coded_condition = "null"
+            self.cond_value = self.selected[2]
+
+        elif self.selected[1] == "DATE":
+            self.composed_condition = (
+                f"Is today's DOY\n ≤ {self.selected[2]}?"
+            )
+            self.coded_condition = "null"
+            self.cond_value = self.selected[2]
         else:
             self.composed_condition = f"Has operation {self.selected[2]}\nbeen performed?"
             self.coded_condition = "null"
@@ -185,5 +201,7 @@ class ChooseConditionDialog(QDialog):
             self.cond_type = "farm_intensity"
         elif self.selected[1] == "HISTORY":
             self.cond_type = "field_history"
+        elif self.selected[1] == "DATE":
+            self.cond_type = "calendar_date"
 
         super().accept()

@@ -1,4 +1,11 @@
 {
+  "CALENDAR": {
+    "var": "g_date",
+    "sublayers": {
+      "DATE": {
+      }
+    }
+  },
   "FARM": {
     "var": "m_farm",
     "sublayers": {
