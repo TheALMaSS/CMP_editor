@@ -415,6 +415,10 @@ class FlowchartWindow(QMainWindow):
                     "height": comment.rect().height()
                 })
 
+            # Set last_modified to today
+            curr_date = datetime.now()
+            curr_date_str = curr_date.strftime("%d/%m/%Y")
+            self.last_modified = curr_date_str
             # Combine nodes + comments
             generate_json(all_nodes, self.crop_name, self.author, self.last_modified, filename, comments=comments_data)
     # ------------------------------------------------------------------------------------------------
