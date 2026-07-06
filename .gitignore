@@ -6,3 +6,7 @@ __pycache__/
 build/
 dist/
 build/cropgen/
+cropprogs/DK_BushFruit_Perm_table_strawberries.xlsx
+PROD_FTS_6_20260427.csv
+choose_condition_dialog.py
+regex_crop_progrs.txt
