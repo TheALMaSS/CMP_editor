@@ -310,6 +310,8 @@ class FlowchartView(QGraphicsView):
                             'height': item.height,
                             'dates': getattr(item, 'dates_doc', None),
                             'cpp_cond': getattr(item, 'cpp_cond', None),
+                            'cond_type': getattr(item, 'cond_type', None),
+                            'cond_value': getattr(item, 'cond_value', None),
                             'pos': item.pos()
                         })
             # Handle GenericTextItem
@@ -325,7 +327,7 @@ class FlowchartView(QGraphicsView):
                 for item in self.clipboard:
                     # Only if cond node with condition
                     if item['cpp_cond'] is not None:
-                        new_node = item['type'](item['name'], item['cpp_cond'])
+                        new_node = item['type'](item['name'], item['cpp_cond'], item['cond_type'], item['cond_value'])
                     else:
                         new_node = item['type'](item['name'])
 
