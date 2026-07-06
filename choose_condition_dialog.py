@@ -190,7 +190,7 @@ class ChooseConditionDialog(QDialog):
             self.coded_condition = "null"
             self.cond_value = self.selected[2]
         else:
-            self.composed_condition = f"Has operation {self.selected[2]}\nbeen performed?"
+            self.composed_condition = f"Is {self.selected[1]}:\n{self.selected[2]}?"
             self.coded_condition = "null"
             self.cond_value = f"{self.selected[2]}"
         if self.selected[1] == "SOIL":
