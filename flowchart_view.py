@@ -38,6 +38,70 @@ class FlowchartView(QGraphicsView):
         center /= len(items)
         self.centerOn(center)
 
+    # Callback endpoint to delete an item
+    def deleteItem(self, item):
+
+        # Delete an arrow
+        if isinstance(item, Arrow):
+            start = item.start_node
+            end = item.end_node
+
+            for bp in list(item.bend_points):
+                self.scene().removeItem(bp)
+            item.bend_points.clear()
+
+            if item in getattr(start, "outgoing_arrows", []):
+                start.outgoing_arrows.remove(item)
+            if item in getattr(end, "incoming_arrows", []):
+                end.incoming_arrows.remove(item)
+
+            if hasattr(item, "text_item") and item.text_item is not None:
+                self.scene().removeItem(item.text_item)
+
+            self.scene().removeItem(item)
+            return
+
+        # Delete a node
+        if isinstance(item, Node):
+            for arrow in list(getattr(item, "outgoing_arrows", [])):
+                if arrow in getattr(arrow.end_node, "incoming_arrows", []):
+                    arrow.end_node.incoming_arrows.remove(arrow)
+                if hasattr(arrow, "text_item"):
+                    self.scene().removeItem(arrow.text_item)
+                for bp in list(arrow.bend_points):
+                    self.scene().removeItem(bp)
+                arrow.bend_points.clear()
+                self.scene().removeItem(arrow)
+
+            for arrow in list(getattr(item, "incoming_arrows", [])):
+                if arrow in getattr(arrow.start_node, "outgoing_arrows", []):
+                    arrow.start_node.outgoing_arrows.remove(arrow)
+                if hasattr(arrow, "text_item"):
+                    self.scene().removeItem(arrow.text_item)
+                for bp in list(arrow.bend_points):
+                    self.scene().removeItem(bp)
+                arrow.bend_points.clear()
+                self.scene().removeItem(arrow)
+
+            if item in self.my_window.op_nodes:
+                self.my_window.op_nodes.remove(item)
+
+            if item in self.my_window.prob_nodes:
+                self.my_window.prob_nodes.remove(item)
+
+            if item in self.my_window.cond_nodes:
+                self.my_window.cond_nodes.remove(item)
+
+            self.scene().removeItem(item)
+            return
+            
+        # Delete a comment box
+        elif isinstance(item, CommentBox):
+            self.scene().removeItem(item)
+            if item in self.my_window.comment_boxes:
+                self.my_window.comment_boxes.remove(item)
+            return
+
     # --------------------------------------------------------------------
     # USER INTERACTION FUNCTIONS
     def mousePressEvent(self, event):
@@ -105,66 +169,8 @@ class FlowchartView(QGraphicsView):
                 elif isinstance(parent, CommentBox):
                     item = parent
 
-                # Delete an arrow
-                if isinstance(item, Arrow):
-                    start = item.start_node
-                    end = item.end_node
-
-                    for bp in list(item.bend_points):
-                        self.scene().removeItem(bp)
-                    item.bend_points.clear()
-
-                    if item in getattr(start, "outgoing_arrows", []):
-                        start.outgoing_arrows.remove(item)
-                    if item in getattr(end, "incoming_arrows", []):
-                        end.incoming_arrows.remove(item)
-
-                    if hasattr(item, "text_item") and item.text_item is not None:
-                        self.scene().removeItem(item.text_item)
-
-                    self.scene().removeItem(item)
-                    return
-
-                # Delete a node
-                elif isinstance(item, Node):
-                    for arrow in list(getattr(item, "outgoing_arrows", [])):
-                        if arrow in getattr(arrow.end_node, "incoming_arrows", []):
-                            arrow.end_node.incoming_arrows.remove(arrow)
-                        if hasattr(arrow, "text_item"):
-                            self.scene().removeItem(arrow.text_item)
-                        for bp in list(arrow.bend_points):
-                            self.scene().removeItem(bp)
-                        arrow.bend_points.clear()
-                        self.scene().removeItem(arrow)
-
-                    for arrow in list(getattr(item, "incoming_arrows", [])):
-                        if arrow in getattr(arrow.start_node, "outgoing_arrows", []):
-                            arrow.start_node.outgoing_arrows.remove(arrow)
-                        if hasattr(arrow, "text_item"):
-                            self.scene().removeItem(arrow.text_item)
-                        for bp in list(arrow.bend_points):
-                            self.scene().removeItem(bp)
-                        arrow.bend_points.clear()
-                        self.scene().removeItem(arrow)
-
-                    if item in self.my_window.op_nodes:
-                        self.my_window.op_nodes.remove(item)
-
-                    if item in self.my_window.prob_nodes:
-                        self.my_window.prob_nodes.remove(item)
-
-                    if item in self.my_window.cond_nodes:
-                        self.my_window.cond_nodes.remove(item)
-
-                    self.scene().removeItem(item)
-                    return
-                
-                # Delete a comment box
-                elif isinstance(item, CommentBox):
-                    self.scene().removeItem(item)
-                    if item in self.my_window.comment_boxes:
-                        self.my_window.comment_boxes.remove(item)
-                    return
+                # Call the delete endpoint
+                self.deleteItem(item)
 
             # ------------------ IF NO SPECIAL MODE IS SELECTED
             else:
@@ -362,6 +368,12 @@ class FlowchartView(QGraphicsView):
                 clipboard_text = QApplication.clipboard().text()
                 cursor.insertText(clipboard_text)
                 focus_item.setTextCursor(cursor)
+
+        # Ctrl+D ---------------------------------------------
+        elif event.key() == Qt.Key_D and modifiers == Qt.ControlModifier:
+            selected = self.scene().selectedItems()
+            for item in selected:
+                self.deleteItem(item)
 
         else:
             super().keyPressEvent(event)
