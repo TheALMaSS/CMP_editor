@@ -376,6 +376,7 @@ def validate_graph(op_nodes, prob_nodes, cond_nodes, crop_name, author):
 
     op_names = [op_node.name_text.toPlainText() for op_node in op_nodes]
     ids = [node.id_text.toPlainText() for node in (op_nodes + prob_nodes + cond_nodes)]
+    all_nodes = op_nodes + prob_nodes + cond_nodes
 
     if crop_name == "":
         warnings.append("⚠ <b>WARNING:</b> no crop's name defined.")
@@ -391,6 +392,11 @@ def validate_graph(op_nodes, prob_nodes, cond_nodes, crop_name, author):
 
     if len(ids) != len(set(ids)):
         warnings.append("⚠ <b>WARNING:</b> two or more Nodes share the same ID.")
+
+    for node in all_nodes:
+        if (node.name != "START") and (node.name != "END"):
+            if len(node.incoming_arrows) <= 0:
+                warnings.append("⚠ <b>WARNING:</b> node '" + node.id_text.toPlainText() + "' has no incoming arrows, thus is never executed.")
 
     for prob_node in prob_nodes:
         total_flow = 0.0
@@ -421,8 +427,6 @@ def validate_graph(op_nodes, prob_nodes, cond_nodes, crop_name, author):
             warnings.append(
                 "⚠ <b>WARNING:</b> Node '" + cond_node.id_text.toPlainText() + "' must have one arrow labeled 'YES' and one labeled 'NO'."
             )
-# TODO: add the option to add textual comments like floating text boxes.
-# TODO: add a conditional type of node that considers previous operations in history.
     pattern1 = r'\d{2}/\d{2} - \d{2}/\d{2}'
     pattern2 = r'\+\d+d - \d{2}/\d{2}'
     pattern3 = r'\d{2}/\d{2}'
