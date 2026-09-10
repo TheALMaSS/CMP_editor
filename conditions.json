@@ -2,8 +2,7 @@
   "CALENDAR": {
     "var": "g_date",
     "sublayers": {
-      "DATE": {
-      }
+      "DATE": {}
     }
   },
   "FARM": {
@@ -32,24 +31,10 @@
     "sublayers": {
       "SOIL": {
         "func": "GetSoilType()",
-        "Water": "0",
-        "Sand (unspecified)": "1",
-        "Loamy sand": "2",
-        "Sandy loam": "3",
-        "Sandy clay loam": "4",
-        "Silt loam": "5",
-        "Silty clay loam": "6",
-        "Clay loam": "7",
-        "Loam": "8",
-        "Silt": "9",
-        "Sandy clay": "10",
-        "Silty clay": "11",
-        "Clay": "12",
-        "Heavy clay": "13",
-        "Organic & peat": "14"
+        "Sandy": "sandy",
+        "Clay": "clay"
       },
-      "HISTORY": {
-      }
+      "HISTORY": {}
     }
   }
 }

@@ -168,6 +168,18 @@ class ChooseConditionDialog(QDialog):
     def on_text3_changed(self):
         self.ok_btn.setEnabled(True)
 
+    def lookup_code(self, layer, sublayer, label):
+        """Translate a display label into the machine value ALMaSS compares against.
+
+        conditions.json stores each option as "<label>": "<code>" under the sublayer, alongside a
+        leading "func" entry naming the C++ accessor. Falls back to the label itself if the entry
+        is missing, so an unmapped option is at least visible rather than silently blank.
+        """
+        try:
+            return self.conditions[layer]["sublayers"][sublayer][label]
+        except (KeyError, TypeError):
+            return label
+
     def accept(self):
         if self.selected[1] in ("HISTORY", "DATE"):
             text = self.text3.toPlainText()
@@ -190,9 +202,14 @@ class ChooseConditionDialog(QDialog):
             self.coded_condition = "null"
             self.cond_value = self.selected[2]
         else:
+            # ALMaSS compares cond_value against the NUMERIC code returned by the accessor
+            # (e.g. std::to_string(GetSoilType()) == cond_value), so the stored value must be the
+            # code from conditions.json -- not the human-readable label shown in the tree.
+            # Writing the label here is why 49 of 57 existing field_soil nodes carry "Clay" and can
+            # never match. The label is kept for composed_condition (what the author sees).
             self.composed_condition = f"Is {self.selected[1]}:\n{self.selected[2]}?"
             self.coded_condition = "null"
-            self.cond_value = f"{self.selected[2]}"
+            self.cond_value = self.lookup_code(self.selected[0], self.selected[1], self.selected[2])
         if self.selected[1] == "SOIL":
             self.cond_type = "field_soil"
         elif self.selected[1] == "SIZE":

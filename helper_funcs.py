@@ -136,7 +136,6 @@ def generate_almass_json(all_nodes, crop_name, filename):
 
         data["nodes"].append(node_data)
 
-# TODO: add validation check for history conditions
     with open(filename, "w") as f:
         json.dump(data, f, indent=4)
 
@@ -430,6 +429,33 @@ def validate_graph(op_nodes, prob_nodes, cond_nodes, crop_name, author):
     pattern1 = r'\d{2}/\d{2} - \d{2}/\d{2}'
     pattern2 = r'\+\d+d - \d{2}/\d{2}'
     pattern3 = r'\d{2}/\d{2}'
+
+    # A field_history condition asks "has operation <id> already been performed by THIS crop?".
+    # ALMaSS clears the field's history at the start of every crop (GenericCrop::ExecuteStartNode),
+    # so the id must name a node in this same flowchart -- an id belonging to another crop can
+    # never match and the condition silently takes the NO branch forever.
+    # The stored cond_value carries no crop prefix; the exporter adds the prefix to node ids only.
+    # So compare against the bare ids, and also accept a value the author wrote with this crop's
+    # own prefix already attached.
+    for cond_node in cond_nodes:
+        if getattr(cond_node, "cond_type", "") != "field_history":
+            continue
+        wanted = (getattr(cond_node, "cond_value", "") or "").strip()
+        node_id = cond_node.id_text.toPlainText()
+        if not wanted:
+            warnings.append(
+                "⚠ <b>WARNING:</b> Node '" + node_id + "' is a history condition but names no operation."
+            )
+            continue
+        stripped = wanted
+        if crop_name and stripped.startswith(crop_name + "_"):
+            stripped = stripped[len(crop_name) + 1:]
+        if wanted not in ids and stripped not in ids:
+            warnings.append(
+                "⚠ <b>WARNING:</b> Node '" + node_id + "' asks about operation '" + wanted
+                + "', which is not a node in this flowchart. History conditions can only refer to "
+                + "operations of the same crop, so this branch would never be taken."
+            )
 
     for op_node in op_nodes:
         name = op_node.name_text.toPlainText()
