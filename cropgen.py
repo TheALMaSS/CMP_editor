@@ -536,7 +536,7 @@ class FlowchartWindow(QMainWindow):
             self.crop_name = data.get("crop_name", "")
             self.crop_edit.setText(self.crop_name)
             self.veg_patchy_check.setChecked(bool(data.get("veg_patchy", False)))
-            self.rotation = {k: data[k] for k in ("is_spring","harvest_end","last_date","first_year_op","flexdates") if k in data}
+            self.rotation = {k: data[k] for k in ("is_spring","harvest_end","first_date","last_date","first_year_op","flexdates") if k in data}
 
             node_map = {}
 

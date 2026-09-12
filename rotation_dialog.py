@@ -59,6 +59,17 @@ class RotationDialog(QDialog):
         hrow.addWidget(self.harvest_edit)
         form.addLayout(hrow)
 
+        frow0 = QHBoxLayout()
+        frow0.addWidget(QLabel("Earliest the crop may start (dd/MM):"))
+        self.first_edit = QLineEdit()
+        self.first_edit.setPlaceholderText("17/09")
+        self.first_edit.setToolTip(
+            "The first day this crop can be sown or started. ALMaSS uses it to schedule the crop "
+            "in the rotation, and to reject a start that is far too late."
+        )
+        frow0.addWidget(self.first_edit)
+        form.addLayout(frow0)
+
         lrow = QHBoxLayout()
         lrow.addWidget(QLabel("Last day of the crop (dd/MM):"))
         self.last_edit = QLineEdit()
@@ -112,6 +123,7 @@ class RotationDialog(QDialog):
     def populate(self, d):
         self.spring_check.setChecked(bool(d.get("is_spring")))
         self.harvest_edit.setText(d.get("harvest_end") or "")
+        self.first_edit.setText(d.get("first_date") or "")
         self.last_edit.setText(d.get("last_date") or "")
         idx = self.first_year_combo.findText(d.get("first_year_op") or "")
         if idx >= 0:
@@ -134,6 +146,7 @@ class RotationDialog(QDialog):
         self.result_data = {
             "is_spring": self.spring_check.isChecked(),
             "harvest_end": self.harvest_edit.text().strip() or None,
+            "first_date": self.first_edit.text().strip() or None,
             "last_date": self.last_edit.text().strip() or None,
             "first_year_op": self.first_year_combo.currentText() or None,
             "flexdates": flexdates,

@@ -12,6 +12,7 @@ a = Analysis(
     datas=[
         ('operations.json', '.'),
         ('conditions.json', '.'),
+        ('flexdates_reference.json', '.'),
         ('templates', 'templates'),
     ],
     hiddenimports=[],
