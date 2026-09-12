@@ -38,7 +38,10 @@
         "Sandy": "sandy",
         "Clay": "clay"
       },
-      "HISTORY": {}
+      "HISTORY": {},
+      "VEGETATION HEIGHT": {
+        "func": "GetVegHeight()"
+      }
     }
   }
 }

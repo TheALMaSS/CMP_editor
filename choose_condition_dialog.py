@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QDialog, QListWidget, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QSizePolicy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QPushButton, QDialog, QListWidget, QTextEdit, QHBoxLayout, QVBoxLayout, QDialogButtonBox
+from PyQt5.QtWidgets import QPushButton, QDialog, QListWidget, QTextEdit, QHBoxLayout, QVBoxLayout, QDialogButtonBox, QComboBox
 
 help_text_choose_condition = """
 Select a condition for branching by navigating the three columns:
@@ -56,7 +56,14 @@ class ChooseConditionDialog(QDialog):
         self.history_instructions.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         self.text3.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
 
+        # Comparison selector, shown only for conditions that compare numbers (vegetation height).
+        # HISTORY and DATE keep their fixed meanings, so it stays hidden for those.
+        self.op_combo = QComboBox()
+        self.op_combo.addItems([">=", ">", "<=", "<", "=="])
+        self.op_combo.hide()
+
         history_layout.addWidget(self.history_instructions)
+        history_layout.addWidget(self.op_combo)
         history_layout.addWidget(self.text3)
         self.layout().addWidget(self.history_widget)
         self.history_widget.hide()
@@ -121,11 +128,18 @@ class ChooseConditionDialog(QDialog):
             self.ok_btn.setEnabled(False)
             return
 
-        elif current.text() in ("HISTORY", "DATE"):
+        elif current.text() in ("HISTORY", "DATE", "VEGETATION HEIGHT"):
             self.list3.hide()
             self.history_widget.show()
+            self.op_combo.setVisible(current.text() == "VEGETATION HEIGHT")
 
-            if current.text() == "HISTORY":
+            if current.text() == "VEGETATION HEIGHT":
+                self.history_instructions.setText(
+                    "Choose a comparison and enter a vegetation height in cm.\n"
+                    "YES branch: the field's height satisfies the comparison.\n"
+                    "NO branch: it does not."
+                )
+            elif current.text() == "HISTORY":
                 self.history_instructions.setText(
                     "Enter the ID of the operation node for branching.\n"
                     "YES branch: operation completed.\n"
@@ -181,14 +195,23 @@ class ChooseConditionDialog(QDialog):
             return label
 
     def accept(self):
-        if self.selected[1] in ("HISTORY", "DATE"):
+        if self.selected[1] in ("HISTORY", "DATE", "VEGETATION HEIGHT"):
             text = self.text3.toPlainText()
             if text:
                 if len(self.selected) < 3:
                     self.selected.append(text)
         if len(self.selected) != 3:
             return  # safety check
-        if self.selected[1] == "HISTORY":
+        if self.selected[1] == "VEGETATION HEIGHT":
+            op = self.op_combo.currentText()
+            self.composed_condition = (
+                f"Is vegetation height\n{op} {self.selected[2]} cm?"
+            )
+            self.coded_condition = "null"
+            self.cond_value = self.selected[2]
+            self.cond_op = op
+
+        elif self.selected[1] == "HISTORY":
             self.composed_condition = (
                 f"Has operation {self.selected[2]}\nbeen performed?"
             )
@@ -224,5 +247,7 @@ class ChooseConditionDialog(QDialog):
             self.cond_type = "field_history"
         elif self.selected[1] == "DATE":
             self.cond_type = "calendar_date"
+        elif self.selected[1] == "VEGETATION HEIGHT":
+            self.cond_type = "field_vegheight"
 
         super().accept()

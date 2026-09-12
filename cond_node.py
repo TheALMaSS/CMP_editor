@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, QPointF
 from node import Node
 
 class CondNode(Node):
-    def __init__(self, name, cpp_cond, cond_type, cond_value):
+    def __init__(self, name, cpp_cond, cond_type, cond_value, cond_op=""):
         super().__init__(name)
         self.vertical_offset_name = 0
         self.vertical_offset_id = 5
@@ -24,6 +24,8 @@ class CondNode(Node):
         self.cpp_cond = cpp_cond
         self.cond_type = cond_type
         self.cond_value = cond_value
+        # Comparison for numeric conditions ("<", "<=", ">", ">=", "=="). Empty means "==".
+        self.cond_op = cond_op
 
     def paint(self, painter, option, widget):
         painter.setBrush(QColor("#A9CFF9"))

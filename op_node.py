@@ -11,6 +11,11 @@ class OpNode(Node):
     def __init__(self, name):
         super().__init__(name)
 
+        # Whether this operation ends the field's patchiness. In the hardcoded crops a
+        # SetVegPatchy(false) call sits inside the operation's own case -- usually the harvest,
+        # sometimes ploughing or topping -- so it is a property of the operation, not a step.
+        self.clears_patchy = False
+
         self.dates_text = GenericTextItem(self)
 
         if name != "END":

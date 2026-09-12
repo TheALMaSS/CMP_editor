@@ -24,7 +24,7 @@ import sys, json, re
 from jinja2 import Environment, FileSystemLoader
 from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QColor, QBrush, QFont
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox, QLineEdit, QHBoxLayout, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox, QLineEdit, QHBoxLayout, QMessageBox, QCheckBox
 from flowchart_view import FlowchartView
 from flowchart_scene import FlowchartScene
 from prob_node import ProbNode
@@ -125,6 +125,22 @@ class FlowchartWindow(QMainWindow):
         author_layout.addWidget(self.author_edit)
 
         left_layout.addLayout(author_layout)
+
+        # Crop-level attributes
+        patchy_layout = QHBoxLayout()
+
+        self.veg_patchy_check = QCheckBox("Patchy vegetation")
+        self.veg_patchy_check.setFont(QFont("Arial", 10))
+        self.veg_patchy_check.setToolTip(
+            "Tick for crops that leave the canopy open until they are tall -- root crops such as\n"
+            "potatoes and beets, and wide-row crops such as legumes. Set once when the crop starts.\n"
+            "Use the 'Clears patchiness' box on an operation to end it (usually the harvest)."
+        )
+        self.veg_patchy_check.setStyleSheet(label_text_style)
+        patchy_layout.addWidget(self.veg_patchy_check)
+        patchy_layout.addStretch()
+
+        left_layout.addLayout(patchy_layout)
 
         # Horizontal layout number 3 (metadata)
         date_layout = QHBoxLayout()
@@ -319,7 +335,7 @@ class FlowchartWindow(QMainWindow):
             cond_value = dlg.cond_value
         cpp_cond = dlg.coded_condition
 
-        node = CondNode(str(condition), cpp_cond, cond_type, cond_value)
+        node = CondNode(str(condition), cpp_cond, cond_type, cond_value, getattr(dlg, "cond_op", ""))
         node.setPos(self.view.mapToScene(self.view.viewport().rect().center()))
         node.setZValue(1)
 
@@ -420,7 +436,7 @@ class FlowchartWindow(QMainWindow):
             curr_date_str = curr_date.strftime("%d/%m/%Y")
             self.last_modified = curr_date_str
             # Combine nodes + comments
-            generate_json(all_nodes, self.crop_name, self.author, self.last_modified, filename, comments=comments_data)
+            generate_json(all_nodes, self.crop_name, self.author, self.last_modified, filename, comments=comments_data, veg_patchy=self.veg_patchy_check.isChecked())
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -447,6 +463,7 @@ class FlowchartWindow(QMainWindow):
             self.last_modified_text.setText(self.last_modified)
             self.crop_name = data.get("crop_name", "")
             self.crop_edit.setText(self.crop_name)
+            self.veg_patchy_check.setChecked(bool(data.get("veg_patchy", False)))
 
             node_map = {}
 
@@ -455,6 +472,7 @@ class FlowchartWindow(QMainWindow):
 
                 if node_type == "OpNode":
                     node = OpNode(str(node_data.get("name", "")))
+                    node.clears_patchy = bool(node_data.get("clears_patchy", False))
                     self.op_nodes.append(node)
 
                 elif node_type == "ProbNode":
@@ -466,7 +484,8 @@ class FlowchartWindow(QMainWindow):
                         str(node_data.get("name", "")),
                         str(node_data.get("cpp_cond", "")),
                         str(node_data.get("cond_type", "")),
-                        str(node_data.get("cond_value", ""))
+                        str(node_data.get("cond_value", "")),
+                        str(node_data.get("cond_op", ""))
                     )
                     self.cond_nodes.append(node)
 
@@ -582,7 +601,7 @@ class FlowchartWindow(QMainWindow):
 
         filename, _ = QFileDialog.getSaveFileName(self, "Export to ALMaSS", "", "JSON Files (*.json)")
         if filename != "":
-            generate_almass_json(all_nodes, self.crop_name, filename)
+            generate_almass_json(all_nodes, self.crop_name, filename, veg_patchy=self.veg_patchy_check.isChecked())
     # ------------------------------------------------------------------------------------------------
 
 # MAIN

@@ -7,12 +7,13 @@ from jinja2 import Environment, FileSystemLoader
 # ------------------------------------------------------------------------------------------------
 # HELPER FUNCTIONS FOR EXPORT AND SAVING
 # ------------------------------------------------------------------------------------------------
-def generate_json(all_nodes, crop_name, author, date, filename, comments=None):
+def generate_json(all_nodes, crop_name, author, date, filename, comments=None, veg_patchy=False):
     # Metadata stays at the top level
     data = {
         "crop_name": crop_name,
         "author": author,
         "last_modified": date,
+        "veg_patchy": bool(veg_patchy),
         "nodes": [],      # this will hold all node objects
         "comments": []    # this will hold all comment boxes
     }
@@ -35,6 +36,10 @@ def generate_json(all_nodes, crop_name, author, date, filename, comments=None):
             node_data["cpp_cond"] = node.cpp_cond
             node_data["cond_type"] = node.cond_type
             node_data["cond_value"] = node.cond_value
+            node_data["cond_op"] = getattr(node, "cond_op", "")
+
+        if node.__class__.__name__ == "OpNode":
+            node_data["clears_patchy"] = bool(getattr(node, "clears_patchy", False))
 
         for arrow in node.outgoing_arrows:
             if arrow.end_node:
@@ -68,7 +73,7 @@ def generate_json(all_nodes, crop_name, author, date, filename, comments=None):
 # ------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------------------
-def generate_almass_json(all_nodes, crop_name, filename):
+def generate_almass_json(all_nodes, crop_name, filename, veg_patchy=False):
     start_node = None
     others = []
     for n in all_nodes:
@@ -78,7 +83,7 @@ def generate_almass_json(all_nodes, crop_name, filename):
             others.append(n)
     ordered = [start_node] + others if start_node else all_nodes
 
-    data = {"crop_name": crop_name, "nodes": []}
+    data = {"crop_name": crop_name, "veg_patchy": bool(veg_patchy), "nodes": []}
     nodes_data = []
 
     code_counter = 1
@@ -107,6 +112,13 @@ def generate_almass_json(all_nodes, crop_name, filename):
         if node.__class__.__name__ == "CondNode":
             node_data["cond_type"] = node.cond_type
             node_data["cond_value"] = node.cond_value
+            # Comparison used by numeric conditions. Empty means "==", which is how every
+            # condition behaved before operators existed.
+            node_data["cond_op"] = getattr(node, "cond_op", "")
+
+        if node.__class__.__name__ == "OpNode":
+            # Harvest, ploughing and topping end a crop's patchiness in the hardcoded crops.
+            node_data["clears_patchy"] = bool(getattr(node, "clears_patchy", False))
 
         nodes_data.append((node, node_data))
         code_counter += 1
