@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 # ------------------------------------------------------------------------------------------------
 # HELPER FUNCTIONS FOR EXPORT AND SAVING
 # ------------------------------------------------------------------------------------------------
-def generate_json(all_nodes, crop_name, author, date, filename, comments=None, veg_patchy=False):
+def generate_json(all_nodes, crop_name, author, date, filename, comments=None, veg_patchy=False, rotation=None):
     # Metadata stays at the top level
     data = {
         "crop_name": crop_name,
@@ -17,6 +17,10 @@ def generate_json(all_nodes, crop_name, author, date, filename, comments=None, v
         "nodes": [],      # this will hold all node objects
         "comments": []    # this will hold all comment boxes
     }
+
+    # Rotation timing, when the author has supplied it.
+    for k, v in (rotation or {}).items():
+        data[k] = v
 
     # Save nodes
     for node in all_nodes:
@@ -78,7 +82,7 @@ def generate_json(all_nodes, crop_name, author, date, filename, comments=None, v
 # ------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------------------
-def generate_almass_json(all_nodes, crop_name, filename, veg_patchy=False):
+def generate_almass_json(all_nodes, crop_name, filename, veg_patchy=False, rotation=None):
     start_node = None
     others = []
     for n in all_nodes:
@@ -89,6 +93,11 @@ def generate_almass_json(all_nodes, crop_name, filename, veg_patchy=False):
     ordered = [start_node] + others if start_node else all_nodes
 
     data = {"crop_name": crop_name, "veg_patchy": bool(veg_patchy), "nodes": []}
+    # Operation windows for the rotation handoff. Absent means the crop takes no part in the
+    # rotation's timing, which is how every crop behaved before this existed.
+    for k, v in (rotation or {}).items():
+        if v is not None:
+            data[k] = v
     nodes_data = []
 
     code_counter = 1

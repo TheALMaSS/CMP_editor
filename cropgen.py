@@ -33,6 +33,7 @@ from op_node import OpNode
 from prob_node import ProbNode
 from cond_node import CondNode
 from catch_crop_node import CatchCropNode
+from rotation_dialog import RotationDialog
 from choose_condition_dialog import ChooseConditionDialog
 from validate_dialog import ValidateDialog
 from help_dialog import HelpDialog
@@ -50,6 +51,15 @@ def load_operations():
     with open(OPERATIONS_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
     
+def load_flexdates_reference():
+    """Operation windows transcribed from the crops ALMaSS already implements, so an author
+    porting one of them does not have to retype its dates."""
+    try:
+        with open(resource_path("flexdates_reference.json"), "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
 def load_conditions():
         with open(CONDITIONS_FILE,  "r", encoding="utf-8") as f:
             return json.load(f)
@@ -66,6 +76,9 @@ class FlowchartWindow(QMainWindow):
         self.prob_nodes = []
         self.cond_nodes = []
         self.catch_crop_nodes = []
+        # Rotation timing (see RotationDialog); empty until the author fills it in.
+        self.rotation = {}
+        self._flexdates_reference = load_flexdates_reference()
         self.arrows = []
         self.delete_mode = False
         self.arrow_mode = False
@@ -192,6 +205,15 @@ class FlowchartWindow(QMainWindow):
         )
         self.add_catch_crop_btn.clicked.connect(self.add_catch_crop_node)
         left_layout.addWidget(self.add_catch_crop_btn)
+
+        self.rotation_btn = QPushButton("Rotation Timing...")
+        self.rotation_btn.setStyleSheet(button_style)
+        self.rotation_btn.setToolTip(
+            "When the harvest must finish, and the windows for operations after it.\n"
+            "ALMaSS needs these to fit the crop into its rotation."
+        )
+        self.rotation_btn.clicked.connect(self.edit_rotation_timing)
+        left_layout.addWidget(self.rotation_btn)
 
         self.add_comment_box_btn = QPushButton("Add Comment Box")
         self.add_comment_box_btn.setStyleSheet(button_style)
@@ -331,6 +353,14 @@ class FlowchartWindow(QMainWindow):
         #TODO : move all those adding/removing nodes parts to functions inside the scene.
         self.scene.addItem(node)
         self.op_nodes.append(node)
+    # ------------------------------------------------------------------------------------------------
+
+    # ------------------------------------------------------------------------------------------------
+    def edit_rotation_timing(self):
+        ids = [n.id_text.toPlainText() for n in (self.op_nodes + self.cond_nodes + self.prob_nodes)]
+        dlg = RotationDialog(self.crop_name, self.rotation, self._flexdates_reference, ids, self)
+        if dlg.exec_() == QDialog.Accepted:
+            self.rotation = dlg.result_data
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -478,7 +508,7 @@ class FlowchartWindow(QMainWindow):
             curr_date_str = curr_date.strftime("%d/%m/%Y")
             self.last_modified = curr_date_str
             # Combine nodes + comments
-            generate_json(all_nodes, self.crop_name, self.author, self.last_modified, filename, comments=comments_data, veg_patchy=self.veg_patchy_check.isChecked())
+            generate_json(all_nodes, self.crop_name, self.author, self.last_modified, filename, comments=comments_data, veg_patchy=self.veg_patchy_check.isChecked(), rotation=self.rotation)
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -506,6 +536,7 @@ class FlowchartWindow(QMainWindow):
             self.crop_name = data.get("crop_name", "")
             self.crop_edit.setText(self.crop_name)
             self.veg_patchy_check.setChecked(bool(data.get("veg_patchy", False)))
+            self.rotation = {k: data[k] for k in ("is_spring","harvest_end","last_date","first_year_op","flexdates") if k in data}
 
             node_map = {}
 
@@ -648,7 +679,7 @@ class FlowchartWindow(QMainWindow):
 
         filename, _ = QFileDialog.getSaveFileName(self, "Export to ALMaSS", "", "JSON Files (*.json)")
         if filename != "":
-            generate_almass_json(all_nodes, self.crop_name, filename, veg_patchy=self.veg_patchy_check.isChecked())
+            generate_almass_json(all_nodes, self.crop_name, filename, veg_patchy=self.veg_patchy_check.isChecked(), rotation=self.rotation)
     # ------------------------------------------------------------------------------------------------
 
 # MAIN
