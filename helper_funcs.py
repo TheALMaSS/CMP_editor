@@ -253,6 +253,22 @@ def generate_header_file(crop_name, data):
 # ------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------------------
+
+def cpp_func_for(op_name):
+    """The C++ function behind an operation's display name, from operations.json.
+
+    The generated code calls this directly, so an unknown name has to be visible rather than
+    producing a call to nothing.
+    """
+    try:
+        with open(resource_path("operations.json"), "r", encoding="utf-8") as f:
+            for op in json.load(f):
+                if op.get("name") == op_name:
+                    return op.get("cpp_func") or "SleepAllDay"
+    except (OSError, ValueError):
+        pass
+    return "SleepAllDay"   # harmless no-op, and obvious in the generated source
+
 def generate_cpp_file(crop_name, data):
     env = Environment(
         loader=FileSystemLoader(resource_path("templates")),
@@ -309,7 +325,10 @@ def generate_cpp_file(crop_name, data):
                 id = node["id"],
                 next_date = next_date,
                 next_id = next_id,
-                latest_date = latest_date
+                latest_date = latest_date,
+                # The template calls m_farm-><cpp_func>(...). Without this it rendered
+                # "m_farm->(...)", which does not compile.
+                cpp_func = cpp_func_for(node.get("name", ""))
             )
 
         # ---------------------------------------------------------
