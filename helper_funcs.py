@@ -41,6 +41,9 @@ def generate_json(all_nodes, crop_name, author, date, filename, comments=None, v
         if node.__class__.__name__ == "OpNode":
             node_data["clears_patchy"] = bool(getattr(node, "clears_patchy", False))
 
+        if node.__class__.__name__ == "CatchCropNode":
+            node_data["catch_crop"] = getattr(node, "catch_crop", "conventional")
+
         for arrow in node.outgoing_arrows:
             if arrow.end_node:
                 destination_id = arrow.end_node.id_text.toPlainText() if hasattr(arrow.end_node, "id_text") else "no_id"
@@ -119,6 +122,11 @@ def generate_almass_json(all_nodes, crop_name, filename, veg_patchy=False):
         if node.__class__.__name__ == "OpNode":
             # Harvest, ploughing and topping end a crop's patchiness in the hardcoded crops.
             node_data["clears_patchy"] = bool(getattr(node, "clears_patchy", False))
+
+        if node.__class__.__name__ == "CatchCropNode":
+            # "conventional" / "organic" rather than the C++ enum name, so renaming an enum
+            # cannot invalidate authored crop files.
+            node_data["catch_crop"] = getattr(node, "catch_crop", "conventional")
 
         nodes_data.append((node, node_data))
         code_counter += 1
@@ -382,8 +390,27 @@ def resource_path(relative_path):
 # ------------------------------------------------------------------------------------------------
 # HELPER FUNC FOR VALIDATION LOGIC
 # ------------------------------------------------------------------------------------------------
-def validate_graph(op_nodes, prob_nodes, cond_nodes, crop_name, author):
+def validate_graph(op_nodes, prob_nodes, cond_nodes, crop_name, author, catch_crop_nodes=None):
     warnings = []
+    catch_crop_nodes = catch_crop_nodes or []
+
+    # A catch-crop node replaces END: the crop continues into the catch crop rather than
+    # finishing, so having both is contradictory and having outgoing arrows is meaningless.
+    for ccn in catch_crop_nodes:
+        if len(ccn.outgoing_arrows) > 0:
+            warnings.append(
+                "⚠ <b>WARNING:</b> the catch crop node has outgoing arrows. It ends the flowchart, "
+                "so nothing can follow it."
+            )
+        if getattr(ccn, "catch_crop", "") not in ("conventional", "organic"):
+            warnings.append(
+                "⚠ <b>WARNING:</b> the catch crop node must be either conventional or organic."
+            )
+    if catch_crop_nodes and any(n.name_text.toPlainText() == "END" for n in op_nodes):
+        warnings.append(
+            "⚠ <b>WARNING:</b> this flowchart has both an END node and a catch crop node. "
+            "A crop that hands over to a catch crop should use the catch crop node instead of END."
+        )
 
     op_names = [op_node.name_text.toPlainText() for op_node in op_nodes]
     ids = [node.id_text.toPlainText() for node in (op_nodes + prob_nodes + cond_nodes)]

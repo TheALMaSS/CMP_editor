@@ -24,7 +24,7 @@ import sys, json, re
 from jinja2 import Environment, FileSystemLoader
 from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QColor, QBrush, QFont
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox, QLineEdit, QHBoxLayout, QMessageBox, QCheckBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox, QLineEdit, QHBoxLayout, QMessageBox, QCheckBox, QInputDialog
 from flowchart_view import FlowchartView
 from flowchart_scene import FlowchartScene
 from prob_node import ProbNode
@@ -32,6 +32,7 @@ from choose_operation_dialog import ChooseOperationDialog
 from op_node import OpNode
 from prob_node import ProbNode
 from cond_node import CondNode
+from catch_crop_node import CatchCropNode
 from choose_condition_dialog import ChooseConditionDialog
 from validate_dialog import ValidateDialog
 from help_dialog import HelpDialog
@@ -64,6 +65,7 @@ class FlowchartWindow(QMainWindow):
         self.op_nodes = []
         self.prob_nodes = []
         self.cond_nodes = []
+        self.catch_crop_nodes = []
         self.arrows = []
         self.delete_mode = False
         self.arrow_mode = False
@@ -182,6 +184,15 @@ class FlowchartWindow(QMainWindow):
         self.add_cond_node_btn.clicked.connect(self.add_conditional_node)
         left_layout.addWidget(self.add_cond_node_btn)
 
+        self.add_catch_crop_btn = QPushButton("Add Catch Crop Node")
+        self.add_catch_crop_btn.setStyleSheet(button_style)
+        self.add_catch_crop_btn.setToolTip(
+            "For crops that hand over to a catch crop instead of simply ending.\n"
+            "Use this in place of the END node."
+        )
+        self.add_catch_crop_btn.clicked.connect(self.add_catch_crop_node)
+        left_layout.addWidget(self.add_catch_crop_btn)
+
         self.add_comment_box_btn = QPushButton("Add Comment Box")
         self.add_comment_box_btn.setStyleSheet(button_style)
         self.add_comment_box_btn.clicked.connect(self.add_comment_box)
@@ -286,7 +297,7 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def validate(self, return_warnings=False):
-        warnings = validate_graph(self.op_nodes, self.prob_nodes, self.cond_nodes, self.crop_name, self.author)
+        warnings = validate_graph(self.op_nodes, self.prob_nodes, self.cond_nodes, self.crop_name, self.author, self.catch_crop_nodes)
 
         if return_warnings:
             return warnings
@@ -310,6 +321,27 @@ class FlowchartWindow(QMainWindow):
         #TODO : move all those adding/removing nodes parts to functions inside the scene.
         self.scene.addItem(node)
         self.op_nodes.append(node)
+    # ------------------------------------------------------------------------------------------------
+
+    # ------------------------------------------------------------------------------------------------
+    def add_catch_crop_node(self):
+        # Organic crops hand over to the organic catch crop; preselect from the crop name, which
+        # the author can still override.
+        default = "organic" if (self.crop_name or "").startswith("DK_O") else "conventional"
+        choice, ok = QInputDialog.getItem(
+            self, "Catch crop", "Which catch crop does this crop hand over to?",
+            ["conventional", "organic"],
+            0 if default == "conventional" else 1,
+            False)
+        if not ok:
+            return
+
+        node = CatchCropNode(choice)
+        node.setPos(self.view.mapToScene(self.view.viewport().rect().center()))
+        node.setZValue(1)
+
+        self.scene.addItem(node)
+        self.catch_crop_nodes.append(node)
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
@@ -390,7 +422,7 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def save_CMP(self):
-        all_nodes = self.op_nodes + self.cond_nodes + self.prob_nodes
+        all_nodes = self.op_nodes + self.cond_nodes + self.prob_nodes + self.catch_crop_nodes
         all_comments = getattr(self, "comment_boxes", [])
 
         ids = [node.id_text.toPlainText() for node in all_nodes]
@@ -478,6 +510,10 @@ class FlowchartWindow(QMainWindow):
                 elif node_type == "ProbNode":
                     node = ProbNode("Probability\nNode")
                     self.prob_nodes.append(node)
+
+                elif node_type == "CatchCropNode":
+                    node = CatchCropNode(str(node_data.get("catch_crop", "conventional")))
+                    self.catch_crop_nodes.append(node)
 
                 elif node_type == "CondNode":
                     node = CondNode(
@@ -576,7 +612,7 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def export_to_almass(self):
-        all_nodes = self.op_nodes + self.cond_nodes + self.prob_nodes
+        all_nodes = self.op_nodes + self.cond_nodes + self.prob_nodes + self.catch_crop_nodes
         ids = [node.id_text.toPlainText() for node in all_nodes]
 
         # Check no repetitions in ids
