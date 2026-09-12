@@ -23,6 +23,10 @@
         "30 - 49.9 ha": "4",
         "50 - 99.9 ha": "5",
         ">= 100 ha": "6"
+      },
+      "FARM TYPE": {
+        "func": "IsStockFarmer()",
+        "Stock farmer (livestock)": "stock"
       }
     }
   },

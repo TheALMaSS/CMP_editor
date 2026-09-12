@@ -1,5 +1,5 @@
 [
-    {
+  {
     "name": "Do nothing",
     "description": "No action performed on the farm.",
     "cpp_func": ""
@@ -24,7 +24,7 @@
     "description": "Apply a molluscicide product.",
     "cpp_func": "Molluscicide"
   },
-    {
+  {
     "name": "Insecticide",
     "description": "Apply an insecticide product.",
     "cpp_func": "Insecticide"
@@ -134,7 +134,7 @@
     "description": "Apply green manure material.",
     "cpp_func": "GreenManure"
   },
-    {
+  {
     "name": "Manual Weeding",
     "description": "Remove weeds manually.",
     "cpp_func": "ManualWeeding"
@@ -420,8 +420,118 @@
     "cpp_func": "Calcium"
   },
   {
-    "name": "Calcium",
-    "description": "Apply calcium as fertilizer.",
-    "cpp_func": "Calcium"
+    "name": "Cattle Is Out",
+    "description": "Keep cattle on the field for another day; they graze while the grass lasts. Place after Release Cattle -- it repeats daily on its own and ends grazing when the season closes (default 10 September).",
+    "cpp_func": "CattleIsOut"
+  },
+  {
+    "name": "Cattle Is Out New",
+    "description": "As Cattle Is Out, but reduces the vegetation by height rather than biomass. Used for the Danish grazing crops.",
+    "cpp_func": "CattleIsOut_new"
+  },
+  {
+    "name": "Cattle Out Should Eat",
+    "description": "Release cattle and have them graze immediately, without waiting for the grass to be tall enough.",
+    "cpp_func": "CattleOut"
+  },
+  {
+    "name": "Cattle Out Low Grazing",
+    "description": "Release cattle at a low grazing intensity.",
+    "cpp_func": "CattleOutLowGrazing"
+  },
+  {
+    "name": "Cattle Is Out Low",
+    "description": "Keep cattle on the field at a low grazing intensity.",
+    "cpp_func": "CattleIsOutLow"
+  },
+  {
+    "name": "Cattle Is Out Low2",
+    "description": "Keep cattle on the field at a low grazing intensity, with a limit on the number of grazing days.",
+    "cpp_func": "CattleIsOutLow2"
+  },
+  {
+    "name": "Pigs Out",
+    "description": "Release pigs onto the field.",
+    "cpp_func": "PigsOut"
+  },
+  {
+    "name": "Pigs Are Out",
+    "description": "Keep pigs on the field for another day. Place after Pigs Out -- it repeats daily on its own.",
+    "cpp_func": "PigsAreOut"
+  },
+  {
+    "name": "Pigs Are Out Forced",
+    "description": "Keep pigs on the field regardless of the usual conditions.",
+    "cpp_func": "PigsAreOutForced"
+  },
+  {
+    "name": "Pruning",
+    "description": "Prune trees or bushes.",
+    "cpp_func": "Pruning"
+  },
+  {
+    "name": "Fruit Harvest",
+    "description": "Harvest fruit. Can run over several days -- the node repeats until the harvest is finished.",
+    "cpp_func": "FruitHarvest"
+  },
+  {
+    "name": "Green Harvest",
+    "description": "Harvest the crop while still green.",
+    "cpp_func": "GreenHarvest"
+  },
+  {
+    "name": "Harvest Shoots",
+    "description": "Harvest shoots, e.g. asparagus.",
+    "cpp_func": "HarvestShoots"
+  },
+  {
+    "name": "Manual Harvest",
+    "description": "Harvest by hand.",
+    "cpp_func": "ManualHarvest"
+  },
+  {
+    "name": "Mowing",
+    "description": "Mow the vegetation.",
+    "cpp_func": "Mowing"
+  },
+  {
+    "name": "Hay Turning",
+    "description": "Turn cut hay to help it dry.",
+    "cpp_func": "HayTurning"
+  },
+  {
+    "name": "Shredding",
+    "description": "Shred prunings or crop residue.",
+    "cpp_func": "Shredding"
+  },
+  {
+    "name": "Suckering",
+    "description": "Remove suckers from trees or bushes.",
+    "cpp_func": "Suckering"
+  },
+  {
+    "name": "Leaf Thinning",
+    "description": "Thin the leaf canopy, e.g. in orchards.",
+    "cpp_func": "LeafThinning"
+  },
+  {
+    "name": "Irrigation Start",
+    "description": "Begin an irrigation period.",
+    "cpp_func": "IrrigationStart"
+  },
+  {
+    "name": "Irrigation",
+    "description": "Irrigate the field.",
+    "cpp_func": "Irrigation"
+  },
+  {
+    "name": "PKS",
+    "description": "Apply PKS as fertilizer.",
+    "cpp_func": "PKS"
+  },
+  {
+    "name": "Cu",
+    "description": "Apply copper as fertilizer.",
+    "cpp_func": "Cu"
   }
 ]

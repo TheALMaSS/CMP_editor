@@ -216,6 +216,10 @@ class ChooseConditionDialog(QDialog):
             self.cond_type = "farm_size"
         elif self.selected[1] == "FARMING INTENSITY":
             self.cond_type = "farm_intensity"
+        elif self.selected[1] == "FARM TYPE":
+            # Boolean in ALMaSS (Farm::IsStockFarmer): YES = stock farm, NO = arable.
+            # Some crops apply slurry on stock farms where an arable farm applies NPKS.
+            self.cond_type = "farm_stock"
         elif self.selected[1] == "HISTORY":
             self.cond_type = "field_history"
         elif self.selected[1] == "DATE":
