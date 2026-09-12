@@ -315,6 +315,16 @@ class FlowchartWindow(QMainWindow):
         operation = dlg.selected
 
         node = OpNode(str(operation["name"]))
+
+        # A few operations take a value from the author -- how late cattle may graze, how much to
+        # irrigate. operations.json marks those with a value_prompt. Cancelling leaves the value
+        # unset, and ALMaSS then applies the operation's own default.
+        prompt = operation.get("value_prompt")
+        if prompt:
+            value, ok = QInputDialog.getInt(self, str(operation["name"]), prompt, 253, 0, 365)
+            if ok:
+                node.op_value = value
+
         node.setPos(self.view.mapToScene(self.view.viewport().rect().center()))
         node.setZValue(1)
 
@@ -505,6 +515,7 @@ class FlowchartWindow(QMainWindow):
                 if node_type == "OpNode":
                     node = OpNode(str(node_data.get("name", "")))
                     node.clears_patchy = bool(node_data.get("clears_patchy", False))
+                    node.op_value = int(node_data.get("op_value", -1))
                     self.op_nodes.append(node)
 
                 elif node_type == "ProbNode":

@@ -40,6 +40,8 @@ def generate_json(all_nodes, crop_name, author, date, filename, comments=None, v
 
         if node.__class__.__name__ == "OpNode":
             node_data["clears_patchy"] = bool(getattr(node, "clears_patchy", False))
+            if getattr(node, "op_value", -1) >= 0:
+                node_data["op_value"] = int(node.op_value)
 
         if node.__class__.__name__ == "CatchCropNode":
             node_data["catch_crop"] = getattr(node, "catch_crop", "conventional")
@@ -122,6 +124,9 @@ def generate_almass_json(all_nodes, crop_name, filename, veg_patchy=False):
         if node.__class__.__name__ == "OpNode":
             # Harvest, ploughing and topping end a crop's patchiness in the hardcoded crops.
             node_data["clears_patchy"] = bool(getattr(node, "clears_patchy", False))
+            # Only written when the author set one; absent means the operation's own default.
+            if getattr(node, "op_value", -1) >= 0:
+                node_data["op_value"] = int(node.op_value)
 
         if node.__class__.__name__ == "CatchCropNode":
             # "conventional" / "organic" rather than the C++ enum name, so renaming an enum

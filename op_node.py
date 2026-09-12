@@ -16,6 +16,10 @@ class OpNode(Node):
         # sometimes ploughing or topping -- so it is a property of the operation, not a step.
         self.clears_patchy = False
 
+        # Optional value for the operations that take one -- the last day of year cattle may
+        # graze, the irrigation amount. -1 means "not set", so the operation keeps its default.
+        self.op_value = -1
+
         self.dates_text = GenericTextItem(self)
 
         if name != "END":

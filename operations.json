@@ -422,12 +422,14 @@
   {
     "name": "Cattle Is Out",
     "description": "Keep cattle on the field for another day; they graze while the grass lasts. Place after Release Cattle -- it repeats daily on its own and ends grazing when the season closes (default 10 September).",
-    "cpp_func": "CattleIsOut"
+    "cpp_func": "CattleIsOut",
+    "value_prompt": "Last day of year the cattle may stay out (day of year, e.g. 253 for 10 September)."
   },
   {
     "name": "Cattle Is Out New",
     "description": "As Cattle Is Out, but reduces the vegetation by height rather than biomass. Used for the Danish grazing crops.",
-    "cpp_func": "CattleIsOut_new"
+    "cpp_func": "CattleIsOut_new",
+    "value_prompt": "Last day of year the cattle may stay out (day of year, e.g. 253 for 10 September)."
   },
   {
     "name": "Cattle Out Should Eat",
@@ -442,12 +444,14 @@
   {
     "name": "Cattle Is Out Low",
     "description": "Keep cattle on the field at a low grazing intensity.",
-    "cpp_func": "CattleIsOutLow"
+    "cpp_func": "CattleIsOutLow",
+    "value_prompt": "Last day of year the cattle may stay out (day of year, e.g. 253 for 10 September)."
   },
   {
     "name": "Cattle Is Out Low2",
     "description": "Keep cattle on the field at a low grazing intensity, with a limit on the number of grazing days.",
-    "cpp_func": "CattleIsOutLow2"
+    "cpp_func": "CattleIsOutLow2",
+    "value_prompt": "Last day of year the cattle may stay out (day of year, e.g. 253 for 10 September)."
   },
   {
     "name": "Pigs Out",
@@ -522,7 +526,8 @@
   {
     "name": "Irrigation",
     "description": "Irrigate the field.",
-    "cpp_func": "Irrigation"
+    "cpp_func": "Irrigation",
+    "value_prompt": "Irrigation amount."
   },
   {
     "name": "PKS",
