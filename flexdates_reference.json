@@ -1,0 +1,1900 @@
+{
+ "DK_BushFruit_Perm1": {
+  "rows": 1,
+  "last_date": "31/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/10"
+   }
+  ],
+  "harvest_end": "30/09",
+  "first_date": "01/12"
+ },
+ "DK_BushFruit_Perm2": {
+  "rows": 1,
+  "last_date": "31/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/12",
+  "first_date": "31/03"
+ },
+ "DK_Cabbages": {
+  "rows": 1,
+  "last_date": "30/11",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "30/11",
+  "first_date": "01/12"
+ },
+ "DK_Carrots": {
+  "rows": 1,
+  "last_date": "30/11",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "30/11",
+  "first_date": "01/12"
+ },
+ "DK_CerealLegume": {
+  "rows": 2,
+  "last_date": "16/09",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/09"
+   },
+   {
+    "start": null,
+    "end": "16/09"
+   }
+  ],
+  "harvest_end": "10/09",
+  "first_date": "01/11"
+ },
+ "DK_CerealLegume_Whole": {
+  "rows": 2,
+  "last_date": "26/07",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "25/07"
+   },
+   {
+    "start": null,
+    "end": "26/07"
+   }
+  ],
+  "harvest_end": "23/07",
+  "first_date": "01/11"
+ },
+ "DK_ChristmasTrees_Perm": {
+  "rows": 1,
+  "last_date": "06/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "06/10"
+   }
+  ],
+  "harvest_end": "05/10",
+  "first_date": "10/03"
+ },
+ "DK_CloverGrassGrazed1": {
+  "rows": 2,
+  "last_date": "30/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "30/09"
+   },
+   {
+    "start": null,
+    "end": "30/09"
+   }
+  ],
+  "harvest_end": "28/09",
+  "first_date": "01/12"
+ },
+ "DK_CloverGrassGrazed2": {
+  "rows": 2,
+  "last_date": "05/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "05/09"
+   },
+   {
+    "start": null,
+    "end": "05/09"
+   }
+  ],
+  "harvest_end": "03/09",
+  "first_date": "01/12"
+ },
+ "DK_CloverGrassGrazed3": {
+  "rows": 2,
+  "last_date": "05/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "05/09"
+   },
+   {
+    "start": null,
+    "end": "05/09"
+   }
+  ],
+  "harvest_end": "03/09",
+  "first_date": "01/12"
+ },
+ "DK_EnergyCrop_Perm": {
+  "rows": 3,
+  "last_date": "15/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/10"
+   },
+   {
+    "start": null,
+    "end": "15/10"
+   },
+   {
+    "start": null,
+    "end": "15/10"
+   }
+  ],
+  "harvest_end": "30/09",
+  "first_date": "01/12"
+ },
+ "DK_FarmForest_Perm": {
+  "rows": 1,
+  "last_date": "01/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "01/09"
+   }
+  ],
+  "harvest_end": "01/09",
+  "first_date": "01/12"
+ },
+ "DK_FarmYoungForest_Perm": {
+  "rows": 1,
+  "last_date": "01/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "01/09"
+   }
+  ],
+  "harvest_end": "01/09",
+  "first_date": "01/12"
+ },
+ "DK_FodderBeet": {
+  "rows": 2,
+  "last_date": "10/12",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/09"
+   },
+   {
+    "start": null,
+    "end": "10/12"
+   }
+  ],
+  "harvest_end": "31/08",
+  "first_date": "30/11"
+ },
+ "DK_GrassGrazed_Perm": {
+  "rows": 2,
+  "last_date": "01/11",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "21/10"
+   },
+   {
+    "start": null,
+    "end": "01/11"
+   }
+  ],
+  "harvest_end": "21/10",
+  "first_date": "01/03"
+ },
+ "DK_GrassLowYield_Perm": {
+  "rows": 1,
+  "last_date": "01/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "01/10"
+   }
+  ],
+  "harvest_end": "15/09",
+  "first_date": "15/05"
+ },
+ "DK_Legume_Beans": {
+  "rows": 1,
+  "last_date": "30/09",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "30/09"
+   }
+  ],
+  "harvest_end": "30/09",
+  "first_date": "31/12"
+ },
+ "DK_Legume_Peas": {
+  "rows": 1,
+  "last_date": "31/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   }
+  ],
+  "harvest_end": "31/08",
+  "first_date": "30/11"
+ },
+ "DK_Legume_Whole": {
+  "rows": 2,
+  "last_date": "31/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "31/08"
+   }
+  ],
+  "harvest_end": "29/08",
+  "first_date": "30/11"
+ },
+ "DK_Maize": {
+  "rows": 1,
+  "last_date": "15/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/10"
+   }
+  ],
+  "harvest_end": "14/10",
+  "first_date": "30/11"
+ },
+ "DK_MaizeSilage": {
+  "rows": 1,
+  "last_date": "14/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "14/10"
+   }
+  ],
+  "harvest_end": "14/10",
+  "first_date": "30/11"
+ },
+ "DK_MixedVeg": {
+  "rows": 1,
+  "last_date": "31/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/10"
+   }
+  ],
+  "harvest_end": "31/10",
+  "first_date": "20/03"
+ },
+ "DK_OBushFruit_Perm1": {
+  "rows": 1,
+  "last_date": "31/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/10"
+   }
+  ],
+  "harvest_end": "31/10",
+  "first_date": "30/04"
+ },
+ "DK_OBushFruit_Perm2": {
+  "rows": 1,
+  "last_date": "31/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/12",
+  "first_date": "31/03"
+ },
+ "DK_OCabbages": {
+  "rows": 1,
+  "last_date": "30/11",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "30/11"
+   }
+  ],
+  "harvest_end": "30/11",
+  "first_date": "01/12"
+ },
+ "DK_OCarrots": {
+  "rows": 1,
+  "last_date": "30/11",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "30/11"
+   }
+  ],
+  "harvest_end": "30/11",
+  "first_date": "15/04"
+ },
+ "DK_OCerealLegume": {
+  "rows": 1,
+  "last_date": "10/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "02/10"
+   }
+  ],
+  "harvest_end": "30/09",
+  "first_date": "31/03"
+ },
+ "DK_OCerealLegume_Whole": {
+  "rows": 1,
+  "last_date": "10/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "02/10"
+   }
+  ],
+  "harvest_end": "30/09",
+  "first_date": "31/03"
+ },
+ "DK_OChristmasTrees_Perm": {
+  "rows": 1,
+  "last_date": "06/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "06/10"
+   }
+  ],
+  "harvest_end": "05/10",
+  "first_date": "01/12"
+ },
+ "DK_OCloverGrassGrazed1": {
+  "rows": 4,
+  "last_date": "10/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "20/07"
+   },
+   {
+    "start": null,
+    "end": "20/08"
+   },
+   {
+    "start": null,
+    "end": "20/09"
+   },
+   {
+    "start": null,
+    "end": "10/10"
+   }
+  ],
+  "harvest_end": "10/07",
+  "first_date": "01/04"
+ },
+ "DK_OCloverGrassGrazed2": {
+  "rows": 4,
+  "last_date": "10/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "20/07"
+   },
+   {
+    "start": null,
+    "end": "20/08"
+   },
+   {
+    "start": null,
+    "end": "20/09"
+   },
+   {
+    "start": null,
+    "end": "10/10"
+   }
+  ],
+  "harvest_end": "10/07",
+  "first_date": "01/04"
+ },
+ "DK_OCloverGrassGrazed3": {
+  "rows": 4,
+  "last_date": "10/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "20/07"
+   },
+   {
+    "start": null,
+    "end": "20/08"
+   },
+   {
+    "start": null,
+    "end": "20/09"
+   },
+   {
+    "start": null,
+    "end": "10/10"
+   }
+  ],
+  "harvest_end": "10/07",
+  "first_date": "01/04"
+ },
+ "DK_OEnergyCrop_Perm": {
+  "rows": 2,
+  "last_date": "15/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/10"
+   },
+   {
+    "start": null,
+    "end": "15/10"
+   }
+  ],
+  "harvest_end": "30/09",
+  "first_date": "25/02"
+ },
+ "DK_OFarmForest_Perm": {
+  "rows": 1,
+  "last_date": "01/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "01/09"
+   }
+  ],
+  "harvest_end": "01/09",
+  "first_date": "01/12"
+ },
+ "DK_OFarmYoungForest_Perm": {
+  "rows": 1,
+  "last_date": "01/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "01/09"
+   }
+  ],
+  "harvest_end": "01/09",
+  "first_date": "01/12"
+ },
+ "DK_OFodderBeet": {
+  "rows": 1,
+  "last_date": "15/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "15/10",
+  "first_date": "20/11"
+ },
+ "DK_OGrassGrazed_Perm": {
+  "rows": 1,
+  "last_date": "01/11",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "21/10"
+   }
+  ],
+  "harvest_end": "21/10",
+  "first_date": "01/03"
+ },
+ "DK_OGrassLowYield_Perm": {
+  "rows": 1,
+  "last_date": "01/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "01/10"
+   }
+  ],
+  "harvest_end": "15/09",
+  "first_date": "15/05"
+ },
+ "DK_OLegumeCloverGrass_Whole": {
+  "rows": 2,
+  "last_date": "27/08",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "27/08"
+   },
+   {
+    "start": null,
+    "end": "27/08"
+   }
+  ],
+  "harvest_end": "25/08",
+  "first_date": "10/04"
+ },
+ "DK_OLegume_Beans": {
+  "rows": 1,
+  "last_date": "30/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "30/09",
+  "first_date": "10/04"
+ },
+ "DK_OLegume_Beans_CC": {
+  "rows": 1,
+  "last_date": "30/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "30/09",
+  "first_date": "10/04"
+ },
+ "DK_OLegume_Peas": {
+  "rows": 1,
+  "last_date": "30/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "29/09",
+  "first_date": "10/04"
+ },
+ "DK_OLegume_Peas_CC": {
+  "rows": 1,
+  "last_date": "30/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "30/09",
+  "first_date": "10/04"
+ },
+ "DK_OLegume_Whole": {
+  "rows": 1,
+  "last_date": "16/08",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "16/08",
+  "first_date": "10/04"
+ },
+ "DK_OLegume_Whole_CC": {
+  "rows": 1,
+  "last_date": "25/08",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "25/08",
+  "first_date": "10/04"
+ },
+ "DK_OLentils": {
+  "rows": 1,
+  "last_date": "31/08",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   }
+  ],
+  "harvest_end": "29/08",
+  "first_date": "10/04"
+ },
+ "DK_OLupines": {
+  "rows": 1,
+  "last_date": "15/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/09"
+   }
+  ],
+  "harvest_end": "13/09",
+  "first_date": "10/04"
+ },
+ "DK_OMaize": {
+  "rows": 1,
+  "last_date": "01/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "01/10"
+   }
+  ],
+  "harvest_end": "30/09",
+  "first_date": "01/12"
+ },
+ "DK_OMaizeSilage": {
+  "rows": 1,
+  "last_date": "01/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/10"
+   }
+  ],
+  "harvest_end": "16/10",
+  "first_date": "01/12"
+ },
+ "DK_OMixedVeg": {
+  "rows": 1,
+  "last_date": "15/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/10"
+   }
+  ],
+  "harvest_end": "15/10",
+  "first_date": "20/03"
+ },
+ "DK_OOrchApple": {
+  "rows": 1,
+  "last_date": "31/12",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/12",
+  "first_date": "30/04"
+ },
+ "DK_OOrchCherry": {
+  "rows": 1,
+  "last_date": "31/12",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/12",
+  "first_date": "31/01"
+ },
+ "DK_OOrchOther": {
+  "rows": 1,
+  "last_date": "31/12",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/12",
+  "first_date": "30/04"
+ },
+ "DK_OOrchPear": {
+  "rows": 1,
+  "last_date": "31/12",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/12",
+  "first_date": "30/04"
+ },
+ "DK_OOrchardCrop_Perm": {
+  "rows": 1,
+  "last_date": "31/12",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/12",
+  "first_date": "30/04"
+ },
+ "DK_OPotato": {
+  "rows": 1,
+  "last_date": "01/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "01/10"
+   }
+  ],
+  "harvest_end": "15/09",
+  "first_date": "01/12"
+ },
+ "DK_OPotatoIndustry": {
+  "rows": 1,
+  "last_date": "31/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/10"
+   }
+  ],
+  "harvest_end": "15/10",
+  "first_date": "01/12"
+ },
+ "DK_OPotatoSeed": {
+  "rows": 1,
+  "last_date": "15/09",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/09"
+   }
+  ],
+  "harvest_end": "01/09",
+  "first_date": "01/12"
+ },
+ "DK_OSeedGrassFescue1": {
+  "rows": 1,
+  "last_date": "31/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/09"
+   }
+  ],
+  "harvest_end": "15/09",
+  "first_date": "30/11"
+ },
+ "DK_OSeedGrassFescue2": {
+  "rows": 1,
+  "last_date": "31/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/09"
+   }
+  ],
+  "harvest_end": "15/09",
+  "first_date": "01/03"
+ },
+ "DK_OSeedGrassFescue3": {
+  "rows": 1,
+  "last_date": "15/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/09"
+   }
+  ],
+  "harvest_end": "15/09",
+  "first_date": "01/03"
+ },
+ "DK_OSeedGrassFescue_Spring": {
+  "rows": 1,
+  "last_date": "31/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/09"
+   }
+  ],
+  "harvest_end": "15/09",
+  "first_date": "30/11"
+ },
+ "DK_OSeedGrassRye1": {
+  "rows": 3,
+  "last_date": "01/09",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "01/09"
+   }
+  ],
+  "harvest_end": "15/08",
+  "first_date": "01/12"
+ },
+ "DK_OSeedGrassRye2": {
+  "rows": 3,
+  "last_date": "01/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "01/09"
+   }
+  ],
+  "harvest_end": "15/08",
+  "first_date": "01/03"
+ },
+ "DK_OSeedGrassRye3": {
+  "rows": 2,
+  "last_date": "31/08",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "31/08"
+   }
+  ],
+  "harvest_end": "15/08",
+  "first_date": "20/03"
+ },
+ "DK_OSeedGrassRye_Spring": {
+  "rows": 3,
+  "last_date": "01/09",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "01/09"
+   }
+  ],
+  "harvest_end": "15/08",
+  "first_date": "01/12"
+ },
+ "DK_OSetAside": {
+  "rows": 2,
+  "last_date": "01/07",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/06"
+   },
+   {
+    "start": null,
+    "end": "01/07"
+   }
+  ],
+  "harvest_end": "15/06",
+  "first_date": "31/12"
+ },
+ "DK_OSetAside_AnnualFlower": {
+  "rows": 1,
+  "last_date": "31/07",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/07"
+   }
+  ],
+  "harvest_end": "31/07",
+  "first_date": "28/04"
+ },
+ "DK_OSetAside_PerennialFlower": {
+  "rows": 1,
+  "last_date": "31/07",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/07"
+   }
+  ],
+  "harvest_end": "31/07",
+  "first_date": "28/04"
+ },
+ "DK_OSetAside_SummerMow": {
+  "rows": 3,
+  "last_date": "11/11",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "26/10"
+   },
+   {
+    "start": null,
+    "end": "26/10"
+   },
+   {
+    "start": null,
+    "end": "11/11"
+   }
+  ],
+  "harvest_end": "25/10",
+  "first_date": "31/12"
+ },
+ "DK_OSpringBarley": {
+  "rows": 3,
+  "last_date": "21/08",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/08"
+   },
+   {
+    "start": null,
+    "end": "16/08"
+   },
+   {
+    "start": null,
+    "end": "16/08"
+   }
+  ],
+  "harvest_end": "12/08",
+  "first_date": "29/03"
+ },
+ "DK_OSpringBarleyCloverGrass": {
+  "rows": 3,
+  "last_date": "16/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "21/08"
+   },
+   {
+    "start": null,
+    "end": "21/08"
+   },
+   {
+    "start": "02/09",
+    "end": "16/10"
+   }
+  ],
+  "harvest_end": "20/08",
+  "first_date": "29/03"
+ },
+ "DK_OSpringBarleySilage": {
+  "rows": 1,
+  "last_date": "16/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "16/08"
+   }
+  ],
+  "harvest_end": "16/08",
+  "first_date": "01/12"
+ },
+ "DK_OSpringBarley_CC": {
+  "rows": 3,
+  "last_date": "21/08",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "20/08"
+   },
+   {
+    "start": null,
+    "end": "21/08"
+   },
+   {
+    "start": null,
+    "end": "21/08"
+   }
+  ],
+  "harvest_end": "17/08",
+  "first_date": "29/03"
+ },
+ "DK_OSpringFodderGrass": {
+  "rows": 4,
+  "last_date": "10/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "30/09"
+   },
+   {
+    "start": null,
+    "end": "10/10"
+   },
+   {
+    "start": null,
+    "end": "10/10"
+   },
+   {
+    "start": null,
+    "end": "10/10"
+   }
+  ],
+  "harvest_end": "31/08",
+  "first_date": "31/03"
+ },
+ "DK_OSugarBeets": {
+  "rows": 1,
+  "last_date": "15/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "15/10",
+  "first_date": "20/11"
+ },
+ "DK_OVegSeeds": {
+  "rows": 1,
+  "last_date": "31/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   }
+  ],
+  "harvest_end": "14/08",
+  "first_date": "30/11"
+ },
+ "DK_OWinterCloverGrassGrazedSown": {
+  "rows": 4,
+  "last_date": "10/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "20/07"
+   },
+   {
+    "start": null,
+    "end": "20/08"
+   },
+   {
+    "start": null,
+    "end": "20/09"
+   },
+   {
+    "start": null,
+    "end": "10/10"
+   }
+  ],
+  "harvest_end": "10/07",
+  "first_date": "17/08"
+ },
+ "DK_OWinterFodderGrass": {
+  "rows": 4,
+  "last_date": "10/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "20/07"
+   },
+   {
+    "start": null,
+    "end": "20/08"
+   },
+   {
+    "start": null,
+    "end": "20/09"
+   },
+   {
+    "start": null,
+    "end": "10/10"
+   }
+  ],
+  "harvest_end": "10/07",
+  "first_date": "17/08"
+ },
+ "DK_OWinterRape": {
+  "rows": 1,
+  "last_date": "10/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "10/08"
+   }
+  ],
+  "harvest_end": "09/08",
+  "first_date": "15/08"
+ },
+ "DK_OWinterWheat": {
+  "rows": 2,
+  "last_date": "30/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "30/08"
+   },
+   {
+    "start": null,
+    "end": "30/08"
+   }
+  ],
+  "harvest_end": "29/08",
+  "first_date": "15/10"
+ },
+ "DK_OWinterWheat_CC": {
+  "rows": 2,
+  "last_date": "30/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "30/08"
+   },
+   {
+    "start": null,
+    "end": "30/08"
+   }
+  ],
+  "harvest_end": "29/08",
+  "first_date": "15/10"
+ },
+ "DK_OptimalFlowerMix1": {
+  "rows": 1,
+  "last_date": "30/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "30/10"
+   }
+  ],
+  "harvest_end": "30/10",
+  "first_date": "28/04"
+ },
+ "DK_OptimalFlowerMix2": {
+  "rows": 1,
+  "last_date": "30/11",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "30/11"
+   }
+  ],
+  "harvest_end": "30/11",
+  "first_date": "01/04"
+ },
+ "DK_OptimalFlowerMix3": {
+  "rows": 2,
+  "last_date": "11/11",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "26/10"
+   },
+   {
+    "start": null,
+    "end": "11/11"
+   }
+  ],
+  "harvest_end": "25/10",
+  "first_date": "01/04"
+ },
+ "DK_OrchApple": {
+  "rows": 1,
+  "last_date": "31/12",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/12",
+  "first_date": "30/04"
+ },
+ "DK_OrchCherry": {
+  "rows": 1,
+  "last_date": "31/12",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/12",
+  "first_date": "31/01"
+ },
+ "DK_OrchOther": {
+  "rows": 1,
+  "last_date": "31/12",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/12",
+  "first_date": "30/04"
+ },
+ "DK_OrchPear": {
+  "rows": 1,
+  "last_date": "31/12",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/12",
+  "first_date": "30/04"
+ },
+ "DK_OrchardCrop_Perm": {
+  "rows": 1,
+  "last_date": "31/12",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/12",
+  "first_date": "30/04"
+ },
+ "DK_PlantNursery_Perm": {
+  "rows": 1,
+  "last_date": "01/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "01/09"
+   }
+  ],
+  "harvest_end": "01/09",
+  "first_date": "01/12"
+ },
+ "DK_Potato": {
+  "rows": 2,
+  "last_date": "24/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "13/10"
+   },
+   {
+    "start": null,
+    "end": "14/10"
+   }
+  ],
+  "harvest_end": "25/09",
+  "first_date": "01/12"
+ },
+ "DK_PotatoIndustry": {
+  "rows": 3,
+  "last_date": "24/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "12/10"
+   },
+   {
+    "start": null,
+    "end": "13/10"
+   },
+   {
+    "start": null,
+    "end": "14/10"
+   }
+  ],
+  "harvest_end": "25/09",
+  "first_date": "01/12"
+ },
+ "DK_PotatoSeed": {
+  "rows": 2,
+  "last_date": "03/11",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "01/11"
+   },
+   {
+    "start": null,
+    "end": "02/11"
+   }
+  ],
+  "harvest_end": "31/10",
+  "first_date": "01/12"
+ },
+ "DK_SeedGrassFescue1": {
+  "rows": 1,
+  "last_date": "31/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/09"
+   }
+  ],
+  "harvest_end": "15/09",
+  "first_date": "30/11"
+ },
+ "DK_SeedGrassFescue2": {
+  "rows": 1,
+  "last_date": "31/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/09"
+   }
+  ],
+  "harvest_end": "15/09",
+  "first_date": "01/03"
+ },
+ "DK_SeedGrassFescue3": {
+  "rows": 1,
+  "last_date": "31/10",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/09"
+   }
+  ],
+  "harvest_end": "15/09",
+  "first_date": "01/03"
+ },
+ "DK_SeedGrassFescue_Spring": {
+  "rows": 1,
+  "last_date": "31/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/09"
+   }
+  ],
+  "harvest_end": "15/09",
+  "first_date": "30/11"
+ },
+ "DK_SeedGrassRye1": {
+  "rows": 3,
+  "last_date": "01/09",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "01/09"
+   }
+  ],
+  "harvest_end": "15/08",
+  "first_date": "30/11"
+ },
+ "DK_SeedGrassRye2": {
+  "rows": 3,
+  "last_date": "01/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "01/09"
+   }
+  ],
+  "harvest_end": "15/08",
+  "first_date": "01/03"
+ },
+ "DK_SeedGrassRye3": {
+  "rows": 3,
+  "last_date": "01/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "01/09"
+   }
+  ],
+  "harvest_end": "15/08",
+  "first_date": "01/03"
+ },
+ "DK_SeedGrassRye_Spring": {
+  "rows": 3,
+  "last_date": "01/09",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "31/08"
+   },
+   {
+    "start": null,
+    "end": "01/09"
+   }
+  ],
+  "harvest_end": "15/08",
+  "first_date": "30/11"
+ },
+ "DK_SetAside": {
+  "rows": 2,
+  "last_date": "01/07",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/06"
+   },
+   {
+    "start": null,
+    "end": "01/07"
+   }
+  ],
+  "harvest_end": "15/06",
+  "first_date": "31/12"
+ },
+ "DK_SetAside_SummerMow": {
+  "rows": 3,
+  "last_date": "11/11",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "26/10"
+   },
+   {
+    "start": null,
+    "end": "26/10"
+   },
+   {
+    "start": null,
+    "end": "11/11"
+   }
+  ],
+  "harvest_end": "25/10",
+  "first_date": "31/12"
+ },
+ "DK_SpringBarley": {
+  "rows": 3,
+  "last_date": "25/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "24/08"
+   },
+   {
+    "start": null,
+    "end": "25/08"
+   },
+   {
+    "start": "02/08",
+    "end": "25/08"
+   }
+  ],
+  "harvest_end": "01/08",
+  "first_date": "01/12"
+ },
+ "DK_SpringBarleyCloverGrass": {
+  "rows": 3,
+  "last_date": "16/10",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "01/09"
+   },
+   {
+    "start": null,
+    "end": "01/09"
+   },
+   {
+    "start": "02/09",
+    "end": "16/10"
+   }
+  ],
+  "harvest_end": "31/08",
+  "first_date": "01/11"
+ },
+ "DK_SpringBarleySilage": {
+  "rows": 2,
+  "last_date": "23/07",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "25/07"
+   },
+   {
+    "start": null,
+    "end": "26/07"
+   }
+  ],
+  "harvest_end": "23/07",
+  "first_date": "01/12"
+ },
+ "DK_SpringBarley_CC": {
+  "rows": 2,
+  "last_date": "01/09",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "01/09"
+   },
+   {
+    "start": "02/08",
+    "end": "01/09"
+   }
+  ],
+  "harvest_end": "31/08",
+  "first_date": "01/11"
+ },
+ "DK_SpringBarley_Green": {
+  "rows": 2,
+  "last_date": "11/07",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "10/07"
+   },
+   {
+    "start": null,
+    "end": "11/07"
+   }
+  ],
+  "harvest_end": "09/07",
+  "first_date": "01/11"
+ },
+ "DK_SpringFodderGrass": {
+  "rows": 2,
+  "last_date": "30/09",
+  "is_spring": true,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "30/09"
+   },
+   {
+    "start": null,
+    "end": "30/09"
+   }
+  ],
+  "harvest_end": "28/09",
+  "first_date": "01/12"
+ },
+ "DK_SpringOats": {
+  "rows": 2,
+  "last_date": "26/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "16/08"
+   },
+   {
+    "start": null,
+    "end": "26/08"
+   }
+  ],
+  "harvest_end": "26/07",
+  "first_date": "01/11"
+ },
+ "DK_SpringOats_CC": {
+  "rows": 1,
+  "last_date": "31/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/08",
+  "first_date": "01/11"
+ },
+ "DK_SpringWheat": {
+  "rows": 1,
+  "last_date": "31/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": null
+   }
+  ],
+  "harvest_end": "31/08",
+  "first_date": "01/11"
+ },
+ "DK_SugarBeets": {
+  "rows": 2,
+  "last_date": "10/12",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/09"
+   },
+   {
+    "start": null,
+    "end": "10/12"
+   }
+  ],
+  "harvest_end": "31/08",
+  "first_date": "30/11"
+ },
+ "DK_WinterBarley": {
+  "rows": 3,
+  "last_date": "31/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "15/08"
+   },
+   {
+    "start": null,
+    "end": "15/08"
+   },
+   {
+    "start": null,
+    "end": "31/08"
+   }
+  ],
+  "harvest_end": "14/08",
+  "first_date": "25/09"
+ },
+ "DK_WinterCloverGrassGrazedSown": {
+  "rows": 2,
+  "last_date": "10/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "10/08"
+   },
+   {
+    "start": null,
+    "end": "10/08"
+   }
+  ],
+  "harvest_end": "08/08",
+  "first_date": "12/08"
+ },
+ "DK_WinterFodderGrass": {
+  "rows": 2,
+  "last_date": "10/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "10/08"
+   },
+   {
+    "start": null,
+    "end": "10/08"
+   }
+  ],
+  "harvest_end": "08/08",
+  "first_date": "26/08"
+ },
+ "DK_WinterRape": {
+  "rows": 1,
+  "last_date": "19/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "19/08"
+   }
+  ],
+  "harvest_end": "05/08",
+  "first_date": "26/08"
+ },
+ "DK_WinterRye": {
+  "rows": 1,
+  "last_date": "30/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "30/08"
+   }
+  ],
+  "harvest_end": "30/08",
+  "first_date": "20/10"
+ },
+ "DK_WinterRye_CC": {
+  "rows": 1,
+  "last_date": "30/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "30/08"
+   }
+  ],
+  "harvest_end": "30/08",
+  "first_date": "20/10"
+ },
+ "DK_WinterWheat": {
+  "rows": 1,
+  "last_date": "31/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   }
+  ],
+  "harvest_end": "31/08",
+  "first_date": "17/09"
+ },
+ "DK_WinterWheat_CC": {
+  "rows": 1,
+  "last_date": "31/08",
+  "is_spring": false,
+  "flexdates": [
+   {
+    "start": null,
+    "end": "31/08"
+   }
+  ],
+  "harvest_end": "31/08",
+  "first_date": "17/09"
+ }
+}

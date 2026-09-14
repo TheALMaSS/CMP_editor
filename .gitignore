@@ -1,4 +1,10 @@
 *.json
+# ...but the editor's own registries are part of the program, not authored crop data.
+# flexdates_reference.json is bundled into the exe by cropgen.spec, so the build fails
+# outright if it is missing.
+!operations.json
+!conditions.json
+!flexdates_reference.json
 *.cmp
 *.cpp
 *.h
