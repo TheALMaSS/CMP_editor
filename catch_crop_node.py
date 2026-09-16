@@ -15,6 +15,8 @@ class CatchCropNode(Node):
     enum cannot invalidate saved crop files.
     """
 
+    _counter = 0
+
     def __init__(self, catch_crop="conventional"):
         super().__init__("Hand off to\ncatch crop")
 
@@ -26,7 +28,10 @@ class CatchCropNode(Node):
         self.padding_horizontal = 100
 
         # Like END, this node terminates the graph, so it carries no date range.
-        self.id_text.setPlainText("CATCH CROP")
+        # The id must be unique -- it is how ALMaSS resolves nodes, and duplicates corrupt the
+        # crop file -- so number it rather than hardcoding one string for every such node.
+        CatchCropNode._counter += 1
+        self.id_text.setPlainText(f"CatchCrop{CatchCropNode._counter}")
         self.adjust_size()
 
     def paint(self, painter, option, widget):

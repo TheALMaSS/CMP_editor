@@ -92,6 +92,12 @@ class FlowchartView(QGraphicsView):
             if item in self.my_window.cond_nodes:
                 self.my_window.cond_nodes.remove(item)
 
+            # Catch crop nodes live in their own list. Missing this left a reference to an item
+            # Qt had already freed, and the next save touched it -- "wrapped C/C++ object has
+            # been deleted".
+            if item in getattr(self.my_window, "catch_crop_nodes", []):
+                self.my_window.catch_crop_nodes.remove(item)
+
             self.scene().removeItem(item)
             return
             
