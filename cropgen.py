@@ -149,7 +149,8 @@ class FlowchartWindow(QMainWindow):
         self.veg_patchy_check.setToolTip(
             "Tick for crops that leave the canopy open until they are tall -- root crops such as\n"
             "potatoes and beets, and wide-row crops such as legumes. Set once when the crop starts.\n"
-            "Use the 'Clears patchiness' box on an operation to end it (usually the harvest)."
+            "With this ticked, adding a harvest or similar operation asks whether it ends the\n"
+            "patchiness -- say yes on the one that closes the canopy, usually the harvest."
         )
         self.veg_patchy_check.setStyleSheet(label_text_style)
         patchy_layout.addWidget(self.veg_patchy_check)
@@ -346,6 +347,18 @@ class FlowchartWindow(QMainWindow):
             value, ok = QInputDialog.getInt(self, str(operation["name"]), prompt, 253, 0, 365)
             if ok:
                 node.op_value = value
+
+        # Operations that can end a crop's patchiness -- the harvest usually, sometimes ploughing
+        # or topping. Only asked for crops that ARE patchy, and only for operations where it makes
+        # sense, so the question does not appear on every node.
+        if operation.get("may_clear_patchy") and self.veg_patchy_check.isChecked():
+            answer = QMessageBox.question(
+                self, "Patchy vegetation",
+                f"Does '{operation['name']}' end this crop's patchiness?\n\n"
+                "Tick yes for the operation that closes the canopy or removes the crop -- "
+                "usually the harvest. ALMaSS then stops treating the field as patchy.",
+                QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            node.clears_patchy = (answer == QMessageBox.Yes)
 
         node.setPos(self.view.mapToScene(self.view.viewport().rect().center()))
         node.setZValue(1)

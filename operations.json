@@ -47,7 +47,8 @@
   {
     "name": "Autumn Plough",
     "description": "Plough the soil in autumn.",
-    "cpp_func": "AutumnPlough"
+    "cpp_func": "AutumnPlough",
+    "may_clear_patchy": true
   },
   {
     "name": "Autumn Roll",
@@ -92,7 +93,8 @@
   {
     "name": "Bulb Harvest",
     "description": "Harvest flower bulbs such as tulips.",
-    "cpp_func": "BulbHarvest"
+    "cpp_func": "BulbHarvest",
+    "may_clear_patchy": true
   },
   {
     "name": "Cut Orchard Vegetation",
@@ -142,22 +144,26 @@
   {
     "name": "Harvest",
     "description": "Harvest the crop.",
-    "cpp_func": "Harvest"
+    "cpp_func": "Harvest",
+    "may_clear_patchy": true
   },
   {
     "name": "Harvest (Long Duration)",
     "description": "Harvest with a different operational profile.",
-    "cpp_func": "HarvestLong"
+    "cpp_func": "HarvestLong",
+    "may_clear_patchy": true
   },
   {
     "name": "Harvest Bush Fruit (Hand)",
     "description": "Harvest bush fruit by hand while preserving plant structure.",
-    "cpp_func": "HarvestBushFruit"
+    "cpp_func": "HarvestBushFruit",
+    "may_clear_patchy": true
   },
   {
     "name": "Harvest Bush Fruit (Machine)",
     "description": "Harvest bush fruit using machinery while preserving plant structure.",
-    "cpp_func": "HarvestBF_Machine"
+    "cpp_func": "HarvestBF_Machine",
+    "may_clear_patchy": true
   },
   {
     "name": "Heavy Cultivator Aggregate",
@@ -277,7 +283,8 @@
   {
     "name": "Straw Chopping",
     "description": "Chop straw residue after harvest.",
-    "cpp_func": "StrawChopping"
+    "cpp_func": "StrawChopping",
+    "may_clear_patchy": true
   },
   {
     "name": "Straw Covering",
@@ -332,7 +339,8 @@
   {
     "name": "Topping",
     "description": "Remove the top of the crop and leave it in the field.",
-    "cpp_func": "Topping"
+    "cpp_func": "Topping",
+    "may_clear_patchy": true
   },
   {
     "name": "Water",
@@ -476,22 +484,26 @@
   {
     "name": "Fruit Harvest",
     "description": "Harvest fruit. Can run over several days -- the node repeats until the harvest is finished.",
-    "cpp_func": "FruitHarvest"
+    "cpp_func": "FruitHarvest",
+    "may_clear_patchy": true
   },
   {
     "name": "Green Harvest",
     "description": "Harvest the crop while still green.",
-    "cpp_func": "GreenHarvest"
+    "cpp_func": "GreenHarvest",
+    "may_clear_patchy": true
   },
   {
     "name": "Harvest Shoots",
     "description": "Harvest shoots, e.g. asparagus.",
-    "cpp_func": "HarvestShoots"
+    "cpp_func": "HarvestShoots",
+    "may_clear_patchy": true
   },
   {
     "name": "Manual Harvest",
     "description": "Harvest by hand.",
-    "cpp_func": "ManualHarvest"
+    "cpp_func": "ManualHarvest",
+    "may_clear_patchy": true
   },
   {
     "name": "Mowing",
