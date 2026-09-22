@@ -534,6 +534,11 @@ class FlowchartWindow(QMainWindow):
         self.op_nodes.clear()
         self.cond_nodes.clear()
         self.prob_nodes.clear()
+        # Every node list has to be emptied here, or the previous crop's nodes are validated
+        # alongside the new one's. A leftover catch-crop node is the visible case: validation
+        # then reports that the flowchart has both an END and a catch-crop handover, naming a
+        # node the author cannot see and did not load.
+        self.catch_crop_nodes.clear()
         self.comment_boxes = []
 
         import traceback
@@ -549,7 +554,7 @@ class FlowchartWindow(QMainWindow):
             self.crop_name = data.get("crop_name", "")
             self.crop_edit.setText(self.crop_name)
             self.veg_patchy_check.setChecked(bool(data.get("veg_patchy", False)))
-            self.rotation = {k: data[k] for k in ("is_spring","harvest_end","first_date","last_date","first_year_op","flexdates") if k in data}
+            self.rotation = {k: data[k] for k in ("is_spring","harvest_end","first_date","last_date","first_year_op","flexdates","cycle_years") if k in data}
 
             node_map = {}
 
