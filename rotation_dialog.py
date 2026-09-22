@@ -77,6 +77,22 @@ class RotationDialog(QDialog):
         lrow.addWidget(self.last_edit)
         form.addLayout(lrow)
 
+        crow = QHBoxLayout()
+        crow.addWidget(QLabel("Permanent crop cycle (years):"))
+        self.cycle_spin = QSpinBox()
+        self.cycle_spin.setRange(0, 100)
+        self.cycle_spin.setSpecialValueText("not a permanent crop")
+        self.cycle_spin.setToolTip(
+            "How many years pass between one establishment and the next. A strawberry field "
+            "planted once and picked for four more years is 5.\n\n"
+            "Leave it at 0 for an ordinary crop in a rotation: those do not age, and the CROP AGE "
+            "condition will always report year 0.\n\n"
+            "The age counts 0 in the establishment year, then 1, 2, ... and wraps back to 0, which "
+            "is the year the field is replanted."
+        )
+        crow.addWidget(self.cycle_spin)
+        form.addLayout(crow)
+
         frow = QHBoxLayout()
         frow.addWidget(QLabel("First-year node:"))
         self.first_year_combo = QComboBox()
@@ -122,6 +138,7 @@ class RotationDialog(QDialog):
 
     def populate(self, d):
         self.spring_check.setChecked(bool(d.get("is_spring")))
+        self.cycle_spin.setValue(int(d.get("cycle_years") or 0))
         self.harvest_edit.setText(d.get("harvest_end") or "")
         self.first_edit.setText(d.get("first_date") or "")
         self.last_edit.setText(d.get("last_date") or "")
@@ -145,6 +162,7 @@ class RotationDialog(QDialog):
                 flexdates.append({"start": st or None, "end": en})
         self.result_data = {
             "is_spring": self.spring_check.isChecked(),
+            "cycle_years": self.cycle_spin.value(),
             "harvest_end": self.harvest_edit.text().strip() or None,
             "first_date": self.first_edit.text().strip() or None,
             "last_date": self.last_edit.text().strip() or None,

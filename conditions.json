@@ -41,6 +41,9 @@
       "HISTORY": {},
       "VEGETATION HEIGHT": {
         "func": "GetVegHeight()"
+      },
+      "CROP AGE": {
+        "func": "GetCropAge()"
       }
     }
   }

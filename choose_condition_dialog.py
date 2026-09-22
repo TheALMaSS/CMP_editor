@@ -128,12 +128,18 @@ class ChooseConditionDialog(QDialog):
             self.ok_btn.setEnabled(False)
             return
 
-        elif current.text() in ("HISTORY", "DATE", "VEGETATION HEIGHT"):
+        elif current.text() in ("HISTORY", "DATE", "VEGETATION HEIGHT", "CROP AGE"):
             self.list3.hide()
             self.history_widget.show()
-            self.op_combo.setVisible(current.text() == "VEGETATION HEIGHT")
+            self.op_combo.setVisible(current.text() in ("VEGETATION HEIGHT", "CROP AGE"))
 
-            if current.text() == "VEGETATION HEIGHT":
+            if current.text() == "CROP AGE":
+                self.history_instructions.setText(
+                    "Choose a comparison and enter a number of years.\n"
+                    "0 is the establishment year; 1 is the first year after that.\n"
+                    "Only meaningful for a permanent crop, which must also set its cycle length."
+                )
+            elif current.text() == "VEGETATION HEIGHT":
                 self.history_instructions.setText(
                     "Choose a comparison and enter a vegetation height in cm.\n"
                     "YES branch: the field's height satisfies the comparison.\n"
@@ -195,14 +201,21 @@ class ChooseConditionDialog(QDialog):
             return label
 
     def accept(self):
-        if self.selected[1] in ("HISTORY", "DATE", "VEGETATION HEIGHT"):
+        if self.selected[1] in ("HISTORY", "DATE", "VEGETATION HEIGHT", "CROP AGE"):
             text = self.text3.toPlainText()
             if text:
                 if len(self.selected) < 3:
                     self.selected.append(text)
         if len(self.selected) != 3:
             return  # safety check
-        if self.selected[1] == "VEGETATION HEIGHT":
+        if self.selected[1] == "CROP AGE":
+            op = self.op_combo.currentText()
+            self.composed_condition = f"Is the crop\n{op} {self.selected[2]} years old?"
+            self.coded_condition = "null"
+            self.cond_value = self.selected[2]
+            self.cond_op = op
+
+        elif self.selected[1] == "VEGETATION HEIGHT":
             op = self.op_combo.currentText()
             self.composed_condition = (
                 f"Is vegetation height\n{op} {self.selected[2]} cm?"
@@ -249,5 +262,7 @@ class ChooseConditionDialog(QDialog):
             self.cond_type = "calendar_date"
         elif self.selected[1] == "VEGETATION HEIGHT":
             self.cond_type = "field_vegheight"
+        elif self.selected[1] == "CROP AGE":
+            self.cond_type = "crop_age"
 
         super().accept()
