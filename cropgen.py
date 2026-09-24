@@ -27,6 +27,7 @@ from PyQt5.QtGui import QColor, QBrush, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox, QLineEdit, QHBoxLayout, QMessageBox, QCheckBox, QInputDialog
 from flowchart_view import FlowchartView
 from flowchart_scene import FlowchartScene
+from pdf_export import export_flowchart_pdf
 from prob_node import ProbNode
 from choose_operation_dialog import ChooseOperationDialog
 from op_node import OpNode
@@ -264,6 +265,12 @@ class FlowchartWindow(QMainWindow):
         self.export_btn.setStyleSheet(button_style)
         self.export_btn.clicked.connect(self.export_to_almass)
         left_layout.addWidget(self.export_btn)
+
+        self.pdf_btn = QPushButton("Export Flowchart to PDF")
+        self.pdf_btn.setStyleSheet(button_style)
+        self.pdf_btn.setToolTip("Save the flowchart as a PDF, e.g. to send it for review or print it.")
+        self.pdf_btn.clicked.connect(self.export_pdf)
+        left_layout.addWidget(self.pdf_btn)
 
         line3 = QFrame()
         line3.setFrameShape(QFrame.HLine)
@@ -665,6 +672,50 @@ class FlowchartWindow(QMainWindow):
     # ------------------------------------------------------------------------------------------------
 
     # ------------------------------------------------------------------------------------------------
+    def pdf_header_lines(self):
+        """Title and details printed above the flowchart in the PDF."""
+        crop = self.crop_edit.text().strip() or "Unnamed crop"
+        lines = [crop]
+        details = []
+        if self.author_edit.text().strip():
+            details.append("Author: " + self.author_edit.text().strip())
+        if self.last_modified:
+            details.append("Last modified: " + self.last_modified)
+        if details:
+            lines.append("    ".join(details))
+        r = self.rotation or {}
+        timing = []
+        if r:
+            timing.append("Spring crop" if r.get("is_spring") else "Not a spring crop")
+        if r.get("cycle_years"):
+            timing.append(f"Permanent crop, {r['cycle_years']}-year cycle")
+        if r.get("harvest_end"):
+            timing.append("Harvest finished by " + r["harvest_end"])
+        if self.veg_patchy_check.isChecked():
+            timing.append("Patchy vegetation")
+        if timing:
+            lines.append("    ".join(timing))
+        return lines
+
+    def export_pdf(self):
+        crop = self.crop_edit.text().strip()
+        filename, _ = QFileDialog.getSaveFileName(
+            self, "Export Flowchart to PDF", (crop or "flowchart") + ".pdf", "PDF Files (*.pdf)")
+        if not filename:
+            return
+        if not filename.lower().endswith(".pdf"):
+            filename += ".pdf"
+        try:
+            scale = export_flowchart_pdf(self.scene, filename, self.pdf_header_lines())
+        except (ValueError, IOError) as e:
+            QMessageBox.warning(self, "Export Flowchart to PDF", str(e))
+            return
+        msg = f"Saved {filename}"
+        if scale < 1.0:
+            msg += (f"\n\nThe flowchart is larger than the biggest page a PDF allows, so it was "
+                    f"shrunk to {scale:.0%}.")
+        QMessageBox.information(self, "Export Flowchart to PDF", msg)
+
     def need_help(self):
         dlg = HelpDialog(self)
         dlg.exec_()
