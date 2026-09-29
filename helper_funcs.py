@@ -1,8 +1,8 @@
+import difflib
 from PyQt5.QtCore import QPointF
 from PyQt5.QtCore import QRectF
 import math
 import sys, os, re, json
-from jinja2 import Environment, FileSystemLoader
 
 # ------------------------------------------------------------------------------------------------
 # HELPER FUNCTIONS FOR EXPORT AND SAVING
@@ -177,243 +177,6 @@ def generate_almass_json(all_nodes, crop_name, filename, veg_patchy=False, rotat
 # ------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------------------
-def to_all_caps(name):
-    s1 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', name)
-    return s1.upper()
-
-def to_lower_underscore(name):
-    s1 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', name)
-    return s1.lower()
-# ------------------------------------------------------------------------------------------------
-
-def get_earliest_date(dates: str) -> str:
-    start_date = dates.split(" - ")[0].strip()
-
-    relative_match = re.fullmatch(r"\+(\d{1,2})d", start_date)
-    absolute_match = re.fullmatch(r"(\d{2})/(\d{2})", start_date)
-
-    if relative_match:
-        offset = int(relative_match.group(1))
-        return f"g_date->Date() + {offset}"
-    elif absolute_match:
-        day, month = absolute_match.groups()
-        return f"std::max(g_date->Date() + 1, g_date->OldDays() + g_date->DayInYear({str(int(day))}, {str(int(month))}))"
-    else:
-        return "g_date->Date() + 1"
-
-
-def get_days_left(dates: str) -> str:
-    end_date = dates.split(" - ")[-1].strip()
-
-    absolute_match = re.fullmatch(r"(\d{2})/(\d{2})", end_date)
-    if absolute_match:
-        day, month = absolute_match.groups()
-        return f"g_date->DayInYear({str(int(day))}, {str(int(month))}) - g_date->DayInYear()"
-    else:
-        # fallback to relative date if format is unknown
-        relative_match = re.fullmatch(r"\+(\d{1,2})d", end_date)
-        if relative_match:
-            offset = int(relative_match.group(1))
-            return f"g_date->Date() + {offset}"
-        return "g_date->Date()"
-
-def get_starting_date(start_node):
-    #g_date->DayInYear(26, 8)
-    absolute_match = re.fullmatch(r"(\d{2})/(\d{2})", start_node.get("dates"))
-    if absolute_match:
-        day, month = absolute_match.groups()
-        return f"g_date->DayInYear({str(int(day))}, {str(int(month))})"
-
-
-# ------------------------------------------------------------------------------------------------
-def generate_header_file(crop_name, data):
-
-    crop_name_all_caps = to_all_caps(crop_name)
-    crop_name_lowercase = to_lower_underscore(crop_name)
-    nodes = [node for node in data[1:] if node.get("type") == "OpNode"]
-    start_node = next(n for n in data[1:] if n["id"] == "START")
-    starting_date = get_starting_date(start_node)
-
-    env = Environment(
-        loader=FileSystemLoader(resource_path("templates"))
-    )
-
-    template = env.get_template('header_file.jinja')
-
-    output = template.render(
-        crop_name=crop_name,
-        crop_name_all_caps=crop_name_all_caps,
-        crop_name_lowercase=crop_name_lowercase,
-        starting_date = starting_date,
-        nodes=nodes
-    )
-
-    with open(f"{crop_name}.h", "w") as f:
-        f.write(output)
-# ------------------------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------------------------
-
-def cpp_func_for(op_name):
-    """The C++ function behind an operation's display name, from operations.json.
-
-    The generated code calls this directly, so an unknown name has to be visible rather than
-    producing a call to nothing.
-    """
-    try:
-        with open(resource_path("operations.json"), "r", encoding="utf-8") as f:
-            for op in json.load(f):
-                if op.get("name") == op_name:
-                    return op.get("cpp_func") or "SleepAllDay"
-    except (OSError, ValueError):
-        pass
-    return "SleepAllDay"   # harmless no-op, and obvious in the generated source
-
-def generate_cpp_file(crop_name, data):
-    env = Environment(
-        loader=FileSystemLoader(resource_path("templates")),
-        trim_blocks=True,
-        lstrip_blocks=True
-    )
-
-    tmpl_main = env.get_template("cpp_file.jinja")
-
-    # Classify nodes
-    start_node = next(n for n in data[1:] if n["id"] == "START")
-    end_node   = next(n for n in data[1:] if n["id"] == "END")
-    middle_nodes = [n for n in data[1:] if n["id"] not in ("START", "END")]
-
-    # Vars for every node
-    crop_name_lowercase = to_lower_underscore(crop_name)
-
-    # Render START
-    t_start = env.get_template("case_start.jinja")
-    next_id = start_node["outgoing"][0]["destination_id"]
-    next_node = next((n for n in data[1:] if n["id"] == next_id), None)
-    next_date = get_earliest_date(next_node["dates"])
-
-    start_block = t_start.render(
-                crop_name = crop_name,
-                crop_name_lowercase = crop_name_lowercase,
-                next_date = next_date,
-                next_id = next_id
-            )
-
-    # Render END
-    t_end = env.get_template("case_end.jinja")
-    end_block = t_end.render(
-                crop_name_lowercase = crop_name_lowercase
-            )
-
-    # Render middle nodes
-    rendered_middle = []
-    for node in middle_nodes:
-
-        # ---------------------------------------------------------
-        if node["type"] == "OpNode":
-            t = env.get_template("case_op_node.jinja")
-            next_id = node["outgoing"][0]["destination_id"]
-            next_node = next((n for n in data[1:] if n["id"] == next_id), None)
-            next_date = get_earliest_date(next_node["dates"])
-            scheduling_date = get_days_left(node["dates"])
-            latest_date = get_days_left(node["dates"])
-
-            block = t.render(
-                crop_name = crop_name,
-                crop_name_lowercase = crop_name_lowercase,
-                scheduling_date = scheduling_date,
-                id = node["id"],
-                next_date = next_date,
-                next_id = next_id,
-                latest_date = latest_date,
-                # The template calls m_farm-><cpp_func>(...). Without this it rendered
-                # "m_farm->(...)", which does not compile.
-                cpp_func = cpp_func_for(node.get("name", ""))
-            )
-
-        # ---------------------------------------------------------
-        elif node["type"] == "CondNode":
-            yes_node_id = next(
-                (arrow["destination_id"] for arrow in node["outgoing"] if arrow.get("branching_condition") == "YES"),
-                None
-            )
-            no_node_id = next(
-                (arrow["destination_id"] for arrow in node["outgoing"] if arrow.get("branching_condition") == "NO"),
-                None
-            )
-            yes_node = next((n for n in data[1:] if n["id"] == yes_node_id), None)
-            no_node = next((n for n in data[1:] if n["id"] == no_node_id), None)
-
-            yes_node_sched_date = get_earliest_date(yes_node["dates"])
-            no_node_sched_date = get_earliest_date(no_node["dates"])
-
-            block = t.render(
-                crop_name = crop_name,
-                crop_name_lowercase = crop_name_lowercase,
-                id = node["id"],
-                cpp_cond = node["cpp_cond"],
-                yes_node_id = yes_node_id,
-                yes_node_sched_date = yes_node_sched_date,
-                no_node_id = no_node_id,
-                no_node_sched_date = no_node_sched_date
-            )
-
-        # ---------------------------------------------------------
-        elif node["type"] == "ProbNode":
-            t = env.get_template("case_prob_node.jinja")
-
-            next_ids = [o["destination_id"] for o in node["outgoing"]]
-            probabilities = [float(o["branching_condition"].strip('%')) / 100.0 for o in node["outgoing"]]
-            earliest_dates = []
-            for dest_id in next_ids:
-                dest_node = next(n for n in data[1:] if n["id"] == dest_id)
-                earliest_dates.append(get_earliest_date(dest_node["dates"]))
-
-            block = t.render(
-                crop_name_lowercase=crop_name.lower(),
-                id=node["id"],
-                next_ids=next_ids,
-                earliest_dates=earliest_dates,
-                probabilities=probabilities
-            )
-        # ---------------------------------------------------------
-        else:
-            continue
-
-        rendered_middle.append(block)
-
-    middle_block = "\n".join(rendered_middle)
-
-    cpp_code = tmpl_main.render(
-        crop_name=crop_name,
-        start_block=start_block,
-        middle_block=middle_block,
-        end_block=end_block
-    )
-
-    with open(crop_name + ".cpp", "w") as f:
-        f.write(cpp_code)
-
-    # If the type of the node is "OpNode" and the node id is not "START" or "END" -> choose case_op_node.jinja
-    # If the type is "OpNode" and the node id is "START" -> choose case_start.jinja
-    # If the type is "OpNode" and the node id is "END" -> choose case_end.jinja
-    # If the type of the node is "CondNode" -> choose case_cond_node.jinja
-    # If the type of the node is "ProbNode" -> choose case_prob_node.jinja
-    #
-    # OpNode structure:
-    # STEP 1: try to do operation. If fail, re-schedule for tomorrow, then break
-    # STEP 2: schedule the only 1 next node (max 1, min 1)
-    #
-    # CondNode structure:
-    # STEP 1: empty
-    # STEP 2: schedule the only 2 next nodes (max 2, min 2) but gate them with the condition
-    #
-    # ProbNode structure:
-    # STEP 1: empty
-    # STEP 2: schedule all the possible nodes iteratively (no upper limit, min 1) but gate them with the probability
-# ------------------------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------------------------
 def resource_path(relative_path):
     if hasattr(sys, "_MEIPASS"):
         return os.path.join(sys._MEIPASS, relative_path)
@@ -423,7 +186,8 @@ def resource_path(relative_path):
 # ------------------------------------------------------------------------------------------------
 # HELPER FUNC FOR VALIDATION LOGIC
 # ------------------------------------------------------------------------------------------------
-def validate_graph(op_nodes, prob_nodes, cond_nodes, crop_name, author, catch_crop_nodes=None):
+def validate_graph(op_nodes, prob_nodes, cond_nodes, crop_name, author, catch_crop_nodes=None,
+                   rotation=None, reference=None, known_crops=None):
     warnings = []
     catch_crop_nodes = catch_crop_nodes or []
 
@@ -458,7 +222,8 @@ def validate_graph(op_nodes, prob_nodes, cond_nodes, crop_name, author, catch_cr
     if "START" not in op_names:
         warnings.append("⚠ <b>WARNING:</b> no operation named 'START' exists.")
 
-    if "END" not in op_names:
+    # A catch crop node ends the flowchart as END does.
+    if "END" not in op_names and not catch_crop_nodes:
         warnings.append("⚠ <b>WARNING:</b> no operation named 'END' exists.")
 
     if len(ids) != len(set(ids)):
@@ -542,8 +307,106 @@ def validate_graph(op_nodes, prob_nodes, cond_nodes, crop_name, author, catch_cr
                 "⚠ <b>WARNING:</b> the Start Node has an invalid date format. Must be 'dd/MM' to indicate the crop cultivation start."
             )
 
+    warnings += _validate_against_almass(op_nodes, prob_nodes, cond_nodes, catch_crop_nodes,
+                                         crop_name, rotation, reference, known_crops)
     return warnings
 # ------------------------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------------------------
+# CHECKS LEARNT FROM RUNNING THE PLANS IN ALMaSS (2026-09)
+# ------------------------------------------------------------------------------------------------
+_DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+
+def _bad_dates(text):
+    """dd/MM dates in text that do not exist (31/09). ALMaSS does not reject them: it quietly
+    moves them to the next day (31/09 becomes 1 October)."""
+    bad = []
+    for d, m in re.findall(r"\b(\d{2})/(\d{2})\b", text or ""):
+        d, m = int(d), int(m)
+        if not (1 <= m <= 12 and 1 <= d <= _DAYS_IN_MONTH[m - 1]):
+            bad.append(f"{d:02d}/{m:02d}")
+    return bad
+
+
+def _validate_against_almass(op_nodes, prob_nodes, cond_nodes, catch_crop_nodes, crop_name,
+                             rotation, reference, known_crops):
+    """Problems found only by running the plans in ALMaSS, now checked when validating."""
+    warnings = []
+    W = "⚠ <b>WARNING:</b> "
+    catch_crop_nodes = catch_crop_nodes or []
+    label = lambda n: n.id_text.toPlainText()
+    name = lambda n: n.name_text.toPlainText()
+    is_end = lambda n: n in catch_crop_nodes or name(n) == "END"
+    kids = lambda n: [a.end_node for a in n.outgoing_arrows if getattr(a, "end_node", None) is not None]
+
+    # 1. Every outcome must be able to reach END. A field whose crop takes a branch that never
+    #    reaches END keeps that crop for ever, and ALMaSS stops the run after 800 days. A branch
+    #    that ends while another thread carries on to END is fine (a side thread), so only a
+    #    probability or condition outcome with no way at all to END is reported.
+    memo = {}
+    def possible(n, stack=()):
+        if id(n) in memo:
+            return memo[id(n)]
+        if id(n) in stack:
+            return False
+        r = is_end(n) or any(possible(c, stack + (id(n),)) for c in kids(n))
+        memo[id(n)] = r
+        return r
+    for n in prob_nodes + cond_nodes:
+        if not possible(n):
+            continue
+        for a in n.outgoing_arrows:
+            end = getattr(a, "end_node", None)
+            if end is not None and not possible(end):
+                lab = a.text_item.toPlainText().strip() if a.text_item else ""
+                warnings.append(W + f"the '{lab}' branch of node '{label(n)}' (to '{label(end)}') "
+                                "never reaches END. A field that takes it keeps this crop for ever. "
+                                "Connect the last step of that branch to where the crop carries on.")
+    starts = [n for n in op_nodes if name(n) == "START"]
+    if starts and not possible(starts[0]):
+        warnings.append(W + "no path from START reaches END.")
+
+    # 2. Dates that do not exist.
+    for n in op_nodes:
+        for d in _bad_dates(n.dates_text.toPlainText() if hasattr(n, "dates_text") else ""):
+            warnings.append(W + f"node '{label(n)}' has the date {d}, which does not exist.")
+    for k, v in (rotation or {}).items():
+        texts = [v] if isinstance(v, str) else ([r.get("start") or "" for r in v] + [r.get("end") or "" for r in v]
+                                                 if isinstance(v, list) else [])
+        for t in texts:
+            for d in _bad_dates(t):
+                warnings.append(W + f"the rotation timing has the date {d}, which does not exist.")
+
+    # 3. A crop followed by a catch crop must hand over to it.
+    if crop_name.endswith("_CC") and not catch_crop_nodes:
+        warnings.append(W + "this crop's name ends in _CC but it has no catch crop node, so the "
+                        "catch crop is never sown.")
+
+    # 4. Rotation timing against the dates ALMaSS has always used for this crop.
+    r = rotation or {}
+    if not r.get("first_date"):
+        warnings.append(W + "no rotation timing is set (Rotation Timing...). ALMaSS needs the "
+                        "date this crop takes over the field.")
+    ref = (reference or {}).get(crop_name)
+    if ref and r:
+        diff = [k for k in ("first_date", "last_date", "harvest_end", "flexdates")
+                if k in ref and (r.get(k) or None) != (ref.get(k) or None)]
+        if diff:
+            warnings.append(W + "the rotation timing differs from the dates ALMaSS has used for "
+                            f"this crop ({', '.join(diff)}). Unless that is intended, use "
+                            "'Load the dates ALMaSS uses' in Rotation Timing. 'Takes over the "
+                            "field by' is the date the previous crop must be harvested by, not the "
+                            "date of this crop's first operation.")
+
+    # 5. ALMaSS finds a plan by the crop's name.
+    if known_crops and crop_name and crop_name not in known_crops:
+        close = difflib.get_close_matches(crop_name, known_crops, n=1)
+        hint = f" Did you mean '{close[0]}'?" if close else ""
+        warnings.append(W + f"ALMaSS has no crop called '{crop_name}', so it will not use this "
+                        f"plan: it loads each crop from '<crop name>.json'.{hint}")
+    return warnings
 
 # ------------------------------------------------------------------------------------------------
 # HELPER FUNCTIONS FOR GRAPHICS

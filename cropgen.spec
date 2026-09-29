@@ -5,15 +5,14 @@ a = Analysis(
     ['cropgen.py'],
     pathex=[],
     binaries=[],
-    # Forward slashes so the spec works on any build host. 'templates' must be here: the C++
-    # code generator loads the jinja files through resource_path(), which reads from the
-    # PyInstaller bundle at runtime -- without this entry that path works from source and
-    # fails only in the built exe.
+    # Forward slashes so the spec works on any build host. Every file the editor opens through
+    # resource_path() must be listed: it reads from the PyInstaller bundle at runtime, so a
+    # missing entry works from source and fails only in the built exe.
     datas=[
         ('operations.json', '.'),
         ('conditions.json', '.'),
         ('flexdates_reference.json', '.'),
-        ('templates', 'templates'),
+        ('crop_names.json', '.'),
     ],
     hiddenimports=[],
     hookspath=[],

@@ -5,6 +5,7 @@
 !operations.json
 !conditions.json
 !flexdates_reference.json
+!crop_names.json
 *.cmp
 *.cpp
 *.h

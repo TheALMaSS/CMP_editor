@@ -1,7 +1,7 @@
 [
   {
     "name": "Do nothing",
-    "description": "No action performed on the farm.",
+    "description": "No action; the step completes at once and the plan moves on. It does not wait for its window to close -- use 'Sleep / Wait' to hold the crop until a date.",
     "cpp_func": ""
   },
   {
@@ -57,12 +57,12 @@
   },
   {
     "name": "Autumn Sow",
-    "description": "Sow crops in autumn.",
+    "description": "Sow crops in autumn. For conventional crops that were seed coated in ALMaSS, seed coating is applied automatically on the sowing day -- do not add it to the plan.",
     "cpp_func": "AutumnSow"
   },
   {
     "name": "Autumn Sow With Fertilizer",
-    "description": "Sow in autumn while applying starter fertilizer.",
+    "description": "Sow in autumn while applying starter fertilizer. For conventional crops that were seed coated in ALMaSS, seed coating is applied automatically on the sowing day -- do not add it to the plan.",
     "cpp_func": "AutumnSowWithFerti"
   },
   {
@@ -212,7 +212,7 @@
   },
   {
     "name": "Preseeding Cultivator + Sow",
-    "description": "Cultivate and sow in a single operation using a combined implement.",
+    "description": "Cultivate and sow in a single operation using a combined implement. For conventional crops that were seed coated in ALMaSS, seed coating is applied automatically on the sowing day -- do not add it to the plan.",
     "cpp_func": "PreseedingCultivatorSow"
   },
   {
@@ -227,7 +227,7 @@
   },
   {
     "name": "Sleep / Wait",
-    "description": "No activity for the day.",
+    "description": "No activity; the step waits until the last day of its window, then the plan moves on. Use it to hold a crop until a date (for example before END).",
     "cpp_func": "SleepAllDay"
   },
   {
@@ -272,12 +272,12 @@
   },
   {
     "name": "Spring Sow",
-    "description": "Sow crops in spring.",
+    "description": "Sow crops in spring. For conventional crops that were seed coated in ALMaSS, seed coating is applied automatically on the sowing day -- do not add it to the plan.",
     "cpp_func": "SpringSow"
   },
   {
     "name": "Spring Sow With Fertilizer",
-    "description": "Sow in spring while applying starter fertilizer.",
+    "description": "Sow in spring while applying starter fertilizer. For conventional crops that were seed coated in ALMaSS, seed coating is applied automatically on the sowing day -- do not add it to the plan.",
     "cpp_func": "SpringSowWithFerti"
   },
   {
@@ -328,7 +328,7 @@
   },
   {
     "name": "Strigling + Sow",
-    "description": "Perform tine-weeding followed by sowing.",
+    "description": "Perform tine-weeding followed by sowing. For conventional crops that were seed coated in ALMaSS, seed coating is applied automatically on the sowing day -- do not add it to the plan.",
     "cpp_func": "StriglingSow"
   },
   {
@@ -413,11 +413,6 @@
     "cpp_func": "LiquidNH3"
   },
   {
-    "name": "Sludge",
-    "description": "Apply sludge as fertilizer.",
-    "cpp_func": "Sludge"
-  },
-  {
     "name": "RSM",
     "description": "Apply RSM as fertilizer.",
     "cpp_func": "RSM"
@@ -473,7 +468,7 @@
   },
   {
     "name": "Pigs Are Out Forced",
-    "description": "Keep pigs on the field regardless of the usual conditions.",
+    "description": "Put pigs on the field and keep them there until the last day of the step's window, regardless of the usual conditions.",
     "cpp_func": "PigsAreOutForced"
   },
   {

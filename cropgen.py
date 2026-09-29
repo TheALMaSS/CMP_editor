@@ -21,7 +21,6 @@
 #********************************************************************************************************
 
 import sys, json, re
-from jinja2 import Environment, FileSystemLoader
 from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QColor, QBrush, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QDialog, QTextEdit, QLabel, QVBoxLayout, QFrame, QSplitter, QDialogButtonBox, QLineEdit, QHBoxLayout, QMessageBox, QCheckBox, QInputDialog
@@ -41,7 +40,7 @@ from help_dialog import HelpDialog
 from export_dialog import ExportDialog
 from datetime import datetime
 from comment_box import CommentBox
-from helper_funcs import resource_path, generate_header_file, generate_almass_json, generate_json, generate_cpp_file, validate_graph
+from helper_funcs import resource_path, generate_almass_json, generate_json, validate_graph
 from css_styles import label_text_style, value_text_style, button_style, validate_button_style, left_panel_style, delete_button_style, arrow_button_style, delete_mode_label_style, arrow_mode_label_style
 
 OPERATIONS_FILE = resource_path("operations.json")
@@ -60,6 +59,15 @@ def load_flexdates_reference():
             return json.load(f)
     except (OSError, ValueError):
         return {}
+
+def load_crop_names():
+    """The crop names ALMaSS knows. It loads each crop's plan from '<crop name>.json', so a plan
+    under any other name is never used."""
+    try:
+        with open(resource_path("crop_names.json"), "r", encoding="utf-8") as f:
+            return json.load(f).get("crops", [])
+    except (OSError, ValueError):
+        return []
 
 def load_conditions():
         with open(CONDITIONS_FILE,  "r", encoding="utf-8") as f:
@@ -80,6 +88,7 @@ class FlowchartWindow(QMainWindow):
         # Rotation timing (see RotationDialog); empty until the author fills it in.
         self.rotation = {}
         self._flexdates_reference = load_flexdates_reference()
+        self._crop_names = load_crop_names()
         self.arrows = []
         self.delete_mode = False
         self.arrow_mode = False
@@ -327,7 +336,9 @@ class FlowchartWindow(QMainWindow):
 
     # ------------------------------------------------------------------------------------------------
     def validate(self, return_warnings=False):
-        warnings = validate_graph(self.op_nodes, self.prob_nodes, self.cond_nodes, self.crop_name, self.author, self.catch_crop_nodes)
+        warnings = validate_graph(self.op_nodes, self.prob_nodes, self.cond_nodes, self.crop_name, self.author, self.catch_crop_nodes,
+                                  rotation=self.rotation, reference=self._flexdates_reference,
+                                  known_crops=self._crop_names)
 
         if return_warnings:
             return warnings

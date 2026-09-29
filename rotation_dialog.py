@@ -47,8 +47,10 @@ class RotationDialog(QDialog):
 
         self.spring_check = QCheckBox("Spring crop")
         self.spring_check.setToolTip(
-            "Spring crops are allowed a year's grace on a late start, because their sowing is "
-            "months after the previous crop finishes."
+            "Tick for a crop sown in spring. A spring crop handed its field in summer or autumn "
+            "waits for next spring before its plan starts (unless its START date passed less than "
+            "30 days ago). An unticked crop whose START date has just passed starts at once -- "
+            "winter rye handed its field in September starts its autumn work straight away."
         )
         form.addWidget(self.spring_check)
 
@@ -60,12 +62,15 @@ class RotationDialog(QDialog):
         form.addLayout(hrow)
 
         frow0 = QHBoxLayout()
-        frow0.addWidget(QLabel("Earliest the crop may start (dd/MM):"))
+        frow0.addWidget(QLabel("Takes over the field by (dd/MM):"))
         self.first_edit = QLineEdit()
         self.first_edit.setPlaceholderText("17/09")
         self.first_edit.setToolTip(
-            "The first day this crop can be sown or started. ALMaSS uses it to schedule the crop "
-            "in the rotation, and to reject a start that is far too late."
+            "The date by which this crop takes over the field: the crop before it must be harvested "
+            "by then. It is NOT the date of this crop's first operation -- for winter wheat it is "
+            "17/09, not the August start of its plan. A date too early makes the crop before stop "
+            "the simulation ('Harvest too late for the next crop to start'). The button above fills "
+            "in the value ALMaSS has always used for this crop."
         )
         frow0.addWidget(self.first_edit)
         form.addLayout(frow0)
@@ -93,18 +98,9 @@ class RotationDialog(QDialog):
         crow.addWidget(self.cycle_spin)
         form.addLayout(crow)
 
-        frow = QHBoxLayout()
-        frow.addWidget(QLabel("First-year node:"))
-        self.first_year_combo = QComboBox()
-        self.first_year_combo.addItem("")
-        for nid in node_ids:
-            self.first_year_combo.addItem(nid)
-        self.first_year_combo.setToolTip(
-            "Which node to run in the crop's very first simulated year, when there is no previous "
-            "crop to hand over from. Usually the first real operation."
-        )
-        frow.addWidget(self.first_year_combo)
-        form.addLayout(frow)
+        # No first-year node any more: ALMaSS picks the first year up from the plan itself, starting
+        # where a crop already in the ground would be. Starting at a single chosen node instead
+        # dropped the other threads a plan starts at START, so plans always save START.
 
         outer.addLayout(form)
 
@@ -134,17 +130,18 @@ class RotationDialog(QDialog):
             self.populate(current)
 
     def load_reference(self):
-        self.populate(self.reference.get(self.crop_name, {}))
+        # Dates only. The reference also records the C++ crops' own spring flag, which meant
+        # something else there (spring barley was 0), so the "Spring crop" tick and the cycle
+        # length stay as the author set them.
+        self.populate(self.reference.get(self.crop_name, {}), dates_only=True)
 
-    def populate(self, d):
-        self.spring_check.setChecked(bool(d.get("is_spring")))
-        self.cycle_spin.setValue(int(d.get("cycle_years") or 0))
+    def populate(self, d, dates_only=False):
+        if not dates_only:
+            self.spring_check.setChecked(bool(d.get("is_spring")))
+            self.cycle_spin.setValue(int(d.get("cycle_years") or 0))
         self.harvest_edit.setText(d.get("harvest_end") or "")
         self.first_edit.setText(d.get("first_date") or "")
         self.last_edit.setText(d.get("last_date") or "")
-        idx = self.first_year_combo.findText(d.get("first_year_op") or "")
-        if idx >= 0:
-            self.first_year_combo.setCurrentIndex(idx)
         for i, (s, e) in enumerate(self.rows):
             fd = d.get("flexdates") or []
             if i < len(fd):
@@ -166,7 +163,7 @@ class RotationDialog(QDialog):
             "harvest_end": self.harvest_edit.text().strip() or None,
             "first_date": self.first_edit.text().strip() or None,
             "last_date": self.last_edit.text().strip() or None,
-            "first_year_op": self.first_year_combo.currentText() or None,
+            "first_year_op": "START",
             "flexdates": flexdates,
         }
         super().accept()
