@@ -132,6 +132,17 @@
   "harvest_end": "03/09",
   "last_date": "05/09"
  },
+ "DK_CloverSeed": {
+  "first_date": "01/09",
+  "flexdates": [
+   {
+    "end": "20/08",
+    "start": null
+   }
+  ],
+  "harvest_end": "20/08",
+  "last_date": "31/08"
+ },
  "DK_EnergyCrop_Perm": {
   "first_date": "01/12",
   "flexdates": [
@@ -445,6 +456,17 @@
   "harvest_end": "10/07",
   "last_date": "10/10"
  },
+ "DK_OCloverSeed": {
+  "first_date": "01/09",
+  "flexdates": [
+   {
+    "end": "20/08",
+    "start": null
+   }
+  ],
+  "harvest_end": "20/08",
+  "last_date": "31/08"
+ },
  "DK_OEnergyCrop_Perm": {
   "first_date": "25/02",
   "flexdates": [
@@ -481,17 +503,6 @@
   ],
   "harvest_end": "01/09",
   "last_date": "01/09"
- },
- "DK_OFoddderBeet": {
-  "first_date": "20/11",
-  "flexdates": [
-   {
-    "end": null,
-    "start": null
-   }
-  ],
-  "harvest_end": "15/10",
-  "last_date": "15/10"
  },
  "DK_OFodderBeet": {
   "first_date": "20/11",
@@ -991,17 +1002,6 @@
   ],
   "harvest_end": "28/09",
   "last_date": "30/09"
- },
- "DK_OSugarBeet": {
-  "first_date": "20/11",
-  "flexdates": [
-   {
-    "end": null,
-    "start": null
-   }
-  ],
-  "harvest_end": "15/10",
-  "last_date": "15/10"
  },
  "DK_OSugarBeets": {
   "first_date": "20/11",
@@ -1507,21 +1507,6 @@
   ],
   "harvest_end": "31/08",
   "last_date": "31/08"
- },
- "DK_SugarBeet": {
-  "first_date": "30/11",
-  "flexdates": [
-   {
-    "end": "15/09",
-    "start": null
-   },
-   {
-    "end": "10/12",
-    "start": null
-   }
-  ],
-  "harvest_end": "31/08",
-  "last_date": "10/12"
  },
  "DK_SugarBeets": {
   "first_date": "30/11",

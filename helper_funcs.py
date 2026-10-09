@@ -400,6 +400,17 @@ def _validate_against_almass(op_nodes, prob_nodes, cond_nodes, catch_crop_nodes,
                             "field by' is the date the previous crop must be harvested by, not the "
                             "date of this crop's first operation.")
 
+    # Timing: follow the plan through the season as ALMaSS runs it (plan_checks.py) -- a skipped step that
+    # moves the harvest into spring, a window that has long passed when its step is reached, a rare step made
+    # certain by a direct arrow, a harvest window ending after the crop's last date.
+    try:
+        import plan_checks
+        for w in plan_checks.check_timing(plan_checks.nodes_from_editor(op_nodes, prob_nodes, cond_nodes, catch_crop_nodes),
+                                          crop_name, rotation):
+            warnings.append(W + w)
+    except Exception as e:                       # a check must never stop validation
+        warnings.append(W + f"the timing checks could not run ({e}).")
+
     # 5. ALMaSS finds a plan by the crop's name.
     if known_crops and crop_name and crop_name not in known_crops:
         close = difflib.get_close_matches(crop_name, known_crops, n=1)
